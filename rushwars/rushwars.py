@@ -20,7 +20,7 @@ from redbot.core.i18n import Translator, cog_i18n
 
 BaseCog = getattr(commands, "Cog", object)
 
-_ = Translator("Rush Wars", __file__)
+_ = Translator("RushWars", __file__)
 
 log = logging.getLogger("red.rushwars")
 listener = getattr(commands.Cog, "listener", None)
