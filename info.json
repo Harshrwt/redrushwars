@@ -1,0 +1,13 @@
+{
+    "author" : "snowsee",
+    "install_msg" : "Thank you for trying out the Rush Wars cog.",
+    "name" : "Rush Wars",
+    "short" : "A simplified version of the game Rush Wars, developed by Supercell.",
+    "description" : "Play the game Rush Wars (by Supercell) on Discord. Kick butt and get mega rich! 💪💰",
+	"tags": [
+		"rpg",
+        "supercell",
+        "rushwars",
+        "games"
+	]
+}
