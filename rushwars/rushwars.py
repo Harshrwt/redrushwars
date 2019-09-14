@@ -35,8 +35,8 @@ class RushWars(BaseCog):
 
     __version__ = "0.0.1"
 
-    def init(self, bot):
-        self.bot = bot
+    def init(self):
+        # self.bot = bot
         self.locks = {}
 
         self.config = Config.get_conf(self, 1_070_701_001, force_registration=True)
