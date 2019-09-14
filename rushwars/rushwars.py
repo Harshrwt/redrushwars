@@ -148,7 +148,7 @@ class RushWars(BaseCog):
         """Attack another base for stars, gold and glory!"""
         await ctx.send("hello, world!")
     
-    @commands.command(name="")
+    # @commands.command(name="")
 
 
     def cog_unload(self):
