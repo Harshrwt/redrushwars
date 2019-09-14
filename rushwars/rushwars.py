@@ -106,7 +106,7 @@ class RushWars(BaseCog):
         
     async def cleanup_tasks(self):
         await self.bot.wait_until_ready()
-        while self is self.bot.get_cog("Rush Wars"):
+        while self is self.bot.get_cog("RushWars"):
             for task in self.tasks:
                 if task.done():
                     self.tasks.remove(task)
