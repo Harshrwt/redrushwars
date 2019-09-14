@@ -37,6 +37,8 @@ class RushWars(BaseCog):
 
     def init(self):
         # self.bot = bot
+        self.path = bundled_data_path(self)
+
         self.locks = {}
 
         self.config = Config.get_conf(self, 1_070_701_001, force_registration=True)
@@ -84,10 +86,10 @@ class RushWars(BaseCog):
 
     async def initialize(self):
         """This will load all the bundled data into respective variables"""
-        troops_fp = cog_data_path(self) / "troops.json"
-        airdrops_fp = cog_data_path(self) / "airdrops.json"
-        defenses_fp = cog_data_path(self) / "defenses.json"
-        commanders_fp = cog_data_path(self) / "commanders.json"
+        troops_fp = bundled_data_path(self) / "troops.json"
+        airdrops_fp = bundled_data_path(self) / "airdrops.json"
+        defenses_fp = bundled_data_path(self) / "defenses.json"
+        commanders_fp = bundled_data_path(self) / "commanders.json"
         files = {
             "troops": troops_fp,
             "airdrops": airdrops_fp,
