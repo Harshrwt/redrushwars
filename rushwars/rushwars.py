@@ -123,8 +123,8 @@ class RushWars(BaseCog):
                 troops = squad["troops"]
                 troops[3] = "Tank"
             cards = await self.config.user(ctx.author).cards()
-        except Exception:
-            await ctx.send("Error!")
+        except Exception as ex:
+            await ctx.send("Error!", ex)
             return
 
         await ctx.send(f"{troops}")
