@@ -193,7 +193,7 @@ class RushWars(BaseCog):
                             log.exception("Error with the new character sheet")
                             return
                         p = await p._equip_item(item, True)
-                        await self.config.user(ctx.author).set(p._to_json())
+                        # await self.config.user(ctx.author).set(p._to_json())
 
     @commands.command(name="attack", autohelp=False)
     async def _attack(self, ctx: Context):
