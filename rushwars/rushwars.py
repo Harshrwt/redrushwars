@@ -141,7 +141,7 @@ class RushWars(BaseCog):
             hp += int(troop_stats.Hp) * count
             att += int(troop_stats.Att) * count
 
-        if member:
+        if member is not None:
             try:
                 async with self.config.user(member).active() as active:
                     defenses = active["defenses"]
@@ -150,7 +150,7 @@ class RushWars(BaseCog):
                 return
         else:
             defenses = random.choice(default_defenses)
-        
+
         def_hp = 0
         def_att = 0
         for defense in defenses.keys():
@@ -158,6 +158,21 @@ class RushWars(BaseCog):
             count = defenses[defense]
             def_hp += int(defense_stats.Hp) * count
             def_att += int(defense_stats.Att) * count
+
+        attack = [(troop, troops[troop]) for troop in troops.keys()]
+        defense = [(defense, defenses[defense]) for defense in defenses.keys()]
+
+        attack_str = ""
+        defense_str = ""
+        for item in attack:
+            attack_str += f"**{item[0]}**: {item[1]}\n"
+        for item in defense:
+            defense_str += f"**{item[0]}**: {item[1]}\n"
+
+        await ctx.send("__**ATTACK:**__")
+        await ctx.send(attack_str)
+        await ctx.send("__**DEFENSE:**__")
+        await ctx.send(defense_str)
 
         if def_hp/att < hp/def_att:
             await ctx.send("You win!")
