@@ -118,8 +118,8 @@ class RushWars(BaseCog):
         """Attack a base!"""
 
         try:
-            squad = await self.config.user(ctx.author).squad
-            cards = await self.config.user(ctx.author).cards
+            squad = await self.config.user(ctx.author).squad()
+            cards = await self.config.user(ctx.author).cards()
         except Exception:
             await ctx.send("Error!")
             return
