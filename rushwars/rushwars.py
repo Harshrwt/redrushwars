@@ -50,16 +50,18 @@ default_user = {
                 "commanders": {}
             },
             "active": {
-                "troops": ["Troopers", "Pitcher", "Shields"],
-                "airdrops": ["Rage"],
-                "defenses": ["Mines", "Bomb", "Cannon"],
-                "commaders": [],
+                "troops": {"Troopers": 2, "Pitcher": 2, "Shields": 1},
+                "airdrops": {"Rage": 1},
+                "defenses": {"Troopers": 1, "Pitcher": 2, "Shields": 1},
+                "commaders": {},
             },
             "stars": 0,
             "keys": 5,
             # "gold": 200,
             "gems": 150,
         }
+
+default_defense = {"Troopers", "Pitcher", "Shields"}
 
 TROOPS: dict = None
 AIRDROPS: dict = None
@@ -115,20 +117,47 @@ class RushWars(BaseCog):
         await ctx.send(f"You are running Rush Wars version {__version__}")
 
     @commands.command()
-    async def rush(self, ctx):
+    async def rush(self, ctx, member = None):
         """Attack a base!"""
 
         try:
             # squad = await self.config.user(ctx.author).squad()
-            async with self.config.user(ctx.author).squad() as squad:
-                troops = squad["troops"]
-            cards = await self.config.user(ctx.author).cards()
+            async with self.config.user(ctx.author).active() as active:
+                troops = active["troops"]
         except Exception as ex:
-            await ctx.send("Error! " + str(ex))
+            log.exception(ex)
             return
 
-        await ctx.send(f"{troops}")
-        await ctx.send(f"{cards}")
+        hp = 0
+        att = 0
+        for troop in troops.keys():
+            troop_stats = self.troop_search(troop)
+            count = troops[troop]
+            hp += int(troop_stats.Hp) * count
+            att += int(troop_stats.Att) * count
+
+        if member:
+            try:
+                async with self.config.user(member).active() as active:
+                    defenses = active["defenses"]
+            except:
+                await ctx.send("User has not set a defense!")
+                return
+        else:
+            defenses = default_defense
+        
+        def_hp = 0
+        def_att = 0
+        for defense in defenses.keys():
+            defense_stats = self.troop_search(defense)
+            count = defenses[defense]
+            def_hp += int(defense_stats.Hp) * count
+            def_att += int(defense_stats.Att) * count
+
+        if def_hp/att > hp/def_att:
+            await ctx.send("You win!")
+        else:
+            await ctx.send("You lose!")
 
     @commands.command()
     async def troop(self, ctx, troop_name: str, level=None):
