@@ -121,7 +121,6 @@ class RushWars(BaseCog):
             # squad = await self.config.user(ctx.author).squad()
             async with self.config.user(ctx.author).squad() as squad:
                 troops = squad["troops"]
-                troops.append("Tank")
             cards = await self.config.user(ctx.author).cards()
         except Exception as ex:
             await ctx.send("Error! " + str(ex))
@@ -129,3 +128,41 @@ class RushWars(BaseCog):
 
         await ctx.send(f"{troops}")
         await ctx.send(f"{cards}")
+
+    @commands.command()
+    async def troop(self, ctx, *, troop_name: str):
+        """Search for an troop in the Rush Wars universe.
+            Args:
+                troop_name: variable length string
+            Returns:
+                Discord embed
+            Raises:
+                AttributeError: Troop not found
+            Examples:
+                troop shields
+        """
+        troop = self.troop_search(troop_name.title())
+        if troop is None:
+            return await ctx.send("Troop with that name could not be found.")
+        color = 0x999966
+
+        embed = discord.Embed(colour=color, title=troop.Name)
+        embed.add_field(name="Attack", value=troop.Att)
+        embed.add_field(name="Health", value=troop.Hp)
+        embed.add_field(name="Rarity", value=troop.Rarity)
+        embed.add_field(name="Count", value=troop.Count)
+        embed.add_field(name="Space", value=troop.Space)
+        await ctx.send(embed=embed)
+
+    def troop_search(self, name):
+        fp = self.path / 'Troops.csv'
+        try:
+            with fp.open('rt', encoding='iso-8859-15') as f:
+                reader = csv.DictReader(f, delimiter=',')
+                for row in reader:
+                    if row['Name'] == name:
+                        Troop = namedtuple('Name', reader.fieldnames)
+                        return Troop(**row)
+        except FileNotFoundError:
+            print("The csv file could not be found in Rush Wars data folder.")
+            return None
