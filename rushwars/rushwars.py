@@ -49,9 +49,10 @@ default_user = {
                 },
                 "commanders": {}
             },
-            "squad": {
+            "active": {
                 "troops": ["Troopers", "Pitcher", "Shields"],
                 "airdrops": ["Rage"],
+                "defenses": ["Mines", "Bomb", "Cannon"],
                 "commaders": [],
             },
             "stars": 0,
@@ -154,14 +155,19 @@ class RushWars(BaseCog):
         if "â" in description:
             description = description.replace("â", "-")
 
+        dps = int(troop.Att/troop.AttSpeed)
+
         embed = discord.Embed(colour=color, title=troop.Name, description=description, url=url)
         embed.set_thumbnail(url=thumbnail_url)
-        embed.add_field(name="Attack", value=troop.Att)
         embed.add_field(name="Health", value=troop.Hp)
+        embed.add_field(name="Damage", value=troop.Att)
+        embed.add_field(name="Damage per second", value=dps)
         embed.add_field(name="Rarity", value=troop.Rarity)
         embed.add_field(name="Count", value=troop.Count)
         embed.add_field(name="Space", value=troop.Space)
         embed.add_field(name="Targets", value=target)
+        embed.add_field(name="Attack Speed", value=troop.AttSpeed)
+        embed.add_field(name="HQ Level", value=troop.UnlockLvl)
         await ctx.send(embed=embed)
 
     def troop_search(self, name):
