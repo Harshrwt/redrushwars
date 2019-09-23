@@ -1,6 +1,7 @@
 # Standard Library
 import csv
 import json
+import logging
 from collections import namedtuple
 
 # Discord
@@ -15,6 +16,11 @@ from redbot.core.utils.chat_formatting import box
 # Third-Party Requirements
 # from tabulate import tabulate
 
+
+BaseCog = getattr(commands, "Cog", object)
+
+log = logging.getLogger("red.rushwars")
+listener = getattr(commands.Cog, "listener", None)
 
 __version__ = "0.0.1"
 __author__ = "Snowsee"
@@ -60,7 +66,7 @@ DEFENSES: dict = None
 COMMANDERS: dict = None
 
 
-class RushWars(commands.Cog):
+class RushWars(BaseCog):
     """Simulate Rush Wars"""
 
     def __init__(self):
@@ -113,3 +119,10 @@ class RushWars(commands.Cog):
 
         player_data = await self.config.user(ctx.user)
         await ctx.send(player_data)
+
+    def cog_unload(self):
+        for task in self.tasks:
+            log.debug(f"removing task {task}")
+            task.cancel()
+
+    __unload = cog_unload
