@@ -151,8 +151,8 @@ class RushWars(BaseCog):
         target = self.troop_targets(troop.Targets)
         description = f"**{troop.Description}**"
 
-        if "-" in description:
-            await ctx.send("- found")
+        if "â" in description:
+            description.replace("â", "-")
 
         embed = discord.Embed(colour=color, title=troop.Name, description=description, url=url)
         embed.set_thumbnail(url=thumbnail_url)
