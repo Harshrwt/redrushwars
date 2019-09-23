@@ -144,7 +144,8 @@ class RushWars(BaseCog):
         troop = self.troop_search(troop_name.title())
         if troop is None:
             return await ctx.send("Troop with that name could not be found.")
-        color = 0x999966
+
+        color = self.color_lookup(troop.Rarity)
         url = f"https://rushwars.fandom.com/wiki/{troop.Name}"
         thumbnail_url = f"https://www.rushstats.com/assets/troop/{troop.Name}.png"
         target = self.troop_targets(troop.Targets)
@@ -180,3 +181,8 @@ class RushWars(BaseCog):
             return "Air"
         else:
             return "Air & Ground"
+
+    @staticmethod
+    def color_lookup(rarity):
+        colors = {"Common": 0xAE8F6F, "Rare": 0x74BD9C, "Epic": 0xB77AE0, "Commander": 0xF7EE85}
+        return colors[rarity]
