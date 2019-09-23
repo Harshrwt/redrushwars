@@ -168,12 +168,16 @@ class RushWars(BaseCog):
             card_name = item[0]
             card_emote = self.card_emotes(card_name)
             count = item[1]
-            attack_str += f"{card_name} {card_emote}: x{count}\n"
+            if count <= 0:
+                continue
+            attack_str += f"**{card_name}** {card_emote}: x{count}\n"
         for item in defense:
             card_name = item[0]
             card_emote = self.card_emotes(card_name)
             count = item[1]
-            defense_str += f"{card_name} {card_emote}: x{count}\n"
+            if count <= 0:
+                continue
+            defense_str += f"**{card_name}** {card_emote}: x{count}\n"
 
         embed = discord.Embed(colour=0x999966, title="Battle Info")
         embed.add_field(name="Attack <:RW_Attck:625783202836905984>", value=attack_str)
