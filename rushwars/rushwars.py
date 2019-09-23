@@ -29,7 +29,7 @@ __author__ = "Snowsee"
 default_card_stats = (1, 0)
 
 default_user = {
-            "exp": 0,
+            "xp": 0,
             "lvl": 1,
             "hq": 1,
             "chopper": 1,
@@ -118,9 +118,11 @@ class RushWars(BaseCog):
         """Attack a base!"""
 
         try:
-            xp = await self.config.user(ctx.author).exp()
+            squad = await self.config.user(ctx.author).squad
+            cards = await self.config.user(ctx.author).cards
         except Exception:
             await ctx.send("Error!")
             return
 
-        await ctx.send(f"{xp}")
+        await ctx.send(f"{squad}")
+        await ctx.send(f"{cards}")
