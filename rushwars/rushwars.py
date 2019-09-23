@@ -148,7 +148,7 @@ class RushWars(BaseCog):
         url = f"https://rushwars.fandom.com/wiki/{troop.Name}"
         thumbnail_url = f"https://www.rushstats.com/assets/troop/{troop.Name}.png"
         target = self.troop_targets(troop.Targets)
-        description = f"*{troop.Description}*\n"
+        description = f"**{troop.Description}**"
 
         embed = discord.Embed(colour=color, title=troop.Name, description=description, url=url)
         embed.set_thumbnail(url=thumbnail_url)
