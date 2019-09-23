@@ -146,7 +146,7 @@ class RushWars(BaseCog):
             return await ctx.send("Troop with that name could not be found.")
         color = 0x999966
         url = f"https://www.rushstats.com/assets/troop/{troop.Name}.png"
-        target = troop_targets(troop.Targets)
+        target = self.troop_targets(troop.Targets)
 
         embed = discord.Embed(colour=color, title=troop.Name)
         embed.set_thumbnail(url=url)
