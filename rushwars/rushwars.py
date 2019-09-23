@@ -1,6 +1,7 @@
 # Standard Library
 import csv
 import json
+import random
 import logging
 from collections import namedtuple
 
@@ -61,7 +62,11 @@ default_user = {
             "gems": 150,
         }
 
-default_defense = {"Troopers": 1, "Pitcher": 2, "Shields": 1}
+default_defenses = [
+    {"Troopers": 1, "Pitcher": 2, "Shields": 1},
+    {"Troopers": 3, "Pitcher": 1, "Shields": 0},
+    {"Troopers": 2, "Pitcher": 2, "Shields": 2}
+]
 
 TROOPS: dict = None
 AIRDROPS: dict = None
@@ -144,7 +149,7 @@ class RushWars(BaseCog):
                 await ctx.send("User has not set a defense!")
                 return
         else:
-            defenses = default_defense
+            defenses = random.choice(default_defenses)
         
         def_hp = 0
         def_att = 0
@@ -154,7 +159,7 @@ class RushWars(BaseCog):
             def_hp += int(defense_stats.Hp) * count
             def_att += int(defense_stats.Att) * count
 
-        if def_hp/att > hp/def_att:
+        if def_hp/att < hp/def_att:
             await ctx.send("You win!")
         else:
             await ctx.send("You lose!")
