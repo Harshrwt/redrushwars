@@ -121,8 +121,7 @@ class RushWars(BaseCog):
         await ctx.send(player_data)
 
     def cog_unload(self):
-        for task in self.tasks:
-            log.debug(f"removing task {task}")
-            task.cancel()
+        self.__unload()
 
-    __unload = cog_unload
+    def __unload(self):
+        self.session.close()
