@@ -157,13 +157,16 @@ class RushWars(BaseCog):
         if "â" in description:
             description = description.replace("â", "-")
 
-        dps = int(int(troop.Att)/float(troop.AttSpeed))
+        lvl_stats = [troop.Hp, troop.Att]
+        upd_stats = self.card_level(level, lvl_stats, troop.Rarity)
+
+        dps = int(int(lvl_stats[1])/float(troop.AttSpeed))
 
         embed = discord.Embed(colour=color, title=troop.Name, description=description, url=url)
         embed.set_thumbnail(url=thumbnail_url)
-        embed.add_field(name="Level", value=1)
-        embed.add_field(name="Health", value=troop.Hp)
-        embed.add_field(name="Damage", value=troop.Att)
+        embed.add_field(name="Level", value=level)
+        embed.add_field(name="Health", value=upd_stats[0])
+        embed.add_field(name="Damage", value=upd_stats[1])
         embed.add_field(name="Damage per second", value=dps)
         embed.add_field(name="Rarity", value=troop.Rarity)
         embed.add_field(name="Count", value=troop.Count)
@@ -172,8 +175,6 @@ class RushWars(BaseCog):
         embed.add_field(name="Attack Speed", value=troop.AttSpeed)
         embed.add_field(name="HQ Level", value=troop.UnlockLvl)
         await ctx.send(embed=embed)
-
-        await ctx.send(level)
 
     def troop_search(self, name):
         fp = self.path / 'troops.csv'
@@ -196,8 +197,29 @@ class RushWars(BaseCog):
         else:
             return "Air & Ground"
 
-    def card_level(self, level, info: list):
-        pass
+    def card_level(self, level, stats: list, rarity):
+        """Get stats by selected level"""
+
+        if rarity.lower().startswith('c'):
+            start = 1
+        elif rarity.lower().startswith('r'):
+            start = 5
+        elif rarity.lower().startswith('e'):
+            start = 9
+        elif rarity.lower().startswith('co'):
+            start = 13
+
+        new_stats = []
+
+        for stat in stats:
+            stat = int(stat) 
+            upgrader = stat/10
+            i = 1
+            while i<=level:
+                stat += upgrader
+            new_stats.append(stat)
+
+        return new_stats
 
     @staticmethod
     def color_lookup(rarity):
