@@ -1,0 +1,6 @@
+Name,Att,Hp,Count,Targets,Space,Aerial,Rarity
+Troopers,21,82,4,2,1,False,Common
+Pitchers,70,110,1,0,1,False,Common
+Shields,25,312,2,2,1,False,Common
+Jetpacks,25,82,2,2,2,True,Common
+Bazooka,80,100,1,2,1,False,Rare
