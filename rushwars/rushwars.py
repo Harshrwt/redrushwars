@@ -128,36 +128,39 @@ class RushWars(BaseCog):
             log.exception(ex)
             return
 
-        hp = 0
-        att = 0
-        for troop in troops.keys():
-            troop_stats = self.troop_search(troop)
-            count = troops[troop]
-            hp += int(troop_stats.Hp) * count
-            att += int(troop_stats.Att) * count
+        await ctx.send(troops)
+        await ctx.send(type(troops))
 
-        if member:
-            try:
-                async with self.config.user(member).active() as active:
-                    defenses = active["defenses"]
-            except:
-                await ctx.send("User has not set a defense!")
-                return
-        else:
-            defenses = default_defense
+        # hp = 0
+        # att = 0
+        # for troop in troops.keys():
+        #     troop_stats = self.troop_search(troop)
+        #     count = troops[troop]
+        #     hp += int(troop_stats.Hp) * count
+        #     att += int(troop_stats.Att) * count
+
+        # if member:
+        #     try:
+        #         async with self.config.user(member).active() as active:
+        #             defenses = active["defenses"]
+        #     except:
+        #         await ctx.send("User has not set a defense!")
+        #         return
+        # else:
+        #     defenses = default_defense
         
-        def_hp = 0
-        def_att = 0
-        for defense in defenses.keys():
-            defense_stats = self.troop_search(defense)
-            count = defenses[defense]
-            def_hp += int(defense_stats.Hp) * count
-            def_att += int(defense_stats.Att) * count
+        # def_hp = 0
+        # def_att = 0
+        # for defense in defenses.keys():
+        #     defense_stats = self.troop_search(defense)
+        #     count = defenses[defense]
+        #     def_hp += int(defense_stats.Hp) * count
+        #     def_att += int(defense_stats.Att) * count
 
-        if def_hp/att > hp/def_att:
-            await ctx.send("You win!")
-        else:
-            await ctx.send("You lose!")
+        # if def_hp/att > hp/def_att:
+        #     await ctx.send("You win!")
+        # else:
+        #     await ctx.send("You lose!")
 
     @commands.command()
     async def troop(self, ctx, troop_name: str, level=None):
