@@ -165,11 +165,17 @@ class RushWars(BaseCog):
         attack_str = ""
         defense_str = ""
         for item in attack:
-            attack_str += f"**{item[0]}**: {item[1]}\n"
+            card_name = item[0]
+            card_emote = self.card_emotes(card_name)
+            count = item[1]
+            attack_str += f"{card_name} {card_emote}: x{count}\n"
         for item in defense:
-            defense_str += f"**{item[0]}**: {item[1]}\n"
+            card_name = item[0]
+            card_emote = self.card_emotes(card_name)
+            count = item[1]
+            defense_str += f"{card_name} {card_emote}: x{count}\n"
 
-        embed = discord.Embed(colour=0x999966, title="Battle")
+        embed = discord.Embed(colour=0x999966, title="Battle Info")
         embed.add_field(name="Attack <:RW_Attck:625783202836905984>", value=attack_str)
         embed.add_field(name="Defense <:RW_Defense:625804692760559636>", value=defense_str)
         await ctx.send(embed=embed)
@@ -276,3 +282,12 @@ class RushWars(BaseCog):
         colors = {"Common": 0xAE8F6F, "Rare": 0x74BD9C, "Epic": 0xB77AE0, "Commander": 0xF7EE85}
         return colors[rarity]
         
+    @staticmethod
+    def card_emotes(card_name):
+        emotes = {
+            "Troopers": "<:Troopers:625807035362967605>",
+            "Pitcher": "<:Pitcher:625807035954626590>",
+            "Shields": "<:Shields:625807036663332865>"
+        }
+
+        return emotes[card_name]
