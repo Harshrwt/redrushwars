@@ -215,7 +215,7 @@ class RushWars(BaseCog):
             stat = int(stat) 
             upgrader = stat/10
             i = 1
-            while i<=level:
+            while i<=int(level):
                 stat += upgrader
             new_stats.append(stat)
 
