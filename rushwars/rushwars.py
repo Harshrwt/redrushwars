@@ -154,9 +154,8 @@ class RushWars(BaseCog):
         embed.add_field(name="Health", value=troop.Hp)
         embed.add_field(name="Rarity", value=troop.Rarity)
         embed.add_field(name="Count", value=troop.Count)
-        embed.add_field(name="Space", value=target)
-
-        embed.add_field(name="Targets", value=troop.Targets)
+        embed.add_field(name="Space", value=troop.Space)
+        embed.add_field(name="Targets", value=target)
         await ctx.send(embed=embed)
 
     def troop_search(self, name):
