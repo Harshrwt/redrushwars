@@ -18,6 +18,14 @@ from redbot.core.utils.menus import menu, DEFAULT_CONTROLS, start_adding_reactio
 from redbot.core.i18n import Translator, cog_i18n
 
 
+from .charsheet import (
+    Player,
+    Card,
+    GameSession,
+    parse_timedelta,
+    CardConverter,
+)
+
 BaseCog = getattr(commands, "Cog", object)
 
 _ = Translator("RushWars", __file__)
@@ -27,7 +35,8 @@ listener = getattr(commands.Cog, "listener", None)
 
 if listener is None:
     def listener(name=None):
-        return lambda x:x
+        return lambda x: x
+
 
 @cog_i18n(_)
 class RushWars(BaseCog):
@@ -41,13 +50,15 @@ class RushWars(BaseCog):
 
         self.locks = {}
 
-        self.config = Config.get_conf(self, 1_070_701_001, force_registration=True)
+        self.config = Config.get_conf(
+            self, 1_070_701_001, force_registration=True)
 
         # (level, number of cards)
         default_card_stats = (1, 0)
 
         default_user = {
             "exp": 0,
+            "lvl": 1,
             "hq": 1,
             "chopper": 1,
             "cards": {
@@ -105,7 +116,7 @@ class RushWars(BaseCog):
             self.DEFENSES = json.load(f)
         with files["commanders"].open("r") as f:
             self.COMMANDERS = json.load(f)
-        
+
     async def cleanup_tasks(self):
         await self.bot.wait_until_ready()
         while self is self.bot.get_cog("RushWars"):
@@ -135,23 +146,61 @@ class RushWars(BaseCog):
     @commands.group(name="squad", autohelp=False)
     async def _squad(self, ctx: Context):
         """This shows your squad.
-        
+
         Add: Add card to squad - `[p]squad add item_name [quantity]`
         Remove: Remove card from squad - `[p]squad remove item_name [quantity]`
         Save:  Save current squad - `[p]squad save (squad_name)`
         """
         if not await self.allow_in_dm(ctx):
             return await ctx.send(_("This command is not available in DM's on this bot."))
+        try:
+            p = await Player._from_json(self.config, ctx.author)
+        except Exception:
+            log.exception("Error with the new character sheet.")
+            return
         if not ctx.invoked_subcommand:
-            await ctx.send("hello, world!")
+            squad = _("[{author}'s squad] \n\n{squad}").format(
+                author=self.E(ctx.author.display_name), squad=p.__squad__()
+            )
+            msgs = []
+            for page in pagify(squad, delims=["\n"], shorten_by=20):
+                msgs.append(box(page, lang="css"))
+            return await menu(ctx, msgs, DEFAULT_CONTROLS)
+
+            try:
+                reply = await ctx.bot.wait_for(
+                    "message", check=MessagePredicate.same_context(ctx), timeout=30
+                )
+            except asyncio.TimeoutError:
+                return
+            if not reply:
+                return
+            else:
+                equip = None
+                for name, item in p.squad.items():
+                    if (
+                        reply.content.lower() in item.name.lower()
+                        or reply.content.lower in str(item).lower()
+                    ):
+                        equip = item
+                        break
+                if equip:
+                    await ctx.send("hello, world!")
+                    async with self.get_lock(p.user):
+                        try:
+                            p = await Player._from_json(self.config, ctx.author)
+                        except Exception:
+                            log.exception("Error with the new character sheet")
+                            return
+                        p = await p._equip_item(item, True)
+                        await self.config.user(ctx.author).set(p._to_json())
 
     @commands.command(name="attack", autohelp=False)
     async def _attack(self, ctx: Context):
         """Attack another base for stars, gold and glory!"""
         await ctx.send("hello, world!")
-    
-    # @commands.command(name="")
 
+    # @commands.command(name="")
 
     def cog_unload(self):
         for task in self.tasks:
