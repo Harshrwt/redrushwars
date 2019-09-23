@@ -119,9 +119,3 @@ class RushWars(BaseCog):
 
         player_data = await self.config.user(ctx.author)
         await ctx.send(player_data)
-
-    def cog_unload(self):
-        self.__unload()
-
-    def __unload(self):
-        self.session.close()
