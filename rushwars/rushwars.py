@@ -152,7 +152,7 @@ class RushWars(BaseCog):
         description = f"**{troop.Description}**"
 
         if "â" in description:
-            description.replace("â", "-")
+            description = description.replace("â", "-")
 
         embed = discord.Embed(colour=color, title=troop.Name, description=description, url=url)
         embed.set_thumbnail(url=thumbnail_url)
@@ -165,7 +165,7 @@ class RushWars(BaseCog):
         await ctx.send(embed=embed)
 
     def troop_search(self, name):
-        fp = self.path / 'Troops.csv'
+        fp = self.path / 'troops.csv'
         try:
             with fp.open('rt', encoding='iso-8859-15') as f:
                 reader = csv.DictReader(f, delimiter=',')
