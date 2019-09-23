@@ -118,11 +118,13 @@ class RushWars(BaseCog):
         """Attack a base!"""
 
         try:
-            squad = await self.config.user(ctx.author).squad()
+            # squad = await self.config.user(ctx.author).squad()
+            async with self.config.user(ctx.author).squad() as squad:
+                troops = squad["troops"]
             cards = await self.config.user(ctx.author).cards()
         except Exception:
             await ctx.send("Error!")
             return
 
-        await ctx.send(f"{squad}")
+        await ctx.send(f"{troops}")
         await ctx.send(f"{cards}")
