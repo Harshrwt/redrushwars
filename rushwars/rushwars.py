@@ -159,6 +159,7 @@ class RushWars(BaseCog):
 
         embed = discord.Embed(colour=color, title=troop.Name, description=description, url=url)
         embed.set_thumbnail(url=thumbnail_url)
+        embed.add_field(name="Level", value=1)
         embed.add_field(name="Health", value=troop.Hp)
         embed.add_field(name="Damage", value=troop.Att)
         embed.add_field(name="Damage per second", value=dps)
