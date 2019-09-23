@@ -1,6 +1,6 @@
 Name,Att,Hp,Count,Targets,Space,Aerial,Rarity,Description
 Troopers,21,82,4,2,1,False,Common,"Bread and butter of warfare! Attacks air and ground at short range. Cool under pressure, but watch out for grenades!"
-Pitchers,70,110,1,0,1,False,Commander,"Ex-baseball pitcher putting those throwing skills to good use! Medium range and best against groups of enemies."
-Shields,25,312,2,2,1,False,Epic,"Put them at the front to soak up damage with their riot shields – but really it's their healthy skepticism that keeps them safe."
+Pitcher,70,110,1,0,1,False,Common,"Ex-baseball pitcher putting those throwing skills to good use! Medium range and best against groups of enemies."
+Shields,25,312,2,2,1,False,Common,"Put them at the front to soak up damage with their riot shields – but really it's their healthy skepticism that keeps them safe."
 Jetpacks,25,82,2,2,2,True,Common,"Fast moving, medium ranged and can fly over obstacles. Can't be targeted by certain troops or defenses. Blue hair is the new pink!"
 Bazooka,80,100,1,2,1,False,Rare,"Deals long range, area damage to both air and ground units – plus extra damage to buildings! Previously a world champion arm wrestler."
