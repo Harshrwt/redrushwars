@@ -148,7 +148,7 @@ class RushWars(BaseCog):
         url = f"https://www.rushstats.com/assets/troop/{troop.Name}.png"
         target = self.troop_targets(troop.Targets)
 
-        embed = discord.Embed(colour=color, title=troop.Name, description=f"*{troop.Description}*")
+        embed = discord.Embed(colour=color, title=troop.Name, description=f"*{troop.Description}*\n***")
         embed.set_thumbnail(url=url)
         embed.add_field(name="Attack", value=troop.Att)
         embed.add_field(name="Health", value=troop.Hp)
