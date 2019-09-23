@@ -171,7 +171,7 @@ class RushWars(BaseCog):
 
         await ctx.send("__**ATTACK:**__")
         await ctx.send(attack_str)
-        await ctx.send("__**DEFENSE:**__")
+        await ctx.send("\n__**DEFENSE:**__")
         await ctx.send(defense_str)
 
         if def_hp/att < hp/def_att:
