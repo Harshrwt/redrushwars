@@ -160,7 +160,7 @@ class RushWars(BaseCog):
         lvl_stats = [troop.Hp, troop.Att]
         upd_stats = self.card_level(level, lvl_stats, troop.Rarity)
 
-        dps = int(int(lvl_stats[1])/float(troop.AttSpeed))
+        dps = int(int(upd_stats[1])/float(troop.AttSpeed))
 
         embed = discord.Embed(colour=color, title=troop.Name, description=description, url=url)
         embed.set_thumbnail(url=thumbnail_url)
@@ -215,7 +215,7 @@ class RushWars(BaseCog):
             stat = int(stat) 
             upgrader = stat/10
             i = 1
-            while i<=int(level):
+            while i < int(level):
                 stat += upgrader
                 i += 1
             new_stats.append(stat)
