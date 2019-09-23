@@ -145,13 +145,18 @@ class RushWars(BaseCog):
         if troop is None:
             return await ctx.send("Troop with that name could not be found.")
         color = 0x999966
+        url = f"https://www.rushstats.com/assets/troop/{troop.Name}.png"
+        target = troop_targets(troop.Targets)
 
         embed = discord.Embed(colour=color, title=troop.Name)
+        embed.set_thumbnail(url=url)
         embed.add_field(name="Attack", value=troop.Att)
         embed.add_field(name="Health", value=troop.Hp)
         embed.add_field(name="Rarity", value=troop.Rarity)
         embed.add_field(name="Count", value=troop.Count)
-        embed.add_field(name="Space", value=troop.Space)
+        embed.add_field(name="Space", value=target)
+
+        embed.add_field(name="Targets", value=troop.Targets)
         await ctx.send(embed=embed)
 
     def troop_search(self, name):
@@ -166,3 +171,11 @@ class RushWars(BaseCog):
         except FileNotFoundError:
             print("The csv file could not be found in Rush Wars data folder.")
             return None
+
+    def troop_targets(self, targets):
+        if targets == 0:
+            return "Ground"
+        elif targets == 1:
+            return "Air"
+        else:
+            return "Air & Ground"
