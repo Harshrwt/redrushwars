@@ -117,5 +117,5 @@ class RushWars(BaseCog):
     async def rush(self, ctx):
         """Attack a base!"""
 
-        player_data = await self.config.user(ctx.author)
+        player_data = self.config.user(ctx.author)
         await ctx.send(player_data)
