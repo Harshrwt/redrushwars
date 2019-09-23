@@ -169,10 +169,10 @@ class RushWars(BaseCog):
         for item in defense:
             defense_str += f"**{item[0]}**: {item[1]}\n"
 
-        await ctx.send("__**ATTACK:**__")
-        await ctx.send(attack_str)
-        await ctx.send("\n__**DEFENSE:**__")
-        await ctx.send(defense_str)
+        embed = discord.Embed(colour=0x999966, title="Battle")
+        embed.add_field(name="Attack <:RW_Attck:625783202836905984>", value=attack_str)
+        embed.add_field(name="Defense <:RW_Defense:625804692760559636>", value=defense_str)
+        await ctx.send(embed=embed)
 
         if def_hp/att < hp/def_att:
             await ctx.send("You win!")
