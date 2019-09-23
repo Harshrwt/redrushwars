@@ -131,7 +131,7 @@ class RushWars(BaseCog):
         await ctx.send(f"{cards}")
 
     @commands.command()
-    async def troop(self, ctx, *, troop_name: str):
+    async def troop(self, ctx, *, troop_name: str, level=None):
         """Search for an troop in the Rush Wars universe.
             Args:
                 troop_name: variable length string
@@ -171,6 +171,8 @@ class RushWars(BaseCog):
         embed.add_field(name="HQ Level", value=troop.UnlockLvl)
         await ctx.send(embed=embed)
 
+        await ctx.send(level)
+
     def troop_search(self, name):
         fp = self.path / 'troops.csv'
         try:
@@ -192,7 +194,11 @@ class RushWars(BaseCog):
         else:
             return "Air & Ground"
 
+    def card_level(self, level, info: list):
+        pass
+
     @staticmethod
     def color_lookup(rarity):
         colors = {"Common": 0xAE8F6F, "Rare": 0x74BD9C, "Epic": 0xB77AE0, "Commander": 0xF7EE85}
         return colors[rarity]
+        
