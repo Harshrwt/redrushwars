@@ -118,9 +118,9 @@ class RushWars(BaseCog):
         """Attack a base!"""
 
         try:
-            xp = await self.config.user(ctx.author).xp()
+            xp = await self.config.user(ctx.author).exp()
         except Exception:
             await ctx.send("Error!")
             return
-            
+
         await ctx.send(f"{xp}")
