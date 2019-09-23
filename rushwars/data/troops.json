@@ -1,5 +1,5 @@
 {
-    "common": [
+    "Common": [
         {
             "name": "Troopers",
             "stats": {
@@ -34,7 +34,7 @@
             }
         }
     ],
-    "rare": [
+    "Rare": [
         {
             "name": "Bazooka",
             "stats": {
@@ -58,7 +58,7 @@
             }
         }
     ],
-    "epic": [
+    "Epic": [
         {
             "name": "Gorilla",
             "stats": {
