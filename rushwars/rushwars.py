@@ -121,7 +121,7 @@ class RushWars(BaseCog):
             # squad = await self.config.user(ctx.author).squad()
             async with self.config.user(ctx.author).squad() as squad:
                 troops = squad["troops"]
-                troops[3] = "Tank"
+                troops.append("Tank")
             cards = await self.config.user(ctx.author).cards()
         except Exception as ex:
             await ctx.send("Error! " + str(ex))
