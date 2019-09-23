@@ -145,11 +145,13 @@ class RushWars(BaseCog):
         if troop is None:
             return await ctx.send("Troop with that name could not be found.")
         color = 0x999966
-        url = f"https://www.rushstats.com/assets/troop/{troop.Name}.png"
+        url = f"https://rushwars.fandom.com/wiki/{troop.Name}"
+        thumbnail_url = f"https://www.rushstats.com/assets/troop/{troop.Name}.png"
         target = self.troop_targets(troop.Targets)
+        description = f"*{troop.Description}*\n"
 
-        embed = discord.Embed(colour=color, title=troop.Name, description=f"*{troop.Description}*\n---")
-        embed.set_thumbnail(url=url)
+        embed = discord.Embed(colour=color, title=troop.Name, description=description, url=url)
+        embed.set_thumbnail(url=thumbnail_url)
         embed.add_field(name="Attack", value=troop.Att)
         embed.add_field(name="Health", value=troop.Hp)
         embed.add_field(name="Rarity", value=troop.Rarity)
