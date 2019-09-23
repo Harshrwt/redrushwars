@@ -117,5 +117,10 @@ class RushWars(BaseCog):
     async def rush(self, ctx):
         """Attack a base!"""
 
-        player_data = self.config.user(ctx.author)
-        await ctx.send(player_data)
+        try:
+            xp = await self.config.user(ctx.author).xp()
+        except Exception:
+            await ctx.send("Error!")
+            return
+            
+        await ctx.send(f"{xp}")
