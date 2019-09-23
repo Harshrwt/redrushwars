@@ -155,7 +155,7 @@ class RushWars(BaseCog):
         if "â" in description:
             description = description.replace("â", "-")
 
-        dps = int(troop.Att/troop.AttSpeed)
+        dps = int(int(troop.Att)/float(troop.AttSpeed))
 
         embed = discord.Embed(colour=color, title=troop.Name, description=description, url=url)
         embed.set_thumbnail(url=thumbnail_url)
