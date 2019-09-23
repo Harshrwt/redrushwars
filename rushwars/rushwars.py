@@ -131,7 +131,7 @@ class RushWars(BaseCog):
         await ctx.send(f"{cards}")
 
     @commands.command()
-    async def troop(self, ctx, *, troop_name: str, level=None):
+    async def troop(self, ctx, troop_name: str, level=None):
         """Search for an troop in the Rush Wars universe.
             Args:
                 troop_name: variable length string
