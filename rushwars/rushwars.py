@@ -149,7 +149,7 @@ class RushWars(BaseCog):
         color = self.color_lookup(troop.Rarity)
         title_name = troop.Name.replace(" ", "_")
         thumb_name = troop.Name.replace(" ", "-")
-        url = f"https://rushwars.fandom.com/wiki/{troop.Name}"
+        url = f"https://rushwars.fandom.com/wiki/{title_name}"
         thumbnail_url = f"https://www.rushstats.com/assets/troop/{thumb_name}.png"
         target = self.troop_targets(troop.Targets)
         description = f"**{troop.Description}**"
