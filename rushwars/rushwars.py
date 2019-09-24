@@ -297,7 +297,7 @@ class RushWars(BaseCog):
         return new_stats
 
     @commands.group(name="squad")
-    async def _squad(self,ctx:Context):
+    async def _squad(self,ctx):
         """This shows your squad.
 
         Add: Add card to squad - `[p]squad add item_name [quantity]`
