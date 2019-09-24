@@ -218,10 +218,14 @@ class RushWars(BaseCog):
 
         if level > 1:
             lvl_stats = [troop.Hp, troop.Att]
-            upd_stats = self.card_level(ctx, level, lvl_stats, troop.Rarity)
+            upd_stats = self.card_level(level, lvl_stats, troop.Rarity)
         else:
             upd_stats = [troop.Hp, troop.Att]
         
+        if isinstance(upd_stats, int):
+            await ctx.send((f"{troop.Rarity} starts at level {upd_stats}! Showing level {upd_stats} stats..."))
+            upd_stats = lvl_stats
+
         dps = int(upd_stats[1]/float(troop.AttSpeed))
 
         embed = discord.Embed(colour=color, title=troop.Name, description=description, url=url)
@@ -259,7 +263,7 @@ class RushWars(BaseCog):
         else:
             return "Air & Ground"
 
-    async def card_level(self, ctx, level, stats: list, rarity):
+    async def card_level(self, level, stats: list, rarity):
         """Get stats by selected level"""
 
         if rarity.lower().startswith('c'):
@@ -272,8 +276,7 @@ class RushWars(BaseCog):
             start = 13
 
         if level < start:
-            await ctx.send(f"{rarity.title()} starts at level {start}! Showing level {start} stats...")
-            return stats
+            return start
 
         level -= start - 1
 
