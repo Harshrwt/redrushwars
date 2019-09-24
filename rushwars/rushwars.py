@@ -54,7 +54,7 @@ default_user = {
                 "commanders": {},
             },
             "active": {
-                "troops": {"Troopers": 0, "Pitcher": 0, "Shields": 0},
+                "troops": {"Troopers": 1, "Pitcher": 0, "Shields": 0},
                 "airdrops": {"Arcade": 1},
                 "defenses": {"Troopers": 2, "Pitcher": 1, "Shields": 1},
                 "commanders": {},
