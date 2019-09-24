@@ -192,7 +192,7 @@ class RushWars(BaseCog):
         attack_str = ""
         defense_str = ""
         for item in troop:
-            attack_str = "`TROOPS`"
+            attack_str += "`TROOPS`"
             card_name = item[0]
             card_emote = self.card_emotes(card_name)
             count = item[1]
@@ -200,7 +200,7 @@ class RushWars(BaseCog):
                 continue
             attack_str += f"\n{card_name} {card_emote} x{count}\n"
         for item in airdrop:
-            attack_str = "`AIRDROPS`"
+            attack_str += "`AIRDROPS`"
             card_name = item[0]
             card_emote = self.card_emotes(card_name)
             count = item[1]
