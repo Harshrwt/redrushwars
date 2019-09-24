@@ -207,7 +207,7 @@ class RushWars(BaseCog):
                 `[p]card "rocket truck"`
                 `[p]card "sneaky ninja" 9`
         """
-        if level > max_card_level:
+        if level is not None and level > max_card_level:
             return await ctx.send("Maximum possible level is 20!")
 
         data = self.card_search(card_name.title())
