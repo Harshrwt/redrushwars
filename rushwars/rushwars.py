@@ -378,7 +378,7 @@ class RushWars(BaseCog):
                 if sqd_str == "":
                     sqd_str = f"No {kind.lower()} in squad."
                 type_emote = self.type_emotes(kind)
-                embed.add_field(name=f"{kind} {type_emote}", value=sqd_str+"\u200b")  
+                embed.add_field(name=f"\u200b{kind} {type_emote}", value=sqd_str)  
     
             await ctx.send(embed=embed)
     
