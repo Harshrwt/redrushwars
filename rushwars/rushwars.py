@@ -42,7 +42,7 @@ default_user = {
                     "Sneaky Ninja": default_card_stats  # only for testing, remove later
                 },
                 "airdrops": {
-                    "Rage": default_card_stats,
+                    "Arcade": default_card_stats,
                 },
                 "defenses": {
                     "Bomb": default_card_stats,
