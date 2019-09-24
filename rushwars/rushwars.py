@@ -370,10 +370,10 @@ class RushWars(BaseCog):
 
     @commands.group(name="squad", autohelp=False)
     async def _squad(self,ctx):
-        """This shows your squad.
+        """This shows your squad. Subcommands help you change squad. 
+
 
         save:  Save current squad - `[p]squad save (squad_name)`
-        reset: Remove all cards from squad - `[p]squad reset`
         """
 
         if not ctx.invoked_subcommand:
