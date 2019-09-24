@@ -63,9 +63,9 @@ default_user = {
         }
 
 default_defenses = [
-    {"Troopers": 2, "Pitcher": 3, "Shields": 2},
-    {"Troopers": 3, "Pitcher": 3, "Shields": 0},
-    {"Troopers": 2, "Pitcher": 1, "Shields": 3}
+    {"Troopers": 4, "Pitcher": 3, "Shields": 2},
+    {"Troopers": 4, "Pitcher": 3, "Shields": 0},
+    {"Troopers": 4, "Pitcher": 2, "Shields": 3}
 ]
 
 base_card_levels = {
@@ -189,7 +189,7 @@ class RushWars(BaseCog):
         airdrop = [(airdrop, airdrops[airdrop]) for airdrop in airdrops.keys()]
         defense = [(defense, defenses[defense]) for defense in defenses.keys()]
 
-        attack_str = "`TROOPS`"
+        attack_str = "`TROOPS`\n"
         defense_str = ""
         for item in troop:
             card_name = item[0]
@@ -198,7 +198,7 @@ class RushWars(BaseCog):
             if count <= 0:
                 continue
             attack_str += f"{card_name} {card_emote} x{count}\n"
-        attack_str += "\n`AIRDROPS`"
+        attack_str += "`AIRDROPS`\n"
         for item in airdrop:
             card_name = item[0]
             card_emote = self.card_emotes(card_name)
