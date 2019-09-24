@@ -424,6 +424,7 @@ class RushWars(BaseCog):
 
         card_type = str(card_info[0]) + "s"
         card_space = int(card_info[1].Space)
+        await ctx.send(card_space)
 
         chopperLvl = await self.config.user(ctx.author).chopper()
 
