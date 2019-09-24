@@ -291,7 +291,7 @@ class RushWars(BaseCog):
                         else:
                             continue
             except FileNotFoundError:
-                log.expection(f"{file} file could not be found in Rush Wars data folder.")
+                log.exception(f"{file} file could not be found in Rush Wars data folder.")
                 continue
 
     def troop_targets(self, targets):
