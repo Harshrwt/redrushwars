@@ -263,7 +263,7 @@ class RushWars(BaseCog):
         else:
             return "Air & Ground"
 
-    async def card_level(self, level, stats: list, rarity):
+    def card_level(self, level, stats: list, rarity):
         """Get stats by selected level"""
 
         if rarity.lower().startswith('c'):
