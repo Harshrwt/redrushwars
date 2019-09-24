@@ -218,7 +218,7 @@ class RushWars(BaseCog):
 
         if level > 1:
             lvl_stats = [troop.Hp, troop.Att]
-            upd_stats = self.card_level(level, lvl_stats, troop.Rarity)
+            upd_stats = self.card_level(ctx, level, lvl_stats, troop.Rarity)
         else:
             upd_stats = [troop.Hp, troop.Att]
         
@@ -259,7 +259,7 @@ class RushWars(BaseCog):
         else:
             return "Air & Ground"
 
-    def card_level(self, level, stats: list, rarity):
+    async def card_level(self, ctx, level, stats: list, rarity):
         """Get stats by selected level"""
 
         if rarity.lower().startswith('c'):
@@ -270,6 +270,10 @@ class RushWars(BaseCog):
             start = 9
         elif rarity.lower().startswith('co'):
             start = 13
+
+        if level < start:
+            await ctx.send(f"{rarity.title()} starts at level {start}! Showing level {start} stats...")
+            return stats
 
         level -= start - 1
 
