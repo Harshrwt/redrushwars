@@ -200,7 +200,7 @@ class RushWars(BaseCog):
             count = item[1]
             if count <= 0:
                 continue
-            attack_str += f"{card_name} {card_emote} x{count}\n"
+            attack_str += f"{card_emote} {card_name} x{count}\n"
         attack_str += "`AIRDROPS`\n"
         for item in airdrop:
             card_name = item[0]
@@ -208,14 +208,14 @@ class RushWars(BaseCog):
             count = item[1]
             if count <= 0:
                 continue
-            attack_str += f"{card_name} {card_emote} x{count}\n"
+            attack_str += f"{card_emote} {card_name} x{count}\n"
         for item in defense:
             card_name = item[0]
             card_emote = self.card_emotes(card_name)
             count = item[1]
             if count <= 0:
                 continue
-            defense_str += f"{card_name} {card_emote} x{count}\n"
+            defense_str += f"{card_emote} {card_name} x{count}\n"
 
         embed = discord.Embed(colour=0x999966, title="Battle Info", description="Will you get mega rich after this battle?")
         embed.set_author(name=f"{player} vs {opponent}", icon_url="https://cdn.discordapp.com/attachments/622323508755693581/626058519929684027/Leaderboard.png")
