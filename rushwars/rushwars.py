@@ -372,7 +372,6 @@ class RushWars(BaseCog):
     async def _squad(self,ctx):
         """This shows your squad. Subcommands help you change squad. 
 
-
         save:  Save current squad - `[p]squad save (squad_name)`
         """
 
@@ -421,7 +420,7 @@ class RushWars(BaseCog):
     
     @_squad.command(name="add")
     async def squad_add(self, ctx, card, number=1):
-        """Add cards to your squad: `[p]squad add card_name [number of cards]`
+        """Add cards to your squad: `[p]squad add card_name [number]`
             Examples: 
                 `[p]squad add troopers`
                 `[p]squad add pitcher 5`
@@ -507,7 +506,7 @@ class RushWars(BaseCog):
 
     @_squad.command(name="remove")
     async def squad_remove(self, ctx, card, number=1):
-        """Remove cards from squad: `[p]squad remove card_name [number of cards]`
+        """Remove cards from squad: `[p]squad remove card_name [number]`
         Examples: 
                 `[p]squad remove troopers`
                 `[p]squad remove pitcher 5`
