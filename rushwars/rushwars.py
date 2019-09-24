@@ -386,6 +386,7 @@ class RushWars(BaseCog):
                 log.exception(f"Error with character sheet: {ex}!")
 
             embed = discord.Embed(colour=0x999966, title="Squad", description="Is your squad strong enough to kick butt and get mega rich?")
+            embed.set_author(name=ctx.author.name, icon_url="https://cdn.discordapp.com/attachments/622323508755693581/626061960567324672/XP.png")
             i = 1
             for items in att_data:
                 if i == 1:
