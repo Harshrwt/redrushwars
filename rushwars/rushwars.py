@@ -296,7 +296,7 @@ class RushWars(BaseCog):
 
         return new_stats
 
-    @commands.group(name="squad")
+    @commands.group(name="squad", autohelp=False)
     async def _squad(self,ctx):
         """This shows your squad.
 
@@ -315,7 +315,7 @@ class RushWars(BaseCog):
                         active["commanders"]
                     ]
             except Exception as ex:
-                return await ctx.send("Error with character sheet!")
+                return await ctx.send(f"Error with character sheet! {ex}")
                 log.exception(f"Error with character sheet: {ex}!")
 
             embed = discord.Embed(colour=0x999966, title="Squad", description="*Is your squad strong enough to kick butt and get mega rich?*")
