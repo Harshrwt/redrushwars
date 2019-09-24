@@ -592,7 +592,7 @@ class RushWars(BaseCog):
                 if pred.result is True:
                     try:
                         async with self.config.user(ctx.author).active() as active:
-                            active[card_type] = {"Pitcher": 2}
+                            active[card_type].clear()
                             await ctx.send(f"{card_type.title()} squad reset.")
                     except:
                         log.exception("Error with character sheet.")
