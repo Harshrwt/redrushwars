@@ -415,7 +415,9 @@ class RushWars(BaseCog):
     @_squad.command(name="add")
     async def squad_add(self, ctx, card, number=1):
         """Add cards to your squad: `[p]squad add card_name [number of cards]`"""    
-        card_info = self.card_search(card.title())
+        card = card.title()
+        
+        card_info = self.card_search(card)
 
         if not card_info:
             return await ctx.send(f"{card.title()} does not exist.")
@@ -551,6 +553,7 @@ class RushWars(BaseCog):
             "Troopers": "<:Troopers:625807035362967605>",
             "Pitcher": "<:Pitcher:625807035954626590>",
             "Shields": "<:Shields:625807036663332865>",
+            "Sneaky Ninja": "<:SneakyNinja:625807033354158100>",
             "Arcade": "<:Arcade:626008229763219477>",
             "Heal": "<:Heal:626008230233112576>",
             "Boost": "<:Boost:626008230186975233>",
