@@ -570,14 +570,9 @@ class RushWars(BaseCog):
                     pred = ReactionPredicate.yes_or_no(msg, ctx.author)
                     await ctx.bot.wait_for("reaction_add", check=pred)
                     if pred.result is True:
-                        defenses = active["defenses"]
-                        async with self.config.user(ctx.author).active() as active:
-                            active = {
-                                "troops": {},
-                                "defenses": defenses,
-                                "airdrops": {},
-                                "commanders": {},
-                            }
+                        await self.config.user(ctx.user).set_raw("active", "troops", value={})
+                        await self.config.user(ctx.user).set_raw("active", "airdrops", value={})
+                        await self.config.user(ctx.user).set_raw("active", "commanders", value={})
                         await ctx.send("Squad reset.")
                     else:
                         return await ctx.send("Reset cancelled by the user.")
