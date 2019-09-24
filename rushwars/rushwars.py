@@ -4,6 +4,7 @@ import json
 import random
 import logging
 from collections import namedtuple
+from typing import Optional
 
 # Discord
 import discord
@@ -369,7 +370,7 @@ class RushWars(BaseCog):
         return new_stats
 
     @commands.group(name="squad", autohelp=False)
-    async def _squad(self,ctx, member:discord.Member=None):
+    async def _squad(self,ctx, member: Optional[discord.Member]=None):
         """Lookup your or any other server member's squad. Subcommands give more squad functions. 
 
         save:  Save current squad - `[p]squad save (squad_name)`
