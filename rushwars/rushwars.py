@@ -189,18 +189,17 @@ class RushWars(BaseCog):
         airdrop = [(airdrop, airdrops[airdrop]) for airdrop in airdrops.keys()]
         defense = [(defense, defenses[defense]) for defense in defenses.keys()]
 
-        attack_str = ""
+        attack_str = "`TROOPS`"
         defense_str = ""
         for item in troop:
-            attack_str += "`TROOPS`"
             card_name = item[0]
             card_emote = self.card_emotes(card_name)
             count = item[1]
             if count <= 0:
                 continue
             attack_str += f"\n{card_name} {card_emote} x{count}\n"
+        attack_str += "`AIRDROPS`"
         for item in airdrop:
-            attack_str += "`AIRDROPS`"
             card_name = item[0]
             card_emote = self.card_emotes(card_name)
             count = item[1]
