@@ -258,7 +258,7 @@ class RushWars(BaseCog):
             embed.add_field(name="Attack Speed <:RW_AttSpeed:625787097709543427>", value=f"{card.AttSpeed}s")
         
         elif card_type == 'airdrop':
-            lvl_stats = [int(card.Value), float(card.Duration)]
+            lvl_stats = [float(card.Duration)]
             upd_stats = self.card_level(level, lvl_stats, card.Rarity, card_type)
 
             if isinstance(upd_stats, int):
@@ -268,7 +268,7 @@ class RushWars(BaseCog):
 
             value_emote = self.airdrop_value_emotes(card.Ability)
 
-            embed.add_field(name=f"{card.Ability} {value_emote}", value=upd_stats[0])
+            embed.add_field(name=f"{card.Ability} {value_emote}", value=card.Value)
             embed.add_field(name="Duration <:Duration:626042235753857034>", value=str(upd_stats[1])+"s")
             embed.add_field(name="Space <:RW_Airdrop:626000292810588164>", value=card.Space)
             
@@ -318,19 +318,18 @@ class RushWars(BaseCog):
 
         for stat in stats:
             if stat != 0:
-                if isinstance(stat, int):
-                    upgrader = stat/10
-                elif isinstance(stat, float):
+                if card_type == 'airdrop':
                     upgrader = 0.5
+                else:
+                    upgrader = stat/10
                 i = 1
-                new_stat = stat
                 while i < level:
                     new_stat += upgrader
                     i += 1
-                if isinstance(stat, int):
-                    new_stats.append(int(new_stat))
-                elif isinstance(stat, float):
-                    new_stats.append(new_stat)
+                if card_type == 'airdrop':
+                    new_stats.append(stat)
+                else:
+                    new_stats.append(int(stat))
             else:
                 new_stats.append(stat)
         return new_stats
