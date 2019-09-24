@@ -332,7 +332,7 @@ class RushWars(BaseCog):
                 i += 1
                 sqd_str = ""
                 for item in items.keys():
-                    if item:
+                    if len(item) > 0:
                         card_name = item[0]
                         card_emote = self.card_emotes(card_name)
                         count = item[1]
