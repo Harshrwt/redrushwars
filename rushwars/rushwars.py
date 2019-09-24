@@ -13,6 +13,8 @@ from redbot.core import commands, Config
 from redbot.core.data_manager import bundled_data_path
 from redbot.core.utils.menus import menu, DEFAULT_CONTROLS
 from redbot.core.utils.chat_formatting import box
+from redbot.core.utils.predicates import ReactionPredicate
+from redbot.core.utils.menus import start_adding_reactions
 
 # Third-Party Requirements
 # from tabulate import tabulate
@@ -559,15 +561,38 @@ class RushWars(BaseCog):
                 `[p]squad reset`
                 `[p]squad reset airdrops`
         """
-        if category is None:
-            try:
-                async with self.config.user(ctx.author).active() as active:
+        try:
+            async with self.config.user(ctx.author).active() as active:
+                if category is None:
                     categories = [active["troops"], active["airdrops"], active["commanders"]]
-                    pages = ["page 1", "page 2"]  # or use pagify to split a long string.
-                    await menu(ctx, pages, DEFAULT_CONTROLS)
-            except:
-                log.exception("Error with character sheet.")
-                return
+                    msg = await ctx.send("Are you sure you want to reset whole squad?")
+                    start_adding_reactions(msg, ReactionPredicate.YES_OR_NO_EMOJIS)
+
+                    pred = ReactionPredicate.yes_or_no(msg, ctx.author)
+                    await ctx.bot.wait_for("reaction_add", check=pred)
+                    if pred.result is True:
+                        for data in categories:
+                            data = {}
+                        await ctx.send("Squad reset.")
+                    else:
+                        return await ctx.send("Reset cancelled by the user.")
+                else:
+                    if category.lower() not in ["troops", "airdrops", "commanders"]:
+                        return await ctx.send("Entered category is not valid.")
+                    else:
+                        msg = await ctx.send("Are you sure you want to reset whole squad?")
+                        start_adding_reactions(msg, ReactionPredicate.YES_OR_NO_EMOJIS)
+
+                        pred = ReactionPredicate.yes_or_no(msg, ctx.author)
+                        await ctx.bot.wait_for("reaction_add", check=pred)
+                        if pred.result is True:
+                            active[category.lower()] = {}
+                            await ctx.send(f"{category.title()} squad reset.")
+                        else:
+                            return await ctx.send("Reset cancelled by the user.")
+        except:
+            log.exception("Error with character sheet.")
+            return
 
     @staticmethod
     def color_lookup(rarity):
