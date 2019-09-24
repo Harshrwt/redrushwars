@@ -190,7 +190,7 @@ class RushWars(BaseCog):
             await ctx.send("You lose!")
 
     @commands.command()
-    async def troop(self, ctx, troop_name: str, level=None):
+    async def troop(self, ctx, troop_name: str, level=1):
         """Search for an troop in the Rush Wars universe.
             Args:
                 troop_name: variable length string
@@ -216,9 +216,12 @@ class RushWars(BaseCog):
         if "â" in description:
             description = description.replace("â", "-")
 
-        lvl_stats = [troop.Hp, troop.Att]
-        upd_stats = self.card_level(level, lvl_stats, troop.Rarity)
-
+        if level > 1:
+            lvl_stats = [troop.Hp, troop.Att]
+            upd_stats = self.card_level(level, lvl_stats, troop.Rarity)
+        else:
+            upd_stats = [troop.Hp, troop.Att]
+        
         dps = int(upd_stats[1]/float(troop.AttSpeed))
 
         embed = discord.Embed(colour=color, title=troop.Name, description=description, url=url)
@@ -268,7 +271,7 @@ class RushWars(BaseCog):
         elif rarity.lower().startswith('co'):
             start = 13
 
-        level += start - 1 
+        level -= start - 1
 
         new_stats = []
 
@@ -276,7 +279,7 @@ class RushWars(BaseCog):
             stat = int(stat) 
             upgrader = stat/10
             i = 1
-            while i < int(level):
+            while i < level:
                 stat += upgrader
                 i += 1
             new_stats.append(int(stat))
