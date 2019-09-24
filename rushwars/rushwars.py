@@ -315,7 +315,7 @@ class RushWars(BaseCog):
         new_stats = []
 
         for stat in stats:
-            if stat is not None:
+            if stat != 0:
                 stat = int(stat) 
                 if card_type == 'troop':
                     upgrader = stat/10
