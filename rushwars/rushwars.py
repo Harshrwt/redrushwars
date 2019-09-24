@@ -270,7 +270,7 @@ class RushWars(BaseCog):
 
             embed.add_field(name=f"Value {value_emote}", value=upd_stats[0])
             embed.add_field(name="Duration <:Duration:626042235753857034>", value=upd_stats[1])
-            embed.add_field(name="Space <:RW_Count:625786275802382347>", value=card.Space)
+            embed.add_field(name="Space <:RW_Airdrop:626000292810588164>", value=card.Space)
             
         embed.add_field(name="Rarity <:RW_Rarity:625783200983154701>", value=card.Rarity)
         embed.add_field(name="HQ Level <:RW_HQ:625787531664818224>", value=card.UnlockLvl)
