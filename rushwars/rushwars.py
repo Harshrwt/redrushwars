@@ -39,7 +39,7 @@ default_user = {
                     "Troopers": default_card_stats,
                     "Pitcher": default_card_stats,
                     "Shields": default_card_stats,
-                    "Sneaky Ninja": default_card_stats  # only for testing, remove later
+                    "Sneaky Ninja": default_card_stats,  # only for testing, remove later
                 },
                 "airdrops": {
                     "Arcade": default_card_stats,
@@ -428,7 +428,7 @@ class RushWars(BaseCog):
         if card_type == "troops":
             try:
                 async with self.config.user(ctx.author).active() as active:
-                    data =  active[card_type]
+                    data = active[card_type]
             except:
                 log.exception("Error with character sheet.")
                 return
@@ -437,7 +437,7 @@ class RushWars(BaseCog):
         elif card_type == "airdrops":
             try:
                 async with self.config.user(ctx.author).active() as active:
-                    data =  active[card_type]
+                    data = active[card_type]
             except:
                 log.exception("Error with character sheet.")
                 return
@@ -446,7 +446,7 @@ class RushWars(BaseCog):
         elif card_type == "commanders":
             try:
                 async with self.config.user(ctx.author).active() as active:
-                    data =  active[card_type]
+                    data = active[card_type]
             except:
                 log.exception("Error with character sheet.")
                 return
