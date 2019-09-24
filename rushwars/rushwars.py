@@ -340,11 +340,10 @@ class RushWars(BaseCog):
                         if count <= 0:
                             continue
                         sqd_str = f"**{card_name}** {card_emote} x{count}\n"
-                if sqd_str != "":
+                if sqd_str == "":
                     sqd_str = f"No {kind.lower()} in squad."
                 type_emote = self.type_emotes(kind)
-                name = f"{kind} {type_emote}"
-                embed.add_field(name=name, value=sqd_str)  
+                embed.add_field(name=f"{kind} {type_emote}", value=sqd_str)  
     
             await ctx.send(embed=embed)
     
