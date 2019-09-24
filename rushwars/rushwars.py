@@ -333,7 +333,6 @@ class RushWars(BaseCog):
                 sqd_str = ""
                 # card_info = [(item, items[item]) for item in items.keys()]
                 for item in items.keys():
-                    await ctx.send(item)
                     if item:
                         card_name = item
                         card_emote = self.card_emotes(card_name)
@@ -341,7 +340,8 @@ class RushWars(BaseCog):
                         if count <= 0:
                             continue
                         sqd_str = f"**{card_name}** {card_emote} x{count}\n"
-                embed.add_field(name=f"{kind} {type_emotes(kind)}", value=sqd_str)  
+                type_emote = self.type_emotes(kind)
+                embed.add_field(name=f"{kind} {type_emote}", value=sqd_str)  
     
             await ctx.send(embed=embed)
     
