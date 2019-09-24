@@ -197,15 +197,15 @@ class RushWars(BaseCog):
             count = item[1]
             if count <= 0:
                 continue
-            attack_str += f"\n{card_name} {card_emote} x{count}\n"
-        attack_str += "`AIRDROPS`"
+            attack_str += f"{card_name} {card_emote} x{count}\n"
+        attack_str += "\n`AIRDROPS`"
         for item in airdrop:
             card_name = item[0]
             card_emote = self.card_emotes(card_name)
             count = item[1]
             if count <= 0:
                 continue
-            attack_str += f"\n{card_name} {card_emote} x{count}\n"
+            attack_str += f"{card_name} {card_emote} x{count}\n"
         for item in defense:
             card_name = item[0]
             card_emote = self.card_emotes(card_name)
