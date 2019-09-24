@@ -333,13 +333,14 @@ class RushWars(BaseCog):
                 sqd_str = ""
                 # card_info = [(item, items[item]) for item in items.keys()]
                 for item in items.keys():
-                    if item:
+                    if len(item) > 0:
                         card_name = item
                         card_emote = self.card_emotes(card_name)
                         count = items[item]
                         if count <= 0:
                             continue
                         sqd_str = f"**{card_name}** {card_emote} x{count}\n"
+                
                 if sqd_str == "":
                     sqd_str = f"No {kind.lower()} in squad."
                 type_emote = self.type_emotes(kind)
