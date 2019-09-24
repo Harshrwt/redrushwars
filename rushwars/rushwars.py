@@ -180,18 +180,18 @@ class RushWars(BaseCog):
             count = item[1]
             if count <= 0:
                 continue
-            attack_str += f"**{card_name}** {card_emote} x{count}\n"
+            attack_str += f"{card_name} {card_emote} x{count}\n"
         for item in defense:
             card_name = item[0]
             card_emote = self.card_emotes(card_name)
             count = item[1]
             if count <= 0:
                 continue
-            defense_str += f"**{card_name}** {card_emote} x{count}\n"
+            defense_str += f"{card_name} {card_emote} x{count}\n"
 
-        embed = discord.Embed(colour=0x999966, title="Battle Info", description="*Will you get mega rich after this battle?*")
-        embed.add_field(name="**Attack** <:RW_Attck:625783202836905984>", value=attack_str)
-        embed.add_field(name="**Defense** <:RW_Defense:625804692760559636>", value=defense_str)
+        embed = discord.Embed(colour=0x999966, title="Battle Info", description="Will you get mega rich after this battle?")
+        embed.add_field(name="Attack <:RW_Attck:625783202836905984>", value=attack_str)
+        embed.add_field(name="Defense <:RW_Defense:625804692760559636>", value=defense_str)
         await ctx.send(embed=embed)
 
         if def_hp/att < hp/def_att:
@@ -222,7 +222,7 @@ class RushWars(BaseCog):
         thumb_name = card.Name.replace(" ", "-")
         url = f"https://rushwars.fandom.com/wiki/{title_name}"
         thumbnail_url = f"https://www.rushstats.com/assets/{card_type}/{thumb_name}.png"
-        description = f"**{card.Description}**"
+        description = f"{card.Description}"
 
         if "â" in description:
             description = description.replace("â", "-")
@@ -352,7 +352,7 @@ class RushWars(BaseCog):
                 return await ctx.send(f"Error with character sheet! {ex}")
                 log.exception(f"Error with character sheet: {ex}!")
 
-            embed = discord.Embed(colour=0x999966, title="Squad", description="*Is your squad strong enough to kick butt and get mega rich?*")
+            embed = discord.Embed(colour=0x999966, title="Squad", description="Is your squad strong enough to kick butt and get mega rich?")
             i = 1
             for items in att_data:
                 if i == 1:
@@ -373,12 +373,12 @@ class RushWars(BaseCog):
                         count = items[item]
                         if count <= 0:
                             continue
-                        sqd_str += f"**{card_name}** {card_emote} x{count}\n"
+                        sqd_str += f"{card_name} {card_emote} x{count}\n"
                 
                 if sqd_str == "":
                     sqd_str = f"No {kind.lower()} in squad."
                 type_emote = self.type_emotes(kind)
-                embed.add_field(name=f"\u200b{kind} {type_emote}", value=sqd_str)  
+                embed.add_field(name=f"{kind} {type_emote}", value=sqd_str)  
     
             await ctx.send(embed=embed)
     
