@@ -216,11 +216,12 @@ class RushWars(BaseCog):
         if "â" in description:
             description = description.replace("â", "-")
 
+        lvl_stats = [int(troop.Hp), int(troop.Att)]
+
         if level > 1:
-            lvl_stats = [troop.Hp, troop.Att]
             upd_stats = self.card_level(level, lvl_stats, troop.Rarity)
         else:
-            upd_stats = [troop.Hp, troop.Att]
+            upd_stats = lvl_stats  
         
         if isinstance(upd_stats, int):
             await ctx.send((f"{troop.Rarity} starts at level {upd_stats}! Showing level {upd_stats} stats..."))
