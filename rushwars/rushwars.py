@@ -54,7 +54,7 @@ default_user = {
                 "troops": {"Troopers": 2, "Pitcher": 2, "Shields": 1},
                 "airdrops": {"Troopers": 1},
                 "defenses": {"Troopers": 1, "Pitcher": 2, "Shields": 1},
-                "commaders": {},
+                "commanders": {},
             },
             "stars": 0,
             "keys": 5,
@@ -311,10 +311,9 @@ class RushWars(BaseCog):
                 async with self.config.user(ctx.author).active() as active:
                     att_data = [
                         active["troops"], 
-                        active["airdrops"]
+                        active["airdrops"], 
+                        active["commanders"]
                     ]
-                    if len(active["commanders"]) > 0:
-                        att_data.append(active["commanders"])
             except Exception as ex:
                 return await ctx.send(f"Error with character sheet! {ex}")
                 log.exception(f"Error with character sheet: {ex}!")
