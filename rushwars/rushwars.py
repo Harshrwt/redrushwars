@@ -507,7 +507,7 @@ class RushWars(BaseCog):
         else:
             return await ctx.send("You have not unlocked the card.")
 
-        await ctx.send(f"{number} {card.title()} cards added to squad.")
+        await ctx.send(f"{number} {card.title()} card(s) added to squad.")
 
     @_squad.command(name="remove")
     async def squad_remove(self, ctx, card, number=1):
@@ -562,7 +562,7 @@ class RushWars(BaseCog):
         else:
             return await ctx.send(f"{card.title()} is not in squad.")
         
-        await ctx.send(f"{number} {card.title()} cards removed from squad.")
+        await ctx.send(f"{number} {card.title()} card(s) removed from squad.")
 
     @_squad.command(name="reset")
     async def squad_reset(self, ctx, card_type=None):
