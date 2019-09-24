@@ -48,7 +48,7 @@ default_user = {
                     "Mines": default_card_stats,
                     "Cannon": default_card_stats,
                 },
-                "commanders": {}
+                "commanders": {},
             },
             "active": {
                 "troops": {"Troopers": 2, "Pitcher": 2, "Shields": 1},
