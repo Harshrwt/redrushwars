@@ -573,6 +573,7 @@ class RushWars(BaseCog):
                     if pred.result is True:
                         for data in categories:
                             data = {}
+                            continue
                         await ctx.send("Squad reset.")
                     else:
                         return await ctx.send("Reset cancelled by the user.")
@@ -580,7 +581,7 @@ class RushWars(BaseCog):
                     if category.lower() not in ["troops", "airdrops", "commanders"]:
                         return await ctx.send("Entered category is not valid.")
                     else:
-                        msg = await ctx.send("Are you sure you want to reset whole squad?")
+                        msg = await ctx.send(f"Are you sure you want to reset {category} squad?")
                         start_adding_reactions(msg, ReactionPredicate.YES_OR_NO_EMOJIS)
 
                         pred = ReactionPredicate.yes_or_no(msg, ctx.author)
