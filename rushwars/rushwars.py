@@ -268,6 +268,8 @@ class RushWars(BaseCog):
         elif rarity.lower().startswith('co'):
             start = 13
 
+        level += start - 1 
+
         new_stats = []
 
         for stat in stats:
