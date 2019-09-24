@@ -68,6 +68,13 @@ default_defenses = [
     {"Troopers": 2, "Pitcher": 2, "Shields": 2}
 ]
 
+base_card_levels = {
+    "common": 1,
+    "rare": 5,
+    "epic": 9,
+    "commander": 13
+}
+
 max_card_level = 20
 
 TROOPS: dict = None
@@ -193,7 +200,7 @@ class RushWars(BaseCog):
             await ctx.send("You lose!")
 
     @commands.command()
-    async def card(self, ctx, card_name: str, level=1):
+    async def card(self, ctx, card_name: str, level:int=None):
         """Search for a card in the Rush Wars universe.
             Examples:
                 `[p]card shields`
@@ -226,8 +233,12 @@ class RushWars(BaseCog):
 
         if card_type == 'troop':
             target = self.troop_targets(card.Targets)
-            lvl_stats = [int(card.Hp), int(card.Att)]
-            upd_stats = self.card_level(level, lvl_stats, card.Rarity, card_type)
+            
+            if level is None:
+                level = base_card_levels[card.Rarity.lower()]
+            else:
+                lvl_stats = [int(card.Hp), int(card.Att)]
+                upd_stats = self.card_level(level, lvl_stats, card.Rarity, card_type)
         
             if isinstance(upd_stats, int):
                 await ctx.send((f"{card.Rarity} starts at level {upd_stats}! Showing level {upd_stats} stats..."))
@@ -247,8 +258,11 @@ class RushWars(BaseCog):
             embed.add_field(name="Attack Speed <:RW_AttSpeed:625787097709543427>", value=f"{card.AttSpeed}s")
         
         elif card_type == 'airdrop':
-            lvl_stats = [int(card.Value), int(card.Duration)]
-            upd_stats = self.card_level(level, lvl_stats, card.Rarity, card_type)
+            if level is None:
+                level = base_card_levels[card.Rarity.lower()]
+            else:
+                lvl_stats = [int(card.Value), int(card.Duration)]
+                upd_stats = self.card_level(level, lvl_stats, card.Rarity, card_type)
 
             if isinstance(upd_stats, int):
                 await ctx.send((f"{card.Rarity} starts at level {upd_stats}! Showing level {upd_stats} stats..."))
@@ -294,14 +308,7 @@ class RushWars(BaseCog):
     def card_level(self, level, stats: list, rarity, card_type):
         """Get stats by selected level"""
 
-        if rarity.lower().startswith('c'):
-            start = 1
-        elif rarity.lower().startswith('r'):
-            start = 5
-        elif rarity.lower().startswith('e'):
-            start = 9
-        elif rarity.lower().startswith('co'):
-            start = 13
+        start = base_card_levels[rarity.lower()]
 
         if level < start:
             return start
