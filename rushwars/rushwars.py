@@ -555,44 +555,50 @@ class RushWars(BaseCog):
         await ctx.send(f"{number} {card.title()} cards removed from squad.")
 
     @_squad.command(name="reset")
-    async def squad_reset(self, ctx, category=None):
+    async def squad_reset(self, ctx, card_type=None):
         """Remove all cards of the optionally specified type. If no type is specified, all cards will be removed. 
         Examples: 
                 `[p]squad reset`
                 `[p]squad reset airdrops`
         """
-        try:
-            async with self.config.user(ctx.author).active() as active:
-                if category is None:
-                    msg = await ctx.send("Are you sure you want to reset whole squad?")
-                    start_adding_reactions(msg, ReactionPredicate.YES_OR_NO_EMOJIS)
+        if card_type is None:
+            categories = ["troops", "airdrops", "commanders"]
+            msg = await ctx.send(f"Are you sure you want to reset the whole squad?")
+            start_adding_reactions(msg, ReactionPredicate.YES_OR_NO_EMOJIS)
 
-                    pred = ReactionPredicate.yes_or_no(msg, ctx.author)
-                    await ctx.bot.wait_for("reaction_add", check=pred)
-                    if pred.result is True:
-                        await self.config.user(ctx.author).set_raw("active", "troops", value={})
-                        await self.config.user(ctx.author).set_raw("active", "airdrops", value={})
-                        await self.config.user(ctx.author).set_raw("active", "commanders", value={})
-                        await ctx.send("Squad reset.")
-                    else:
-                        return await ctx.send("Reset cancelled by the user.")
+            pred = ReactionPredicate.yes_or_no(msg, ctx.author)
+            await ctx.bot.wait_for("reaction_add", check=pred)
+            if pred.result is True:
+                for category in categories: 
+                    try:
+                        async with self.config.user(ctx.author).active() as active:
+                            active[category] = {}
+                    except:
+                        log.exception("Error with character sheet.")
+                        return
+                await ctx.send("Squad reset.")
+            else:
+                return await ctx.send("Reset cancelled by the user.")
+        else:
+            card_type = card_type.lower()
+            if card_type not in ["troops", "airdrops", "commanders"]:
+                return await ctx.send("Entered card type is not valid.")
+            else:
+                msg = await ctx.send(f"Are you sure you want to reset {card_type} squad?")
+                start_adding_reactions(msg, ReactionPredicate.YES_OR_NO_EMOJIS)
+
+                pred = ReactionPredicate.yes_or_no(msg, ctx.author)
+                await ctx.bot.wait_for("reaction_add", check=pred)
+                if pred.result is True:
+                    try:
+                        async with self.config.user(ctx.author).active() as active:
+                            active[card_type] = {}
+                            await ctx.send(f"{card_type.title()} squad reset.")
+                    except:
+                        log.exception("Error with character sheet.")
+                        return
                 else:
-                    if category.lower() not in ["troops", "airdrops", "commanders"]:
-                        return await ctx.send("Entered category is not valid.")
-                    else:
-                        msg = await ctx.send(f"Are you sure you want to reset {category} squad?")
-                        start_adding_reactions(msg, ReactionPredicate.YES_OR_NO_EMOJIS)
-
-                        pred = ReactionPredicate.yes_or_no(msg, ctx.author)
-                        await ctx.bot.wait_for("reaction_add", check=pred)
-                        if pred.result is True:
-                            active[category.lower()] = {}
-                            await ctx.send(f"{category.title()} squad reset.")
-                        else:
-                            return await ctx.send("Reset cancelled by the user.")
-        except:
-            log.exception("Error with character sheet.")
-            return
+                    return await ctx.send("Reset cancelled by the user.")
 
     @staticmethod
     def color_lookup(rarity):
