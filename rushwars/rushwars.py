@@ -425,7 +425,7 @@ class RushWars(BaseCog):
             "Shields": "<:Shields:625807036663332865>",
             "Arcade": "<:Arcade:626008229763219477>",
             "Heal": "<:Heal:626008230233112576>",
-            "Rage": "<:Boost:626008230186975233>",
+            "Boost": "<:Boost:626008230186975233>",
             "Fridge": "<:Fridge:626008230279118848>",
             "Paratroopers": "<:Paratroopers:626008231478558732>",
             "Invisibility": "<:Invisibility:626008231713439794>",
