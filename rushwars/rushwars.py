@@ -233,11 +233,12 @@ class RushWars(BaseCog):
 
         if card_type == 'troop':
             target = self.troop_targets(card.Targets)
-            
+
+            lvl_stats = [int(card.Hp), int(card.Att)]
             if level is None:
                 level = base_card_levels[card.Rarity.lower()]
+                upd_stats = lvl_stats
             else:
-                lvl_stats = [int(card.Hp), int(card.Att)]
                 upd_stats = self.card_level(level, lvl_stats, card.Rarity, card_type)
         
             if isinstance(upd_stats, int):
@@ -258,10 +259,11 @@ class RushWars(BaseCog):
             embed.add_field(name="Attack Speed <:RW_AttSpeed:625787097709543427>", value=f"{card.AttSpeed}s")
         
         elif card_type == 'airdrop':
+            lvl_stats = [int(card.Value), int(card.Duration)]
             if level is None:
                 level = base_card_levels[card.Rarity.lower()]
+                upd_stats = lvl_stats
             else:
-                lvl_stats = [int(card.Value), int(card.Duration)]
                 upd_stats = self.card_level(level, lvl_stats, card.Rarity, card_type)
 
             if isinstance(upd_stats, int):
