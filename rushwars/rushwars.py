@@ -227,6 +227,9 @@ class RushWars(BaseCog):
         if "â" in description:
             description = description.replace("â", "-")
 
+        if level is None:
+            level = base_card_levels[card.Rarity.lower()]
+
         embed = discord.Embed(colour=color, title=card.Name, description=description, url=url)
         embed.set_thumbnail(url=thumbnail_url)
         embed.add_field(name="Level <:RW_Level:625788888480350216>", value=level)
@@ -235,11 +238,7 @@ class RushWars(BaseCog):
             target = self.troop_targets(card.Targets)
 
             lvl_stats = [int(card.Hp), int(card.Att)]
-            if level is None:
-                level = base_card_levels[(card.Rarity).lower()]
-                upd_stats = lvl_stats
-            else:
-                upd_stats = self.card_level(level, lvl_stats, card.Rarity, card_type)
+            upd_stats = self.card_level(level, lvl_stats, card.Rarity, card_type)
         
             if isinstance(upd_stats, int):
                 await ctx.send((f"{card.Rarity} starts at level {upd_stats}! Showing level {upd_stats} stats..."))
@@ -260,11 +259,7 @@ class RushWars(BaseCog):
         
         elif card_type == 'airdrop':
             lvl_stats = [int(card.Value), int(card.Duration)]
-            if level is None:
-                level = base_card_levels[(card.Rarity).lower()]
-                upd_stats = lvl_stats
-            else:
-                upd_stats = self.card_level(level, lvl_stats, card.Rarity, card_type)
+            upd_stats = self.card_level(level, lvl_stats, card.Rarity, card_type)
 
             if isinstance(upd_stats, int):
                 await ctx.send((f"{card.Rarity} starts at level {upd_stats}! Showing level {upd_stats} stats..."))
