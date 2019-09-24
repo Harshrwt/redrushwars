@@ -211,7 +211,7 @@ class RushWars(BaseCog):
             return await ctx.send("Maximum possible level is 20!")
 
         data = self.card_search(card_name.title())
-        if data[1] is None:
+        if data is None:
             return await ctx.send("Card with that name could not be found.")
         
         card_type = data[0]
