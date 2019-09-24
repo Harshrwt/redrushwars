@@ -186,7 +186,7 @@ class RushWars(BaseCog):
             def_att += int(defense_stats.Att) * count
 
         troop = [(troop, troops[troop]) for troop in troops.keys()]
-        airdrop = [(airdrop, airdrop[airdrop]) for airdrop in airdrop.keys()]
+        airdrop = [(airdrop, airdrops[airdrop]) for airdrop in airdrops.keys()]
         defense = [(defense, defenses[defense]) for defense in defenses.keys()]
 
         attack_str = ""
