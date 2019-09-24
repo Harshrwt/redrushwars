@@ -311,9 +311,10 @@ class RushWars(BaseCog):
                 async with self.config.user(ctx.author).active() as active:
                     att_data = [
                         active["troops"], 
-                        active["airdrops"], 
-                        active["commanders"]
+                        active["airdrops"]
                     ]
+                    if len(active["commanders"]) > 0:
+                        att_data.append(active["commanders"])
             except Exception as ex:
                 return await ctx.send(f"Error with character sheet! {ex}")
                 log.exception(f"Error with character sheet: {ex}!")
