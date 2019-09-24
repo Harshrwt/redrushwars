@@ -266,8 +266,10 @@ class RushWars(BaseCog):
                 level = upd_stats
                 upd_stats = lvl_stats
 
-            embed.add_field(name="Value <:RW_Health:625786278058917898>", value=upd_stats[0])
-            embed.add_field(name="Duration <:RW_Health:625786278058917898>", value=upd_stats[1])
+            value_emote = self.airdrop_value_emotes(card.Ability)
+
+            embed.add_field(name=f"Value {value_emote}", value=upd_stats[0])
+            embed.add_field(name="Duration <:Duration:626042235753857034>", value=upd_stats[1])
             embed.add_field(name="Space <:RW_Count:625786275802382347>", value=card.Space)
             
         embed.add_field(name="Rarity <:RW_Rarity:625783200983154701>", value=card.Rarity)
@@ -412,3 +414,14 @@ class RushWars(BaseCog):
             "Commanders": "<:RW_Commander:626000293519163422>"
         }
         return emotes[card_type]
+
+    @staticmethod
+    def airdrop_value_emotes(airdrop_ability):
+        emotes = {
+            "Boost": "<:BoostIcon:626042235812708362>",
+            "Damage": "<:AreaDMG:626042235351334943>",
+            "Heal": "<:HealIcon:626042237339303946>",
+            "Invisibility": "<:AreaDMG:626042235351334943>",
+            "Freeze": "<:Freeze:626042235661713408>"
+        }
+        return emotes[airdrop_ability]
