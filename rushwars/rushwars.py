@@ -124,7 +124,7 @@ class RushWars(BaseCog):
         await ctx.send(f"You are running Rush Wars version {__version__}")
 
     @commands.command()
-    async def rush(self, ctx, *, member=None):
+    async def rush(self, ctx, *, member:discord.Member=None):
         """Attack a base!"""
 
         try:
