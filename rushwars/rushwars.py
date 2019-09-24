@@ -135,6 +135,10 @@ class RushWars(BaseCog):
     async def rush(self, ctx, *, member:discord.Member=None):
         """Attack a base!"""
 
+        if member is not None:
+            if member.id == ctx.author.id:
+                return await ctx.send("You can't battle against yourself!")
+        
         try:
             async with self.config.user(ctx.author).active() as active:
                 troops =  active["troops"]
