@@ -65,7 +65,7 @@ default_user = {
 default_defenses = [
     {"Troopers": 4, "Pitcher": 3, "Shields": 2},
     {"Troopers": 4, "Pitcher": 3, "Shields": 0},
-    {"Troopers": 4, "Pitcher": 2, "Shields": 3}
+    {"Troopers": 4, "Pitcher": 2, "Shields": 2}
 ]
 
 base_card_levels = {
@@ -218,7 +218,7 @@ class RushWars(BaseCog):
             defense_str += f"{card_name} {card_emote} x{count}\n"
 
         embed = discord.Embed(colour=0x999966, title="Battle Info", description="Will you get mega rich after this battle?")
-        embed.set_author(name=f"{player} vs {opponent}", icon_url="https://cdn.discordapp.com/attachments/622323508755693581/626057897717268491/rw.png")
+        embed.set_author(name=f"{player} vs {opponent}", icon_url="https://cdn.discordapp.com/attachments/622323508755693581/626058519929684027/Leaderboard.png")
         embed.add_field(name="Attack <:RW_Attck:625783202836905984>", value=attack_str)
         embed.add_field(name="Defense <:RW_Defense:625804692760559636>", value=defense_str)
         await ctx.send(embed=embed)
