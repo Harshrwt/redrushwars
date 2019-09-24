@@ -52,7 +52,7 @@ default_user = {
             },
             "active": {
                 "troops": {"Troopers": 2, "Pitcher": 2, "Shields": 1},
-                "airdrops": {"Rage": 1},
+                "airdrops": {"Troopers": 1},
                 "defenses": {"Troopers": 1, "Pitcher": 2, "Shields": 1},
                 "commaders": {},
             },
@@ -132,8 +132,8 @@ class RushWars(BaseCog):
             async with self.config.user(ctx.author).active() as active:
                 troops = active["troops"]
         except Exception as ex:
-            log.exception(ex)
-            return
+            return await ctx.send("Error with character sheet!")
+            log.exception(f"Error with character sheet: {ex}!")
 
         hp = 0
         att = 0
@@ -296,6 +296,53 @@ class RushWars(BaseCog):
 
         return new_stats
 
+    @commands.group(name="squad")
+    async def _squad(self,ctx:Context):
+        """This shows your squad.
+
+        Add: Add card to squad - `[p]squad add item_name [quantity]`
+        Remove: Remove card from squad - `[p]squad remove item_name [quantity]`
+        Save:  Save current squad - `[p]squad save (squad_name)`
+        Reset: Remove all cards from squad - `[p]squad reset`
+        """
+
+        if not ctx.invoked_subcommand:
+            try:
+                async with self.config.user(ctx.author).active() as active:
+                    att_data = [
+                        active["troops"], 
+                        active["airdrops"], 
+                        active["commanders"]
+                    ]
+            except Exception as ex:
+                return await ctx.send("Error with character sheet!")
+                log.exception(f"Error with character sheet: {ex}!")
+
+            embed = discord.Embed(colour=0x999966, title="Squad", description="*Is your squad strong enough to kick butt and get mega rich?*")
+            i = 1
+            for items in att_data:
+                if i == 1:
+                    kind = "Troops"
+                elif i == 2:
+                    kind = "Airdrops"
+                elif i == 3:
+                    kind = "Commanders"
+                else:
+                    break
+                i += 1
+                sqd_str = ""
+                for item in items.keys():
+                    if item:
+                        card_name = item[0]
+                        card_emote = self.card_emotes(card_name)
+                        count = item[1]
+                        if count <= 0:
+                            continue
+                        sqd_str = f"**{card_name}** {card_emote} x{count}\n"
+                embed.add_field(name=f"{kind} {type_emotes(kind)}", value=sqd_str)  
+    
+            await ctx.send(embed=embed)
+    
     @staticmethod
     def color_lookup(rarity):
         colors = {"Common": 0xAE8F6F, "Rare": 0x74BD9C, "Epic": 0xB77AE0, "Commander": 0xF7EE85}
@@ -308,5 +355,14 @@ class RushWars(BaseCog):
             "Pitcher": "<:Pitcher:625807035954626590>",
             "Shields": "<:Shields:625807036663332865>"
         }
-
         return emotes[card_name]
+
+    @staticmethod
+    def type_emotes(card_type):
+        emotes = {
+            "Troops": "<:RW_Attck:625783202836905984>",
+            "Airdrops": "<:RW_Airdrop:626000292810588164>",
+            "Defenses": "<:RW_Defense:625804692760559636>",
+            "Commanders": "<:RW_Commander:626000293519163422>"
+        }
+        return emotes[card_type]
