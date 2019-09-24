@@ -236,7 +236,7 @@ class RushWars(BaseCog):
 
             lvl_stats = [int(card.Hp), int(card.Att)]
             if level is None:
-                level = base_card_levels[card.Rarity.lower()]
+                level = base_card_levels[(card.Rarity).lower()]
                 upd_stats = lvl_stats
             else:
                 upd_stats = self.card_level(level, lvl_stats, card.Rarity, card_type)
@@ -261,7 +261,7 @@ class RushWars(BaseCog):
         elif card_type == 'airdrop':
             lvl_stats = [int(card.Value), int(card.Duration)]
             if level is None:
-                level = base_card_levels[card.Rarity.lower()]
+                level = base_card_levels[(card.Rarity).lower()]
                 upd_stats = lvl_stats
             else:
                 upd_stats = self.card_level(level, lvl_stats, card.Rarity, card_type)
