@@ -140,6 +140,7 @@ class RushWars(BaseCog):
                 troops =  active["troops"]
                 airdrops = active["airdrops"]
                 # commanders = active["commanders"]
+                player = ctx.author.name
         except Exception as ex:
             return await ctx.send(f"Error with character sheet! {ex}")
             log.exception(f"Error with character sheet: {ex}!")
@@ -155,7 +156,7 @@ class RushWars(BaseCog):
             hp += int(troop_stats.Hp) * count
             att += int(troop_stats.Att) * count
 
-        for airdrop in airdrops:
+        for airdrop in airdrops.keys():
             airdrop_stats = self.card_search(airdrop)[1]
             count = airdrops[airdrop]
             ability = airdrop_stats.Ability
@@ -173,11 +174,13 @@ class RushWars(BaseCog):
             try:
                 async with self.config.user(member).active() as active:
                     defenses = active["defenses"]
+                    opponent = member.name
             except:
                 await ctx.send("User has not set a defense!")
                 return
         else:
             defenses = random.choice(default_defenses)
+            opponent = "Computer"
 
         for defense in defenses.keys():
             defense_stats = self.card_search(defense)[1]
@@ -215,6 +218,7 @@ class RushWars(BaseCog):
             defense_str += f"{card_name} {card_emote} x{count}\n"
 
         embed = discord.Embed(colour=0x999966, title="Battle Info", description="Will you get mega rich after this battle?")
+        embed.set_author(name=f"{player} vs {opponent}", icon_url="https://cdn.discordapp.com/attachments/622323508755693581/626057897717268491/rw.png")
         embed.add_field(name="Attack <:RW_Attck:625783202836905984>", value=attack_str)
         embed.add_field(name="Defense <:RW_Defense:625804692760559636>", value=defense_str)
         await ctx.send(embed=embed)
