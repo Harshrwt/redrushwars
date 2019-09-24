@@ -54,8 +54,8 @@ default_user = {
                 "commanders": {},
             },
             "active": {
-                "troops": {"Troopers": 1, "Pitcher": 0, "Shields": 0},
-                "airdrops": {"Arcade": 1},
+                "troops": {"Troopers": 0, "Pitcher": 0, "Shields": 0},
+                "airdrops": {"Arcade":0},
                 "defenses": {"Troopers": 2, "Pitcher": 1, "Shields": 1},
                 "commanders": {},
             },
@@ -148,6 +148,12 @@ class RushWars(BaseCog):
         att = 0
         def_hp = 0
         def_att = 0
+
+        sel_trp = sum(troops.values())
+        sel_ardp = sum(airdrops.values())
+
+        if sel_trp == 0 or sel_trp == 0:
+            return await ctx.send("Please add items to squad! Help: `[p]help squad`")
 
         for troop in troops.keys():
             troop_stats = self.card_search(troop)[1]
