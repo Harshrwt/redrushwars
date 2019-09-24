@@ -269,7 +269,7 @@ class RushWars(BaseCog):
             value_emote = self.airdrop_value_emotes(card.Ability)
 
             embed.add_field(name=f"{card.Ability} {value_emote}", value=card.Value)
-            embed.add_field(name="Duration <:Duration:626042235753857034>", value=str(upd_stats[1])+"s")
+            embed.add_field(name="Duration <:Duration:626042235753857034>", value=str(upd_stats[0])+"s")
             embed.add_field(name="Space <:RW_Airdrop:626000292810588164>", value=card.Space)
             
         embed.add_field(name="Rarity <:RW_Rarity:625783200983154701>", value=card.Rarity)
