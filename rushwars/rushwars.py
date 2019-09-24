@@ -406,7 +406,7 @@ class RushWars(BaseCog):
                         count = items[item]
                         if count <= 0:
                             continue
-                        sqd_str += f"{card_emote} {card_name} x{count}\n"
+                        sqd_str += f"{card_emote} `{card_name}` x{count}\n"
                 
                 if sqd_str == "":
                     sqd_str = f"No {kind.lower()} in squad."
