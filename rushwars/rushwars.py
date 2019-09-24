@@ -124,7 +124,7 @@ class RushWars(BaseCog):
         await ctx.send(f"You are running Rush Wars version {__version__}")
 
     @commands.command()
-    async def rush(self, ctx, member = None):
+    async def rush(self, ctx, *, member=None):
         """Attack a base!"""
 
         try:
@@ -145,7 +145,7 @@ class RushWars(BaseCog):
 
         if member is not None:
             try:
-                async with self.config.user(member).active() as active:
+                async with self.config.user(member.id).active() as active:
                     defenses = active["defenses"]
             except:
                 await ctx.send("User has not set a defense!")
