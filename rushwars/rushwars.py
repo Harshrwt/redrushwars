@@ -564,16 +564,15 @@ class RushWars(BaseCog):
         try:
             async with self.config.user(ctx.author).active() as active:
                 if category is None:
-                    categories = [active["troops"], active["airdrops"], active["commanders"]]
                     msg = await ctx.send("Are you sure you want to reset whole squad?")
                     start_adding_reactions(msg, ReactionPredicate.YES_OR_NO_EMOJIS)
 
                     pred = ReactionPredicate.yes_or_no(msg, ctx.author)
                     await ctx.bot.wait_for("reaction_add", check=pred)
                     if pred.result is True:
-                        for data in categories:
-                            data = {}
-                            continue
+                        active["troops"] = {}
+                        active["airdrops"] = {}
+                        active["commanders"] = {}
                         await ctx.send("Squad reset.")
                     else:
                         return await ctx.send("Reset cancelled by the user.")
