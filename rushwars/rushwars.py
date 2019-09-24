@@ -420,7 +420,7 @@ class RushWars(BaseCog):
     
     @_squad.command(name="add")
     async def squad_add(self, ctx, card, number=1):
-        """Add cards to your squad: `[p]squad add card_name [number]`
+        """Add cards to your squad: `[p]squad add card [number]`
             Examples: 
                 `[p]squad add troopers`
                 `[p]squad add pitcher 5`
@@ -506,7 +506,7 @@ class RushWars(BaseCog):
 
     @_squad.command(name="remove")
     async def squad_remove(self, ctx, card, number=1):
-        """Remove cards from squad: `[p]squad remove card_name [number]`
+        """Remove cards from squad: `[p]squad remove card [number]`
         Examples: 
                 `[p]squad remove troopers`
                 `[p]squad remove pitcher 5`
