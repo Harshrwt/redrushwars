@@ -364,7 +364,6 @@ class RushWars(BaseCog):
     async def _squad(self,ctx):
         """This shows your squad.
 
-        remove: Remove card from squad - `[p]squad remove item_name [quantity]`
         save:  Save current squad - `[p]squad save (squad_name)`
         reset: Remove all cards from squad - `[p]squad reset`
         """
@@ -414,7 +413,13 @@ class RushWars(BaseCog):
     
     @_squad.command(name="add")
     async def squad_add(self, ctx, card, number=1):
-        """Add cards to your squad: `[p]squad add card_name [number of cards]`"""    
+        """Add cards to your squad: `[p]squad add card_name [number of cards]`
+            Examples: 
+                `[p]squad add troopers`
+                `[p]squad add pitcher 5`
+                `[p]squad add "sneaky ninja"`
+                `[p]squad add "rocket trucks" 2`
+        """    
         card = card.title()
         
         card_info = self.card_search(card)
@@ -494,6 +499,13 @@ class RushWars(BaseCog):
 
     @_squad.command(name="remove")
     async def squad_remove(self, ctx, card, number=1):
+        """Remove cards from squad: `[p]squad remove card_name [number of cards]`
+        Examples: 
+                `[p]squad remove troopers`
+                `[p]squad remove pitcher 5`
+                `[p]squad remove "sneaky ninja"`
+                `[p]squad remove "rocket trucks" 2`
+        """
         if number < 1:
             return await ctx.send("Must remove at least one card.")
         
@@ -539,6 +551,23 @@ class RushWars(BaseCog):
             return await ctx.send(f"{card.title()} is not in squad.")
         
         await ctx.send(f"{number} {card.title()} cards removed from squad.")
+
+    @_squad.command(name="reset")
+    async def squad_reset(self, ctx, category=None):
+        """Remove all cards of the optionally specified type. If no type is specified, all cards will be removed. 
+        Examples: 
+                `[p]squad reset`
+                `[p]squad reset airdrops`
+        """
+        if category is None:
+            try:
+                async with self.config.user(ctx.author).active() as active:
+                    categories = [active["troops"], active["airdrops"], active["commanders"]]
+                    pages = ["page 1", "page 2"]  # or use pagify to split a long string.
+                    await menu(ctx, pages, DEFAULT_CONTROLS)
+            except:
+                log.exception("Error with character sheet.")
+                return
 
     @staticmethod
     def color_lookup(rarity):
