@@ -331,16 +331,17 @@ class RushWars(BaseCog):
                     break
                 i += 1
                 sqd_str = ""
+                # card_info = [(item, items[item]) for item in items.keys()]
                 for item in items.keys():
                     await ctx.send(item)
-                #     if len(item) > 0:
-                #         card_name = item[0]
-                #         card_emote = self.card_emotes(card_name)
-                #         count = item[1]
-                #         if count <= 0:
-                #             continue
-                #         sqd_str = f"**{card_name}** {card_emote} x{count}\n"
-                # embed.add_field(name=f"{kind} {type_emotes(kind)}", value=sqd_str)  
+                    if item:
+                        card_name = item
+                        card_emote = self.card_emotes(card_name)
+                        count = items[item]
+                        if count <= 0:
+                            continue
+                        sqd_str = f"**{card_name}** {card_emote} x{count}\n"
+                embed.add_field(name=f"{kind} {type_emotes(kind)}", value=sqd_str)  
     
             await ctx.send(embed=embed)
     
