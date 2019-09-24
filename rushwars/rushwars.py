@@ -39,6 +39,7 @@ default_user = {
                     "Troopers": default_card_stats,
                     "Pitcher": default_card_stats,
                     "Shields": default_card_stats,
+                    "Sneaky Ninja": default_card_stats  # only for testing, remove later
                 },
                 "airdrops": {
                     "Rage": default_card_stats,
@@ -108,29 +109,6 @@ class RushWars(BaseCog):
             self, 1_070_701_001, force_registration=True)
 
         self.config.register_user(**default_user)
-
-    async def initialize(self):
-        """This will load all the bundled data into respective variables"""
-        pass
-        # troops_fp = bundled_data_path(self) / "troops.json"
-        # airdrops_fp = bundled_data_path(self) / "airdrops.json"
-        # defenses_fp = bundled_data_path(self) / "defenses.json"
-        # commanders_fp = bundled_data_path(self) / "commanders.json"
-        # files = {
-        #     "troops": troops_fp,
-        #     "airdrops": airdrops_fp,
-        #     "defenses": defenses_fp,
-        #     "commanders": commanders_fp,
-        # }
-
-        # with files["troops"].open("r") as f:
-        #     self.TROOPS = json.load(f)
-        # with files["airdrops"].open("r") as f:
-        #     self.AIRDROPS = json.load(f)
-        # with files["defenses"].open("r") as f:
-        #     self.DEFENSES = json.load(f)
-        # with files["commanders"].open("r") as f:
-        #     self.COMMANDERS = json.load(f)
 
     @commands.group(autohelp=True)
     async def rushwars(self, ctx):
@@ -386,10 +364,9 @@ class RushWars(BaseCog):
     async def _squad(self,ctx):
         """This shows your squad.
 
-        Add: Add card to squad - `[p]squad add item_name [quantity]`
-        Remove: Remove card from squad - `[p]squad remove item_name [quantity]`
-        Save:  Save current squad - `[p]squad save (squad_name)`
-        Reset: Remove all cards from squad - `[p]squad reset`
+        remove: Remove card from squad - `[p]squad remove item_name [quantity]`
+        save:  Save current squad - `[p]squad save (squad_name)`
+        reset: Remove all cards from squad - `[p]squad reset`
         """
 
         if not ctx.invoked_subcommand:
@@ -437,7 +414,7 @@ class RushWars(BaseCog):
     
     @_squad.command(name="add")
     async def squad_add(self, ctx, card, number=1):
-        """Add cards to your squad"""    
+        """Add cards to your squad: `[p]squad add card_name [number of cards]`"""    
         card_info = self.card_search(card.title())
 
         if not card_info:
@@ -513,7 +490,51 @@ class RushWars(BaseCog):
         else:
             return await ctx.send("You have not unlocked the card.")
 
-        await ctx.send("Card added to squad.")
+        await ctx.send("Card(s) added to squad.")
+
+    @_squad.command(name="remove")
+    async def squad_remove(self, ctx, card, number=1):
+        if number < 1:
+            return await ctx.send("Must remove at least one card.")
+        
+        try:
+            async with self.config.user(ctx.author).active() as active:
+                cards_selected = [active["troops"], active["airdrops"], active["commanders"]]
+        except:
+            log.exception("Error with character sheet.")
+            return
+        
+        selected = False
+        i = 0
+        for items in cards_selected:
+            i += 1
+            for item in items.keys():
+                if item == card:
+                    selected = True
+                    if i == 1:
+                        card_type = "troops"
+                    elif i == 2:
+                        card_type = "airdrops"
+                    elif i == 3:
+                        card_type = "commanders"     
+                    break
+
+        if selected:
+            try:
+                async with self.config.user(ctx.author).active() as active:
+                    data = active[card_type]
+                    for sqd_card in data.keys():
+                        if card == sqd_card:
+                            if data[sqd_card] >= number:
+                                data[sqd_card] -= number
+                                break
+                            else:
+                                return await ctx.send(f"Number of cards in squad are less than {number}.")
+            except:
+                log.exception("Error with character sheet.")
+                return
+        
+        await ctx.send("Card(s) removed from squad.")
 
     @staticmethod
     def color_lookup(rarity):
