@@ -424,7 +424,6 @@ class RushWars(BaseCog):
 
         card_type = str(card_info[0]) + "s"
         card_space = int(card_info[1].Space)
-        await ctx.send(card_space)
 
         chopperLvl = await self.config.user(ctx.author).chopper()
 
@@ -455,7 +454,7 @@ class RushWars(BaseCog):
                 return
             capacity = 1
 
-        total_selected = sum(data.values())
+        total_selected = self.total_selected(card, data)
         if total_selected >= capacity:
             return await ctx.send("Chopper is already full.")
 
@@ -600,3 +599,13 @@ class RushWars(BaseCog):
             except FileNotFoundError:
                 log.exception(f"{file} file could not be found in Rush Wars data folder.")
                 continue
+
+    def total_selected(self, card, data):
+        total = 0
+        for item in data.keys():
+            card_info = self.card_search(card)
+            card_space = int(card_info[1].Space)
+
+            number = data[item]
+            total += (number * card_space)
+        return total
