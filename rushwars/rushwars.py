@@ -490,7 +490,7 @@ class RushWars(BaseCog):
         else:
             return await ctx.send("You have not unlocked the card.")
 
-        await ctx.send("Card(s) added to squad.")
+        await ctx.send(f"{number} {card.title()} added to squad.")
 
     @_squad.command(name="remove")
     async def squad_remove(self, ctx, card, number=1):
@@ -504,6 +504,8 @@ class RushWars(BaseCog):
             log.exception("Error with character sheet.")
             return
         
+        card = card.title()
+
         selected = False
         i = 0
         for items in cards_selected:
@@ -533,8 +535,10 @@ class RushWars(BaseCog):
             except:
                 log.exception("Error with character sheet.")
                 return
+        else:
+            return await ctx.send(f"{card.title()} is not in squad.")
         
-        await ctx.send("Card(s) removed from squad.")
+        await ctx.send(f"{number} {card.title()} removed from squad.")
 
     @staticmethod
     def color_lookup(rarity):
