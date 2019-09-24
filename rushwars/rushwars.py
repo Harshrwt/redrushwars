@@ -52,8 +52,8 @@ default_user = {
             },
             "active": {
                 "troops": {"Troopers": 2, "Pitcher": 2, "Shields": 1},
-                "airdrops": {"Troopers": 1},
-                "defenses": {"Troopers": 1, "Pitcher": 2, "Shields": 1},
+                "airdrops": {"Boost": 1, "Arcade": 1},
+                "defenses": {"Troopers": 2, "Pitcher": 3, "Shields": 2},
                 "commanders": {},
             },
             "stars": 0,
@@ -63,9 +63,9 @@ default_user = {
         }
 
 default_defenses = [
-    {"Troopers": 1, "Pitcher": 2, "Shields": 1},
-    {"Troopers": 3, "Pitcher": 1, "Shields": 0},
-    {"Troopers": 2, "Pitcher": 2, "Shields": 2}
+    {"Troopers": 2, "Pitcher": 3, "Shields": 2},
+    {"Troopers": 3, "Pitcher": 3, "Shields": 0},
+    {"Troopers": 2, "Pitcher": 1, "Shields": 3}
 ]
 
 base_card_levels = {
@@ -136,20 +136,38 @@ class RushWars(BaseCog):
         """Attack a base!"""
 
         try:
-            # squad = await self.config.user(ctx.author).squad()
             async with self.config.user(ctx.author).active() as active:
-                troops = active["troops"]
+                troops =  active["troops"]
+                airdrops = active["airdrops"]
+                # commanders = active["commanders"]
         except Exception as ex:
-            return await ctx.send("Error with character sheet!")
+            return await ctx.send(f"Error with character sheet! {ex}")
             log.exception(f"Error with character sheet: {ex}!")
 
         hp = 0
         att = 0
+        def_hp = 0
+        def_att = 0
+
         for troop in troops.keys():
             troop_stats = self.card_search(troop)[1]
             count = troops[troop]
             hp += int(troop_stats.Hp) * count
             att += int(troop_stats.Att) * count
+
+        for airdrop in airdrops:
+            airdrop_stats = self.card_search(airdrop)[1]
+            count = airdrops[airdrop]
+            ability = airdrop_stats.Ability
+            if ability == "Damage":
+                att += int(airdrop_stats.Value) * float(airdrop_stats.Duration) * count
+            elif ability == "Boost":
+                att += int(airdrop_stats.Value) * float(airdrop_stats.Duration) * count
+                hp += int(airdrop_stats.Value) * float(airdrop_stats.Duration) * count
+            elif ability == "Heal":
+                hp += int(airdrop_stats.Value) * float(airdrop_stats.Duration) * count
+            elif ability in ["Invisibility", "Freeze"]:
+                def_att -= int(airdrop_stats.Value) * float(airdrop_stats.Duration) * count
 
         if member is not None:
             try:
@@ -161,26 +179,34 @@ class RushWars(BaseCog):
         else:
             defenses = random.choice(default_defenses)
 
-        def_hp = 0
-        def_att = 0
         for defense in defenses.keys():
             defense_stats = self.card_search(defense)[1]
             count = defenses[defense]
             def_hp += int(defense_stats.Hp) * count
             def_att += int(defense_stats.Att) * count
 
-        attack = [(troop, troops[troop]) for troop in troops.keys()]
+        troop = [(troop, troops[troop]) for troop in troops.keys()]
+        airdrop = [(airdrop, airdrop[airdrop]) for airdrop in airdrop.keys()]
         defense = [(defense, defenses[defense]) for defense in defenses.keys()]
 
         attack_str = ""
         defense_str = ""
-        for item in attack:
+        for item in troop:
+            attack_str = "`TROOPS`"
             card_name = item[0]
             card_emote = self.card_emotes(card_name)
             count = item[1]
             if count <= 0:
                 continue
-            attack_str += f"{card_name} {card_emote} x{count}\n"
+            attack_str += f"\n{card_name} {card_emote} x{count}\n"
+        for item in airdrop:
+            attack_str = "`AIRDROPS`"
+            card_name = item[0]
+            card_emote = self.card_emotes(card_name)
+            count = item[1]
+            if count <= 0:
+                continue
+            attack_str += f"\n{card_name} {card_emote} x{count}\n"
         for item in defense:
             card_name = item[0]
             card_emote = self.card_emotes(card_name)
