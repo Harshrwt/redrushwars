@@ -590,7 +590,7 @@ class RushWars(BaseCog):
                 await ctx.bot.wait_for("reaction_add", check=pred)
                 if pred.result is True:
                     try:
-                        await self.config.user(ctx.author).set_raw("active", card_type, value={})
+                        await self.config.user(ctx.author).active.set_raw(card_type, value={})
                         await ctx.send(f"{card_type.title()} squad reset.")
                     except:
                         log.exception("Error with character sheet.")
