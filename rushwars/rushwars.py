@@ -228,7 +228,7 @@ class RushWars(BaseCog):
             description = description.replace("â", "-")
 
         if level is None:
-            level = base_card_levels[card.Rarity.lower()]
+            level = base_card_levels[(card.Rarity).lower()]
 
         embed = discord.Embed(colour=color, title=card.Name, description=description, url=url)
         embed.set_thumbnail(url=thumbnail_url)
