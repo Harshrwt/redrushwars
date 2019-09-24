@@ -343,7 +343,6 @@ class RushWars(BaseCog):
             except FileNotFoundError:
                 log.exception(f"{file} file could not be found in Rush Wars data folder.")
                 continue
-            return False
 
     def troop_targets(self, targets):
         if targets == 0:
@@ -439,7 +438,7 @@ class RushWars(BaseCog):
     @_squad.command(name="add")
     async def squad_add(self, ctx, card, number=1):
         """Add cards to your squad"""    
-        card_info = self.card_search(card)
+        card_info = self.card_search(card.title())
 
         if not card_info:
             return await ctx.send(f"{card.title()} does not exist.")
@@ -574,4 +573,3 @@ class RushWars(BaseCog):
             except FileNotFoundError:
                 log.exception(f"{file} file could not be found in Rush Wars data folder.")
                 continue
-        return False
