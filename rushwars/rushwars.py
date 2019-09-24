@@ -68,6 +68,8 @@ default_defenses = [
     {"Troopers": 2, "Pitcher": 2, "Shields": 2}
 ]
 
+max_card_level = 20
+
 TROOPS: dict = None
 AIRDROPS: dict = None
 DEFENSES: dict = None
@@ -201,6 +203,9 @@ class RushWars(BaseCog):
             Examples:
                 troop shields
         """
+        if level > max_card_level:
+            return await ctx.send("Maximum possible level is 20!")
+
         troop = self.troop_search(troop_name.title())
         if troop is None:
             return await ctx.send("Troop with that name could not be found.")
