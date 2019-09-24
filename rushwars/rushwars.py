@@ -51,9 +51,9 @@ default_user = {
                 "commanders": {},
             },
             "active": {
-                "troops": {"Troopers": 2, "Pitcher": 2, "Shields": 1},
-                "airdrops": {"Boost": 1, "Arcade": 1},
-                "defenses": {"Troopers": 2, "Pitcher": 3, "Shields": 2},
+                "troops": {"Troopers": 0, "Pitcher": 0, "Shields": 0},
+                "airdrops": {"Arcade": 1},
+                "defenses": {"Troopers": 2, "Pitcher": 1, "Shields": 1},
                 "commanders": {},
             },
             "stars": 0,
@@ -63,9 +63,12 @@ default_user = {
         }
 
 default_defenses = [
-    {"Troopers": 4, "Pitcher": 3, "Shields": 2},
-    {"Troopers": 4, "Pitcher": 3, "Shields": 0},
-    {"Troopers": 4, "Pitcher": 2, "Shields": 2}
+    {"Troopers": 4, "Pitcher": 0, "Shields": 0},
+    {"Troopers": 0, "Pitcher": 4, "Shields": 0},
+    {"Troopers": 0, "Pitcher": 0, "Shields": 4},
+    {"Troopers": 2, "Pitcher": 2, "Shields": 0},
+    {"Troopers": 1, "Pitcher": 0, "Shields": 3},
+    {"Troopers": 0, "Pitcher": 3, "Shields": 1}
 ]
 
 base_card_levels = {
@@ -76,6 +79,18 @@ base_card_levels = {
 }
 
 max_card_level = 20
+
+# chopperLvl: (troops, airdrops, defenses)
+chopper_capacity = {
+    1: (3, 1, 4),
+    2: (5, 1, 5),
+    3: (6, 1, 7),
+    4: (6, 1, 9),
+    5: (7, 2, 10),
+    6: (8, 2, 11),
+    7: (9, 2, 12),
+    8: (10, 2, 13)
+}
 
 TROOPS: dict = None
 AIRDROPS: dict = None
@@ -146,7 +161,7 @@ class RushWars(BaseCog):
                 # commanders = active["commanders"]
                 player = ctx.author.name
         except Exception as ex:
-            return await ctx.send(f"Error with character sheet! {ex}")
+            return await ctx.send(f"Error with character sheet!")
             log.exception(f"Error with character sheet: {ex}!")
 
         hp = 0
@@ -328,6 +343,7 @@ class RushWars(BaseCog):
             except FileNotFoundError:
                 log.exception(f"{file} file could not be found in Rush Wars data folder.")
                 continue
+            return False
 
     def troop_targets(self, targets):
         if targets == 0:
@@ -386,7 +402,7 @@ class RushWars(BaseCog):
                         active["commanders"]
                     ]
             except Exception as ex:
-                return await ctx.send(f"Error with character sheet! {ex}")
+                return await ctx.send(f"Error with character sheet!")
                 log.exception(f"Error with character sheet: {ex}!")
 
             embed = discord.Embed(colour=0x999966, title="Squad", description="Is your squad strong enough to kick butt and get mega rich?")
@@ -420,6 +436,85 @@ class RushWars(BaseCog):
     
             await ctx.send(embed=embed)
     
+    @_squad.command(name="add")
+    async def squad_add(self, ctx, card, number=1):
+        """Add cards to your squad"""    
+        card_info = self.card_search(card)
+        card_type = str(card_info[0]) + "s"
+        card_space = int(card_info[1].Space)
+
+        if not card_type:
+            return await ctx.send(f"{card.title()} does not exist.")
+
+        chopperLvl = await self.config.user(ctx.author).chopper()
+
+        if card_type == "troops":
+            try:
+                async with self.config.user(ctx.author).active() as active:
+                    data =  active[card_type]
+            except:
+                log.exception("Error with character sheet.")
+                return
+            capacity = chopper_capacity[chopperLvl][0]
+
+        elif card_type == "airdrops":
+            try:
+                async with self.config.user(ctx.author).active() as active:
+                    data =  active[card_type]
+            except:
+                log.exception("Error with character sheet.")
+                return
+            capacity = chopper_capacity[chopperLvl][1]
+
+        elif card_type == "commanders":
+            try:
+                async with self.config.user(ctx.author).active() as active:
+                    data =  active[card_type]
+            except:
+                log.exception("Error with character sheet.")
+                return
+            capacity = 1
+
+        total_selected = sum(data.values())
+        if total_selected >= capacity:
+            return await ctx.send("Chopper is already full.")
+
+        # check if user owns the card
+        try:
+            async with self.config.user(ctx.author).cards() as cards:
+                owned = cards[card_type]
+        except:
+            log.exception("Error with character sheet.")
+            return
+
+        owns = False
+        for item in owned.keys():
+            if card == item:
+                owns = True
+                break
+        
+        if owns:
+            if total_selected + number * card_space <= capacity:
+                pass
+            else:
+                return await ctx.send("Adding the card(s) will exceed chopper capacity.")
+            try:
+                async with self.config.user(ctx.author).active() as active:
+                    data = active[card_type]
+                    for sqd_card in data.keys():
+                        if card == sqd_card:
+                            data[sqd_card] += number
+                            break
+                    else:
+                        data[card] = number
+            except:
+                log.exception("Error with character sheet.")
+                return
+        else:
+            return await ctx.send("You have not unlocked the card.")
+
+        await ctx.send("Card added to squad.")
+
     @staticmethod
     def color_lookup(rarity):
         colors = {"Common": 0xAE8F6F, "Rare": 0x74BD9C, "Epic": 0xB77AE0, "Commander": 0xF7EE85}
@@ -461,3 +556,21 @@ class RushWars(BaseCog):
             "Freeze": "<:Freeze:626042235661713408>"
         }
         return emotes[airdrop_ability]
+
+    def card_exist(self, card_name):
+        files = ['troops.csv', 'airdrops.csv', 'defenses.csv', 'commanders.csv']
+        for file in files: 
+            fp = self.path / file
+            try:
+                with fp.open('rt', encoding='iso-8859-15') as f:
+                    reader = csv.DictReader(f, delimiter=',')
+                    for row in reader:
+                        if row['Name'] == card_name:
+                            card_type = file.split('.')[0]
+                            return card_type
+                        else:
+                            continue
+            except FileNotFoundError:
+                log.exception(f"{file} file could not be found in Rush Wars data folder.")
+                continue
+        return False
