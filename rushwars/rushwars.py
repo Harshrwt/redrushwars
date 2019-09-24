@@ -440,11 +440,12 @@ class RushWars(BaseCog):
     async def squad_add(self, ctx, card, number=1):
         """Add cards to your squad"""    
         card_info = self.card_search(card)
+
+        if not card_info:
+            return await ctx.send(f"{card.title()} does not exist.")
+
         card_type = str(card_info[0]) + "s"
         card_space = int(card_info[1].Space)
-
-        if not card_type:
-            return await ctx.send(f"{card.title()} does not exist.")
 
         chopperLvl = await self.config.user(ctx.author).chopper()
 
