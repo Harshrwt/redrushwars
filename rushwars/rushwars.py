@@ -324,7 +324,7 @@ class RushWars(BaseCog):
                     upgrader = stat/10
                 i = 1
                 while i < level:
-                    new_stat += upgrader
+                    stat += upgrader
                     i += 1
                 if card_type == 'airdrop':
                     new_stats.append(stat)
