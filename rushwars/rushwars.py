@@ -369,15 +369,19 @@ class RushWars(BaseCog):
         return new_stats
 
     @commands.group(name="squad", autohelp=False)
-    async def _squad(self,ctx):
-        """This shows your squad. Subcommands help you change squad. 
+    async def _squad(self,ctx, member:discord.Member=None):
+        """Lookup your or any other server member's squad. Subcommands give more squad functions. 
 
         save:  Save current squad - `[p]squad save (squad_name)`
         """
 
         if not ctx.invoked_subcommand:
+            if member is None:
+                user = ctx.author
+            else:
+                user = member
             try:
-                async with self.config.user(ctx.author).active() as active:
+                async with self.config.user(user).active() as active:
                     att_data = [
                         active["troops"], 
                         active["airdrops"], 
