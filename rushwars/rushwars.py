@@ -473,9 +473,7 @@ class RushWars(BaseCog):
                 break
         
         if owns:
-            if total_selected + number * card_space <= capacity:
-                pass
-            else:
+            if total_selected + (number * card_space) > capacity:
                 return await ctx.send("Adding the card(s) will exceed chopper capacity.")
             try:
                 async with self.config.user(ctx.author).active() as active:
