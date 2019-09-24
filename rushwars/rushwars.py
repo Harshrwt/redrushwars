@@ -89,25 +89,26 @@ class RushWars(BaseCog):
 
     async def initialize(self):
         """This will load all the bundled data into respective variables"""
-        troops_fp = bundled_data_path(self) / "troops.json"
-        airdrops_fp = bundled_data_path(self) / "airdrops.json"
-        defenses_fp = bundled_data_path(self) / "defenses.json"
-        commanders_fp = bundled_data_path(self) / "commanders.json"
-        files = {
-            "troops": troops_fp,
-            "airdrops": airdrops_fp,
-            "defenses": defenses_fp,
-            "commanders": commanders_fp,
-        }
+        pass
+        # troops_fp = bundled_data_path(self) / "troops.json"
+        # airdrops_fp = bundled_data_path(self) / "airdrops.json"
+        # defenses_fp = bundled_data_path(self) / "defenses.json"
+        # commanders_fp = bundled_data_path(self) / "commanders.json"
+        # files = {
+        #     "troops": troops_fp,
+        #     "airdrops": airdrops_fp,
+        #     "defenses": defenses_fp,
+        #     "commanders": commanders_fp,
+        # }
 
-        with files["troops"].open("r") as f:
-            self.TROOPS = json.load(f)
-        with files["airdrops"].open("r") as f:
-            self.AIRDROPS = json.load(f)
-        with files["defenses"].open("r") as f:
-            self.DEFENSES = json.load(f)
-        with files["commanders"].open("r") as f:
-            self.COMMANDERS = json.load(f)
+        # with files["troops"].open("r") as f:
+        #     self.TROOPS = json.load(f)
+        # with files["airdrops"].open("r") as f:
+        #     self.AIRDROPS = json.load(f)
+        # with files["defenses"].open("r") as f:
+        #     self.DEFENSES = json.load(f)
+        # with files["commanders"].open("r") as f:
+        #     self.COMMANDERS = json.load(f)
 
     @commands.group(autohelp=True)
     async def rushwars(self, ctx):
@@ -138,7 +139,7 @@ class RushWars(BaseCog):
         hp = 0
         att = 0
         for troop in troops.keys():
-            troop_stats = self.troop_search(troop)
+            troop_stats = self.card_search(troop)[1]
             count = troops[troop]
             hp += int(troop_stats.Hp) * count
             att += int(troop_stats.Att) * count
@@ -156,7 +157,7 @@ class RushWars(BaseCog):
         def_hp = 0
         def_att = 0
         for defense in defenses.keys():
-            defense_stats = self.troop_search(defense)
+            defense_stats = self.card_search(defense)[1]
             count = defenses[defense]
             def_hp += int(defense_stats.Hp) * count
             def_att += int(defense_stats.Att) * count
@@ -192,71 +193,95 @@ class RushWars(BaseCog):
             await ctx.send("You lose!")
 
     @commands.command()
-    async def troop(self, ctx, troop_name: str, level=1):
-        """Search for an troop in the Rush Wars universe.
-            Args:
-                troop_name: variable length string
-            Returns:
-                Discord embed
-            Raises:
-                AttributeError: Troop not found
+    async def card(self, ctx, card_name: str, level=1):
+        """Search for a card in the Rush Wars universe.
             Examples:
-                troop shields
+                `[p]card shields`
+                `[p]card "rocket truck"`
+                `[p]card "sneaky ninja" 9`
         """
         if level > max_card_level:
             return await ctx.send("Maximum possible level is 20!")
 
-        troop = self.troop_search(troop_name.title())
-        if troop is None:
-            return await ctx.send("Troop with that name could not be found.")
+        data = self.card_search(card_name.title())
+        if data[1] is None:
+            return await ctx.send("Card with that name could not be found.")
+        
+        card_type = data[0]
+        card = data[1]
 
-        color = self.color_lookup(troop.Rarity)
-        title_name = troop.Name.replace(" ", "_")
-        thumb_name = troop.Name.replace(" ", "-")
+        color = self.color_lookup(card.Rarity)
+        title_name = card.Name.replace(" ", "_")
+        thumb_name = card.Name.replace(" ", "-")
         url = f"https://rushwars.fandom.com/wiki/{title_name}"
-        thumbnail_url = f"https://www.rushstats.com/assets/troop/{thumb_name}.png"
-        target = self.troop_targets(troop.Targets)
-        description = f"**{troop.Description}**"
+        thumbnail_url = f"https://www.rushstats.com/assets/{card_type}/{thumb_name}.png"
+        description = f"**{card.Description}**"
 
         if "â" in description:
             description = description.replace("â", "-")
 
-        lvl_stats = [int(troop.Hp), int(troop.Att)]
-        upd_stats = self.card_level(level, lvl_stats, troop.Rarity)
-        
-        if isinstance(upd_stats, int):
-            await ctx.send((f"{troop.Rarity} starts at level {upd_stats}! Showing level {upd_stats} stats..."))
-            level = upd_stats
-            upd_stats = lvl_stats
-
-        dps = int(upd_stats[1]/float(troop.AttSpeed))
-
-        embed = discord.Embed(colour=color, title=troop.Name, description=description, url=url)
+        embed = discord.Embed(colour=color, title=card.Name, description=description, url=url)
         embed.set_thumbnail(url=thumbnail_url)
         embed.add_field(name="Level <:RW_Level:625788888480350216>", value=level)
-        embed.add_field(name="Health <:RW_Health:625786278058917898>", value=upd_stats[0])
-        embed.add_field(name="Damage <:RW_Damage:625786276938907659>", value=upd_stats[1])
-        embed.add_field(name="Damage per second <:RW_DPS:625786277903466498>", value=dps)
-        embed.add_field(name="Rarity <:RW_Rarity:625783200983154701>", value=troop.Rarity)
-        embed.add_field(name="Squad Size <:RW_Count:625786275802382347>", value=troop.Count)
-        embed.add_field(name="Space <:RW_Space:625783199670206486>", value=troop.Space)
-        embed.add_field(name="Targets <:RW_Targets:625786278096535574>", value=target)
-        embed.add_field(name="Attack Speed <:RW_AttSpeed:625787097709543427>", value=f"{troop.AttSpeed}s")
-        embed.add_field(name="HQ Level <:RW_HQ:625787531664818224>", value=troop.UnlockLvl)
+
+        if card_type == 'troop':
+            target = self.troop_targets(card.Targets)
+            lvl_stats = [int(card.Hp), int(card.Att)]
+            upd_stats = self.card_level(level, lvl_stats, card.Rarity, card_type)
+        
+            if isinstance(upd_stats, int):
+                await ctx.send((f"{card.Rarity} starts at level {upd_stats}! Showing level {upd_stats} stats..."))
+                level = upd_stats
+                upd_stats = lvl_stats
+
+            target = self.troop_targets(card.Targets)
+
+            dps = int(upd_stats[1]/float(card.AttSpeed))
+
+            embed.add_field(name="Health <:RW_Health:625786278058917898>", value=upd_stats[0])
+            embed.add_field(name="Damage <:RW_Damage:625786276938907659>", value=upd_stats[1])
+            embed.add_field(name="Damage per second <:RW_DPS:625786277903466498>", value=dps)
+            embed.add_field(name="Squad Size <:RW_Count:625786275802382347>", value=card.Count)
+            embed.add_field(name="Space <:RW_Space:625783199670206486>", value=card.Space)
+            embed.add_field(name="Targets <:RW_Targets:625786278096535574>", value=target)
+            embed.add_field(name="Attack Speed <:RW_AttSpeed:625787097709543427>", value=f"{card.AttSpeed}s")
+        
+        elif card_type == 'airdrop':
+            lvl_stats = [int(card.Value), int(card.Duration)]
+            upd_stats = self.card_level(level, lvl_stats, card.Rarity, card_type)
+
+            if isinstance(upd_stats, int):
+                await ctx.send((f"{card.Rarity} starts at level {upd_stats}! Showing level {upd_stats} stats..."))
+                level = upd_stats
+                upd_stats = lvl_stats
+
+            embed.add_field(name="Value <:RW_Health:625786278058917898>", value=upd_stats[0])
+            embed.add_field(name="Duration <:RW_Health:625786278058917898>", value=upd_stats[1])
+            embed.add_field(name="Space <:RW_Count:625786275802382347>", value=card.Space)
+            
+        embed.add_field(name="Rarity <:RW_Rarity:625783200983154701>", value=card.Rarity)
+        embed.add_field(name="HQ Level <:RW_HQ:625787531664818224>", value=card.UnlockLvl)
         await ctx.send(embed=embed)
 
-    def troop_search(self, name):
-        fp = self.path / 'troops.csv'
-        try:
-            with fp.open('rt', encoding='iso-8859-15') as f:
-                reader = csv.DictReader(f, delimiter=',')
-                for row in reader:
-                    if row['Name'] == name:
-                        Troop = namedtuple('Name', reader.fieldnames)
-                        return Troop(**row)
-        except FileNotFoundError:
-            print("The csv file could not be found in Rush Wars data folder.")
-            return None
+    def card_search(self, name):
+        files = ['troops.csv', 'airdrops.csv', 'defenses.csv', 'commanders.csv']
+        for file in files: 
+            fp = self.path / file
+            try:
+                with fp.open('rt', encoding='iso-8859-15') as f:
+                    reader = csv.DictReader(f, delimiter=',')
+                    for row in reader:
+                        if row['Name'] == name:
+                            Card = namedtuple('Name', reader.fieldnames)
+                            card_type = file.split('.')[0]
+                            # remove trailing "s"
+                            card_type = card_type[:-1]
+                            return (card_type, Card(**row))
+                        else:
+                            continue
+            except FileNotFoundError:
+                log.expection(f"{file} file could not be found in Rush Wars data folder.")
+                continue
 
     def troop_targets(self, targets):
         if targets == 0:
@@ -266,7 +291,7 @@ class RushWars(BaseCog):
         else:
             return "Air & Ground"
 
-    def card_level(self, level, stats: list, rarity):
+    def card_level(self, level, stats: list, rarity, card_type):
         """Get stats by selected level"""
 
         if rarity.lower().startswith('c'):
@@ -286,14 +311,19 @@ class RushWars(BaseCog):
         new_stats = []
 
         for stat in stats:
-            stat = int(stat) 
-            upgrader = stat/10
-            i = 1
-            while i < level:
-                stat += upgrader
-                i += 1
-            new_stats.append(int(stat))
-
+            if stat is not None:
+                stat = int(stat) 
+                if card_type == 'troop':
+                    upgrader = stat/10
+                elif card_type == 'airdrop':
+                    upgrader == 0.5
+                i = 1
+                while i < level:
+                    stat += upgrader
+                    i += 1
+                new_stats.append(int(stat))
+            else:
+                new_stats.append(stat)
         return new_stats
 
     @commands.group(name="squad", autohelp=False)
@@ -358,7 +388,14 @@ class RushWars(BaseCog):
         emotes = {
             "Troopers": "<:Troopers:625807035362967605>",
             "Pitcher": "<:Pitcher:625807035954626590>",
-            "Shields": "<:Shields:625807036663332865>"
+            "Shields": "<:Shields:625807036663332865>",
+            "Arcade": "<:Arcade:626008229763219477>",
+            "Heal": "<:Heal:626008230233112576>",
+            "Rage": "<:Boost:626008230186975233>",
+            "Fridge": "<:Fridge:626008230279118848>",
+            "Paratroopers": "<:Paratroopers:626008231478558732>",
+            "Invisibility": "<:Invisibility:626008231713439794>",
+            "Satellite": "<:Satellite:626010083406643200>"
         }
         return emotes[card_name]
 
