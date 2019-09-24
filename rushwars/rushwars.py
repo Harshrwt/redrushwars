@@ -145,7 +145,7 @@ class RushWars(BaseCog):
 
         if member is not None:
             try:
-                async with self.config.member(member).active() as active:
+                async with self.config.user(member).active() as active:
                     defenses = active["defenses"]
             except:
                 await ctx.send("User has not set a defense!")
