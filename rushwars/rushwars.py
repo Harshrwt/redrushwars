@@ -320,7 +320,7 @@ class RushWars(BaseCog):
                 if card_type == 'troop':
                     upgrader = stat/10
                 elif card_type == 'airdrop':
-                    upgrader == 0.5
+                    upgrader = 0.5
                 i = 1
                 while i < level:
                     stat += upgrader
