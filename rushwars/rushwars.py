@@ -808,7 +808,7 @@ class RushWars(BaseCog):
     
     @commands.command()
     async def set_hq(self, ctx, lvl:int=None):
-        unlocked = await self.level_up_hq(ctx, int(lvl))
+        unlocked = await self.level_up_hq(ctx, lvl)
         for card in unlocked:
             await ctx.send(card)
     
@@ -872,7 +872,7 @@ class RushWars(BaseCog):
         if lvl is None:
             old_lvl = await self.config.user(ctx.author).hq()
         else:
-            old_lvl = lvl
+            old_lvl = int(lvl)
         
         new_hq = old_lvl
 
