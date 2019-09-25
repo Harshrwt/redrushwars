@@ -222,7 +222,7 @@ class RushWars(BaseCog):
         embed = discord.Embed(colour=0x999966, title="Battle Info", description="Will you get mega rich after this battle?")
         embed.set_author(name=f"{player} vs {opponent}", icon_url="https://cdn.discordapp.com/attachments/622323508755693581/626058519929684027/Leaderboard.png")
         embed.add_field(name="Attack <:RW_Attck:625783202836905984>", value=attack_str)
-        embed.add_field(name="Defense <:RW_Defense:625804692760559636>", value=defense_str)
+        embed.add_field(name="Defense <:RW_Defenses:626339085501333504>", value=defense_str)
         await ctx.send(embed=embed)
 
         if def_hp/att < hp/def_att:
@@ -285,7 +285,7 @@ class RushWars(BaseCog):
                 embed.add_field(name="Squad Size <:RW_Count:625786275802382347>", value=card.Count)
                 embed.add_field(name="Space <:RW_Space:625783199670206486>", value=card.Space)
             else:
-                embed.add_field(name="Space <:RW_Defense:625804692760559636>", value=card.Space)
+                embed.add_field(name="Space <:RW_Defense:626338600467824660>", value=card.Space)
             embed.add_field(name="Targets <:RW_Targets:625786278096535574>", value=target)
             embed.add_field(name="Attack Speed <:RW_AttSpeed:625787097709543427>", value=f"{card.AttSpeed}s")
         
@@ -670,7 +670,7 @@ class RushWars(BaseCog):
         emotes = {
             "Troops": "<:RW_Attck:625783202836905984>",
             "Airdrops": "<:RW_Airdrop:626000292810588164>",
-            "Defenses": "<:RW_Defense:625804692760559636>",
+            "Defenses": "<:RW_Defense:626338600467824660>",
             "Commanders": "<:RW_Commander:626000293519163422>"
         }
         return emotes[card_type]
