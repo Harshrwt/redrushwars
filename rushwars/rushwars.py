@@ -884,10 +884,10 @@ class RushWars(BaseCog):
                     for row in reader:
                         if row['UnlockLvl'] == new_hq:
                             cards_unlocked.append(row['Name'])
-                            continue
             except FileNotFoundError:
                 log.exception("File not found.")
                 return
+            continue
         return cards_unlocked
         # # update cards to include newly unlocked cards
         # try:
