@@ -981,3 +981,6 @@ class RushWars(BaseCog):
                 for item in data.keys():
                     if card_name == item:
                         return data[item][0]
+        except:
+            log.exception("Error with character sheet.")
+            return
