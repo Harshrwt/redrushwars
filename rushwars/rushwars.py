@@ -809,8 +809,7 @@ class RushWars(BaseCog):
     @commands.command()
     async def set_hq(self, ctx, lvl:int=None):
         unlocked = await self.level_up_hq(ctx, lvl)
-        for card in unlocked:
-            await ctx.send(card)
+        await ctx.send(unlocked)
     
     @staticmethod
     def color_lookup(rarity):
@@ -875,7 +874,7 @@ class RushWars(BaseCog):
             hq = int(lvl)
 
         # check which cards are unlocked at the new HQ level
-        cards_unlocked = []
+        cards_unlocked = {}
         files = ['troops.csv', 'airdrops.csv',
             'defenses.csv', 'commanders.csv']
         for file in files:
@@ -885,18 +884,19 @@ class RushWars(BaseCog):
                     reader = csv.DictReader(f, delimiter=',')
                     for row in reader:
                         if int(row['UnlockLvl']) == hq:
-                            cards_unlocked.append(row['Name'])
+                            card_type = file.split('.')[0]
+                            cards_unlocked[row['Name']] = card_type
                             continue
             except FileNotFoundError:
                 log.exception("File not found.")
-                return ['file not found']
+                return
             except Exception as ex:
-                return [ex]
-        return cards_unlocked
-        # # update cards to include newly unlocked cards
+                return 
+        return card_type
+        # update cards to include newly unlocked cards
         # try:
-        #     async with self.config.user(ctx.author).active() as active:
-        #         pass
+        #     async with self.config.user(ctx.author).cards() as cards:
+                
         # except Exception as ex:
         #     log.exception(ex)
         #     return
