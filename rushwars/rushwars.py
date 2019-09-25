@@ -981,13 +981,15 @@ class RushWars(BaseCog):
 
     def rush_strings(self, data):
         """To return strings containing card information."""
+        info = ""
         for item in data:
             card_name = item[0]
             card_emote = self.card_emotes(card_name)
             count = item[1]
             if count <= 0:
                 continue
-            return f"{card_emote} {card_name} x{count}\n"
+            info += f"{card_emote} {card_name} x{count}\n"
+        return info
 
     async def rush_card_level(self, ctx, card_name, card_type):
         """Return the level of card user owns."""
