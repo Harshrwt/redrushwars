@@ -174,7 +174,7 @@ class RushWars(BaseCog):
             
             hp += upd_stats[0] * count
             att = upd_stats[1] * count
-            attps += (att/int(stats.AttSpeed))
+            attps += (att/float(stats.AttSpeed))
 
         for airdrop in airdrops.keys():
             stats = self.card_search(airdrop)[1]
@@ -211,7 +211,7 @@ class RushWars(BaseCog):
             
             def_hp += upd_stats[0] * count
             def_att = upd_stats[1] * count
-            def_attps += (def_att/int(stats.AttSpeed))
+            def_attps += (def_att/float(stats.AttSpeed))
 
         troop = [(troop, troops[troop]) for troop in troops.keys()]
         airdrop = [(airdrop, airdrops[airdrop]) for airdrop in airdrops.keys()]
