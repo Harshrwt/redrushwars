@@ -47,13 +47,16 @@ default_user = {
                 "airdrops": {
                     "Arcade": default_card_stats,
                 },
-                "defenses": {},
+                "defenses": {
+                    "Cannon": default_card_stats,
+                    "Mines": default_card_stats,
+                },
                 "commanders": {},
             },
             "active": {
                 "troops": {"Troopers": 0, "Pitcher": 0, "Shields": 0},
                 "airdrops": {"Arcade":0},
-                "defenses": {"Troopers": 2, "Pitcher": 1, "Shields": 1},
+                "defenses": {},
                 "commanders": {},
             },
             "stars": 0,
@@ -468,9 +471,12 @@ class RushWars(BaseCog):
                 return
             capacity = 1
 
+        else:
+            return await ctx.send(f"{card.title()} is not a valid attack card.")
+
         total_selected = self.total_selected(card, data)
         if total_selected >= capacity:
-            return await ctx.send(f"Chopper is already full. ({total_selected}/{capacity})")
+            return await ctx.send("Chopper is already full.")
 
         # check if user owns the card
         try:
@@ -672,7 +678,7 @@ class RushWars(BaseCog):
 
         total_selected = self.total_selected(card, data)
         if total_selected >= capacity:
-            return await ctx.send(f"No space for this unit. ({total_selected}/{capacity})")
+            return await ctx.send("No space for this unit.")
         
         # check if user owns the card
         try:
