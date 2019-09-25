@@ -887,7 +887,9 @@ class RushWars(BaseCog):
                             continue
             except FileNotFoundError:
                 log.exception("File not found.")
-                return
+                return ['file not found']
+            except Exception as ex:
+                return [ex]
         return cards_unlocked
         # # update cards to include newly unlocked cards
         # try:
