@@ -33,37 +33,37 @@ __author__ = "Snowsee"
 default_card_stats = (1, 1)
 
 default_user = {
-            "xp": 0,
-            "lvl": 1,
-            "hq": 1,
-            "chopper": 1,
-            "cards": {
-                "troops": {
-                    "Troopers": default_card_stats,
-                    "Pitcher": default_card_stats,
-                    "Shields": default_card_stats,
-                    "Sneaky Ninja": default_card_stats,  # only for testing, remove later
-                },
-                "airdrops": {
-                    "Arcade": default_card_stats,
-                },
-                "defenses": {
-                    "Cannon": default_card_stats,
-                    "Mines": default_card_stats,
-                },
-                "commanders": {},
-            },
-            "active": {
-                "troops": {"Troopers": 0, "Pitcher": 0, "Shields": 0},
-                "airdrops": {"Arcade": 0},
-                "defenses": {"Troopers": 0},
-                "commanders": {},
-            },
-            "stars": 0,
-            "keys": 5,
-            # "gold": 200,
-            "gems": 150,
-        }
+    "xp": 0,
+    "lvl": 1,
+    "hq": 1,
+    "chopper": 1,
+    "cards": {
+        "troops": {
+            "Troopers": default_card_stats,
+            "Pitcher": default_card_stats,
+            "Shields": default_card_stats,
+            "Sneaky Ninja": default_card_stats,  # only for testing, remove later
+        },
+        "airdrops": {
+            "Arcade": default_card_stats,
+        },
+        "defenses": {
+            "Cannon": default_card_stats,
+            "Mines": default_card_stats,
+        },
+        "commanders": {},
+    },
+    "active": {
+        "troops": {"Troopers": 0, "Pitcher": 0, "Shields": 0},
+        "airdrops": {"Arcade": 0},
+        "defenses": {"Troopers": 0},
+        "commanders": {},
+    },
+    "stars": 0,
+    "keys": 5,
+    # "gold": 200,
+    "gems": 150,
+}
 
 default_defenses = [
     {"Troopers": 4, "Pitcher": 0, "Shields": 0},
@@ -162,18 +162,18 @@ class RushWars(BaseCog):
             ability = airdrop_stats.Ability
             if ability == "Damage":
                 att += int(airdrop_stats.Value) * \
-                           float(airdrop_stats.Duration) * count
+                    float(airdrop_stats.Duration) * count
             elif ability == "Boost":
                 att += int(airdrop_stats.Value) * \
-                           float(airdrop_stats.Duration) * count
+                    float(airdrop_stats.Duration) * count
                 hp += int(airdrop_stats.Value) * \
-                          float(airdrop_stats.Duration) * count
+                    float(airdrop_stats.Duration) * count
             elif ability == "Heal":
                 hp += int(airdrop_stats.Value) * \
-                          float(airdrop_stats.Duration) * count
+                    float(airdrop_stats.Duration) * count
             elif ability in ["Invisibility", "Freeze"]:
                 def_att -= int(airdrop_stats.Value) * \
-                               float(airdrop_stats.Duration) * count
+                    float(airdrop_stats.Duration) * count
 
         if member is not None:
             try:
@@ -334,7 +334,7 @@ class RushWars(BaseCog):
 
     def card_search(self, name):
         files = ['troops.csv', 'airdrops.csv',
-            'defenses.csv', 'commanders.csv']
+                 'defenses.csv', 'commanders.csv']
         for file in files:
             fp = self.path / file
             try:
@@ -552,7 +552,7 @@ class RushWars(BaseCog):
         try:
             async with self.config.user(ctx.author).active() as active:
                 cards_selected = [active["troops"],
-                    active["airdrops"], active["commanders"]]
+                                  active["airdrops"], active["commanders"]]
         except:
             log.exception("Error with character sheet.")
             return
@@ -646,7 +646,7 @@ class RushWars(BaseCog):
         if not ctx.invoked_subcommand:
             try:
                 async with self.config.user(ctx.author).active() as active:
-                   defense = active["defenses"]
+                    defense = active["defenses"]
             except Exception as ex:
                 return await ctx.send(f"Error with character sheet!")
                 log.exception(f"Error with character sheet: {ex}!")
@@ -805,9 +805,9 @@ class RushWars(BaseCog):
                 return
         else:
             return await ctx.send("Reset cancelled by the user.")
-    
+
     @commands.command(name="sethq")
-    async def set_hq(self, ctx, lvl:int=None):
+    async def set_hq(self, ctx, lvl: int = None):
         await self.level_up_hq(ctx, lvl)
         await ctx.send("Done")
 
@@ -822,30 +822,35 @@ class RushWars(BaseCog):
                     data = cards[card_type]
 
                     type_emote = self.type_emotes(card_type.title())
-                    embed = discord.Embed(color=0xEE2222, title=f"{card_type.title()}")
-                    
+                    embed = discord.Embed(
+                        color=0xEE2222, title=f"{card_type.title()}")
+
                     for item in data.keys():
                         emote = self.card_emotes(item)
                         level = data[item][0]
                         found = data[item][1]
+                        if found < 1:
+                            found = "Not Found"
                         try:
-                            embed.add_field(name=f"{emote} `{item}`", value=f"Level: {level}\nFound: {found}")
+                            val_str = "<:RW_XP:625783207518011412> Level: {level}\n" \
+                                "<:RW_Cards:626415485327507465> Cards: {found}\n"
+                            embed.add_field(
+                                name=f"`{item}` {emote}", value=val_str)
                         except:
-                            embed.add_field(value=f"No {card_type} unlocked.")
+                            embed.add_field(name="No cards!",
+                                            value=f"No {card_type} unlocked.")
                     embeds.append(embed)
-                    # if card_str == "":
-                    #     card_str = f"No {card_type} unlocked."
                 await menu(ctx, embeds, DEFAULT_CONTROLS)
         except Exception as ex:
             log.exception(ex)
             return
-        await ctx.send(embed=embed)
-    
+
     @staticmethod
     def color_lookup(rarity):
-        colors = {"Common": 0xAE8F6F, "Rare": 0x74BD9C, "Epic": 0xB77AE0, "Commander": 0xF7EE85}
+        colors = {"Common": 0xAE8F6F, "Rare": 0x74BD9C,
+                  "Epic": 0xB77AE0, "Commander": 0xF7EE85}
         return colors[rarity]
-        
+
     @staticmethod
     def card_emotes(card_name):
         emotes = {
@@ -898,9 +903,9 @@ class RushWars(BaseCog):
             total += (number * card_space)
         return total
 
-    async def level_up_hq(self, ctx, lvl:int=None):
+    async def level_up_hq(self, ctx, lvl: int = None):
         """Function to handle HQ level ups."""
-        # get current hq level 
+        # get current hq level
         if lvl is None:
             hq = await self.config.user(ctx.author).hq() + 1
         else:
@@ -914,7 +919,7 @@ class RushWars(BaseCog):
             "commanders": []
         }
         files = ['troops.csv', 'airdrops.csv',
-            'defenses.csv', 'commanders.csv']
+                 'defenses.csv', 'commanders.csv']
         for file in files:
             fp = self.path / file
             try:
@@ -929,7 +934,7 @@ class RushWars(BaseCog):
                 log.exception("File not found.")
                 return
             except Exception as ex:
-                return 
+                return
         # return cards_unlocked
         # update cards to include newly unlocked cards
         try:
@@ -937,7 +942,7 @@ class RushWars(BaseCog):
                 for card_type in ['troops', 'airdrops', 'defenses', 'commanders']:
                     for card in cards_unlocked[card_type]:
                         if card not in list(cards[card_type]):
-                            cards[card_type][card] = (1,0)
+                            cards[card_type][card] = (1, 0)
         except Exception as ex:
             log.exception(ex)
             return
