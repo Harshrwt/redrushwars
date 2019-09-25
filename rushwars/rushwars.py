@@ -829,13 +829,15 @@ class RushWars(BaseCog):
                         emote = self.card_emotes(item)
                         level = data[item][0]
                         found = data[item][1]
-                        if found < 1:
-                            found = "Not Found"
+                        # if found < 1:
+                        #     found = "Not Found"
+                        # else:
+                        #     found = str(found) + " Cards"
                         try:
-                            val_str = f"Level: {level}\n" \
-                                f"Cards: {found}\n"
+                            val_str = f"<:RW_Medal:625783202849619998>`\u283F{level}`Level" \
+                                f" | <:RW_Cards:626422103092232192>`\u284F{found}\n"
                             embed.add_field(
-                                name=f"`{item}` {emote}", value=val_str)
+                                name=f"{item.upper()} {emote}", value=val_str)
                         except:
                             embed.add_field(name="No cards!",
                                             value=f"No {card_type} unlocked.")
