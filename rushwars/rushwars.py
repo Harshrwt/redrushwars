@@ -817,20 +817,25 @@ class RushWars(BaseCog):
         embed = discord.Embed(colour=0x999966, title="Cards")
         try:
             async with self.config.user(ctx.author).cards() as cards:
+                embeds = []
                 for card_type in ['troops', 'airdrops', 'defenses', 'commanders']:
-                    card_str = ""
                     data = cards[card_type]
+
+                    type_emote = self.type_emotes(card_type.title())
+                    embed = discord.Embed(color=0xEE2222, title=f"{card_type.title()}")
+                    
                     for item in data.keys():
                         emote = self.card_emotes(item)
                         level = data[item][0]
                         found = data[item][1]
-                        card_str += f"{emote} {item}\nLevel: {level}\t\tFound: {found}\n"
-                    
-                    if card_str == "":
-                        card_str = f"No {card_type} unlocked."
-                    
-                    type_emote = self.type_emotes(card_type.title())
-                    embed.add_field(name=f"`{card_type.upper()}` {type_emote}", value=card_str)
+                        try:
+                            embed.add_field(name=f"{emote} `{item}`", value=f"Level: {level}\nFound: {found}")
+                        except:
+                            pass
+                        embeds.append(embed)
+                    # if card_str == "":
+                    #     card_str = f"No {card_type} unlocked."
+                await menu(ctx, embeds, DEFAULT_CONTROLS)
         except Exception as ex:
             log.exception(ex)
             return
