@@ -824,7 +824,7 @@ class RushWars(BaseCog):
                         emote = self.card_emotes(item)
                         level = data[item][0]
                         found = data[item][1]
-                        card_str += f"{emote} {item}\nLevel: {level}\tFound: {found}\n\n"
+                        card_str += f"{emote} {item}\nLevel: {level}\t\tFound: {found}\n"
                     
                     if card_str == "":
                         card_str = f"No {card_type} unlocked."
