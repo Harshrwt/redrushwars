@@ -26,7 +26,7 @@ BaseCog = getattr(commands, "Cog", object)
 log = logging.getLogger("red.rushwars")
 listener = getattr(commands.Cog, "listener", None)
 
-__version__ = "0.0.1"
+__version__ = "0.1.0"
 __author__ = "Snowsee"
 
 # (level, number of cards)
@@ -42,7 +42,6 @@ default_user = {
             "Troopers": default_card_stats,
             "Pitcher": default_card_stats,
             "Shields": default_card_stats,
-            "Sneaky Ninja": default_card_stats,  # only for testing, remove later
         },
         "airdrops": {
             "Arcade": default_card_stats,
@@ -482,8 +481,9 @@ class RushWars(BaseCog):
         owns = False
         for item in owned.keys():
             if card == item:
-                owns = True
-                break
+                if item[owned][1] >= 1:
+                    owns = True
+                    break
 
         if owns:
             if total_selected + (number * card_space) > capacity:
@@ -689,8 +689,9 @@ class RushWars(BaseCog):
         owns = False
         for item in owned.keys():
             if card == item:
-                owns = True
-                break
+                if item[owned][1] >= 1:
+                    owns = True
+                    break
 
         if owns:
             if total_selected + (number * card_space) > capacity:
