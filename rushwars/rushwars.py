@@ -617,7 +617,7 @@ class RushWars(BaseCog):
         if not ctx.invoked_subcommand:
             try:
                 async with self.config.user(ctx.author).active() as active:
-                   defense = active["defense"]
+                   defense = active["defenses"]
             except Exception as ex:
                 return await ctx.send(f"Error with character sheet!")
                 log.exception(f"Error with character sheet: {ex}!")
