@@ -821,13 +821,16 @@ class RushWars(BaseCog):
                     card_str = ""
                     data = cards[card_type]
                     for item in data.keys():
-                        card_str += f"{item}\n"
+                        emote = self.card_emotes(item)
+                        level = data[item][0]
+                        found = data[item][1]
+                        card_str += f"{emote} {item}\nLevel: {level}\tFound: {found}\n\n"
                     
                     if card_str == "":
                         card_str = f"No {card_type} unlocked."
                     
-                    emote = self.type_emotes(card_type.title())
-                    embed.add_field(name=f"`{card_type.upper()}` {emote}", value=card_str)
+                    type_emote = self.type_emotes(card_type.title())
+                    embed.add_field(name=f"`{card_type.upper()}` {type_emote}", value=card_str)
         except Exception as ex:
             log.exception(ex)
             return
@@ -854,7 +857,10 @@ class RushWars(BaseCog):
             "Satellite": "<:Satellite:626010083406643200>",
             "Cannon": "<:Cannon:123432123>"
         }
-        return emotes[card_name]
+        try:
+            return emotes[card_name]
+        except:
+            return emotes["Troopers"]
 
     @staticmethod
     def type_emotes(card_type):
