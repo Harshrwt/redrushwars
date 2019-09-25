@@ -821,9 +821,9 @@ class RushWars(BaseCog):
                 for card_type in ['troops', 'airdrops', 'defenses', 'commanders']:
                     data = cards[card_type]
                     for item in data.keys():
-                        card_str += f"{item}\n"
+                        card_str += f"{item}\nLevel: {data[item][0]}\nFound: {data[item][1]}\n\n"
                     emote = self.type_emotes(card_type.title())
-                    embed.add_field(name=f"`{card_str.upper()} {emote}`", value=card_str)
+                embed.add_field(name=f"`{card_str.upper()} {emote}`", value=card_str)
         except Exception as ex:
             log.exception(ex)
             return
