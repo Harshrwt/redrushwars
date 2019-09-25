@@ -834,8 +834,8 @@ class RushWars(BaseCog):
                         # else:
                         #     found = str(found) + " Cards"
                         try:
-                            val_str = f"<:RW_Medal:625783202849619998>`\u283F{level}`Level" \
-                                f" `|` Cards`\u283F{found}`<:RW_Cards:626422103092232192>\n"
+                            val_str = f"<:RW_Medal:625783202849619998>`{level}\u283FLevel`" \
+                                f" | <:RW_Cards:626422103092232192>`{found}\u283FCards`\n"
                             embed.add_field(
                                 name=f"{item.upper()} {emote}", value=val_str)
                         except:
