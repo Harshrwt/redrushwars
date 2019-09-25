@@ -249,7 +249,6 @@ class RushWars(BaseCog):
 
         # battle logic 
         res = hp/def_attps - def_hp/attps
-        await ctx.send(res)
         if res > 8:
             stars = 3
         elif res > 4:
