@@ -677,7 +677,7 @@ class RushWars(BaseCog):
         capacity = chopper_capacity[chopperLvl][2]
 
         total_selected = self.total_selected(card, data)
-        if total_selected > capacity:
+        if total_selected >= capacity:
             return await ctx.send(f"No space for this unit. {total_selected}")
         
         # check if user owns the card
@@ -823,7 +823,7 @@ class RushWars(BaseCog):
     def total_selected(self, card, data):
         total = 0
         for item in data.keys():
-            card_info = self.card_search(card)
+            card_info = self.card_search(item)
             card_space = int(card_info[1].Space)
 
             number = data[item]
