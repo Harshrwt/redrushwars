@@ -678,7 +678,7 @@ class RushWars(BaseCog):
 
         total_selected = self.total_selected(card, data)
         if total_selected >= capacity:
-            return await ctx.send("No space for this unit.")
+            return await ctx.send(f"No space for this unit. {total_selected}")
         
         # check if user owns the card
         try:
