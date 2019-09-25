@@ -822,6 +822,10 @@ class RushWars(BaseCog):
                     data = cards[card_type]
                     for item in data.keys():
                         card_str += f"{item}\n"
+                    
+                    if card_str == "":
+                        card_str = f"No {card_type} unlocked."
+                    
                     emote = self.type_emotes(card_type.title())
                     embed.add_field(name=f"`{card_str.upper()} {emote}`", value=card_str)
         except Exception as ex:
