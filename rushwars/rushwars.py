@@ -139,42 +139,6 @@ class RushWars(BaseCog):
             return await ctx.send(f"Error with character sheet!")
             log.exception(f"Error with character sheet: {ex}!")
 
-        hp = 0
-        att = 0
-        def_hp = 0
-        def_att = 0
-
-        sel_trp = sum(troops.values())
-        sel_ardp = sum(airdrops.values())
-
-        if sel_trp == 0 or sel_trp == 0:
-            return await ctx.send("Please add items to squad! Help: `[p]help squad`")
-
-        for troop in troops.keys():
-            troop_stats = self.card_search(troop)[1]
-            count = troops[troop]
-            hp += int(troop_stats.Hp) * count
-            att += int(troop_stats.Att) * count
-
-        for airdrop in airdrops.keys():
-            airdrop_stats = self.card_search(airdrop)[1]
-            count = airdrops[airdrop]
-            ability = airdrop_stats.Ability
-            if ability == "Damage":
-                att += int(airdrop_stats.Value) * \
-                    float(airdrop_stats.Duration) * count
-            elif ability == "Boost":
-                att += int(airdrop_stats.Value) * \
-                    float(airdrop_stats.Duration) * count
-                hp += int(airdrop_stats.Value) * \
-                    float(airdrop_stats.Duration) * count
-            elif ability == "Heal":
-                hp += int(airdrop_stats.Value) * \
-                    float(airdrop_stats.Duration) * count
-            elif ability in ["Invisibility", "Freeze"]:
-                def_att -= int(airdrop_stats.Value) * \
-                    float(airdrop_stats.Duration) * count
-
         if member is not None:
             try:
                 async with self.config.user(member).active() as active:
@@ -187,40 +151,77 @@ class RushWars(BaseCog):
             defenses = random.choice(default_defenses)
             opponent = "Computer"
 
+        hp = 0
+        attps = 0
+        def_hp = 0
+        def_attps = 0
+
+        sel_trp = sum(troops.values())
+        sel_ardp = sum(airdrops.values())
+
+        if sel_trp == 0 or sel_trp == 0:
+            return await ctx.send("Please add items to squad! Help: `[p]help squad`")
+
+        for troop in troops.keys():
+            stats = self.card_search(troop)[1]
+            level = await self.rush_card_level(ctx, troop.title(), "troops")
+            
+            lvl_stats = [int(stats.Hp), int(stats.Att)]
+            upd_stats = self.card_level(
+                level, lvl_stats, stats.Rarity, "troops")
+            
+            count = troops[troop]
+            
+            hp += upd_stats[0] * count
+            att = upd_stats[1] * count
+            attps += (att/stats.AttSpeed)
+
+        for airdrop in airdrops.keys():
+            stats = self.card_search(airdrop)[1]
+            level = await self.rush_card_level(ctx, airdrop.title(), "airdrops")
+            
+            lvl_stats = [int(stats.Duration)]
+            upd_stats = self.card_level(
+                level, lvl_stats, stats.Rarity, "airdrops")
+            
+            count = airdrops[airdrop]
+            
+            duration = upd_stats[1] * count
+
+            ability = stats.Ability
+            if ability == "Damage":
+                attps += int(stats.Value) * duration
+            elif ability == "Boost":
+                attps += int(stats.Value) * duration
+                hp += int(stats.Value) * duration
+            elif ability == "Heal":
+                hp += int(stats.Value) * duration
+            elif ability in ["Invisibility", "Freeze"]:
+                def_attps -= int(stats.Value) * duration
+
         for defense in defenses.keys():
-            defense_stats = self.card_search(defense)[1]
+            stats = self.card_search(defense)[1]
+            level = await self.rush_card_level(ctx, defense.title(), "defenses")
+            
+            lvl_stats = [int(stats.Hp), int(stats.Att)]
+            upd_stats = self.card_level(
+                level, lvl_stats, stats.Rarity, "defenses")
+            
             count = defenses[defense]
-            def_hp += int(defense_stats.Hp) * count
-            def_att += int(defense_stats.Att) * count
+            
+            def_hp += upd_stats[0] * count
+            def_att = upd_stats[1] * count
+            def_attps += (def_att/stats.AttSpeed)
 
         troop = [(troop, troops[troop]) for troop in troops.keys()]
         airdrop = [(airdrop, airdrops[airdrop]) for airdrop in airdrops.keys()]
         defense = [(defense, defenses[defense]) for defense in defenses.keys()]
 
         attack_str = "`TROOPS`\n"
-        defense_str = ""
-        for item in troop:
-            card_name = item[0]
-            card_emote = self.card_emotes(card_name)
-            count = item[1]
-            if count <= 0:
-                continue
-            attack_str += f"{card_emote} {card_name} x{count}\n"
+        attack_str += self.rush_strings(troop)
         attack_str += "`AIRDROPS`\n"
-        for item in airdrop:
-            card_name = item[0]
-            card_emote = self.card_emotes(card_name)
-            count = item[1]
-            if count <= 0:
-                continue
-            attack_str += f"{card_emote} {card_name} x{count}\n"
-        for item in defense:
-            card_name = item[0]
-            card_emote = self.card_emotes(card_name)
-            count = item[1]
-            if count <= 0:
-                continue
-            defense_str += f"{card_emote} {card_name} x{count}\n"
+        attack_str += self.rush_strings(airdrop)
+        defense_str = self.rush_strings(defense)
 
         embed = discord.Embed(colour=0x999966, title="Battle Info",
                               description="Will you get mega rich after this battle?")
@@ -232,9 +233,22 @@ class RushWars(BaseCog):
             name="Defense <:RW_Defenses:626339085501333504>", value=defense_str)
         await ctx.send(embed=embed)
 
-        if def_hp/att < hp/def_att:
-            await ctx.send("You win!")
+        # battle logic 
+        res = hp/def_attps - def_hp/attps
+        if res > 10:
+            stars = 3
+        elif res > 5:
+            stars = 2
+        elif res > 0:
+            stars = 1
         else:
+            stars = 0
+        
+        if stars > 0:
+            victory = True
+            await ctx.send(f"You win! Stars: {stars}")
+        else:
+            victory = False
             await ctx.send("You lose!")
 
     @commands.command()
@@ -331,66 +345,6 @@ class RushWars(BaseCog):
         embed.add_field(
             name="HQ Level <:RW_HQ:625787531664818224>", value=card.UnlockLvl)
         await ctx.send(embed=embed)
-
-    def card_search(self, name):
-        files = ['troops.csv', 'airdrops.csv',
-                 'defenses.csv', 'commanders.csv']
-        for file in files:
-            fp = self.path / file
-            try:
-                with fp.open('rt', encoding='iso-8859-15') as f:
-                    reader = csv.DictReader(f, delimiter=',')
-                    for row in reader:
-                        if row['Name'] == name:
-                            Card = namedtuple('Name', reader.fieldnames)
-                            card_type = file.split('.')[0]
-                            # remove trailing "s"
-                            card_type = card_type[:-1]
-                            return (card_type, Card(**row))
-                        else:
-                            continue
-            except FileNotFoundError:
-                log.exception(
-                    f"{file} file could not be found in Rush Wars data folder.")
-                continue
-
-    def card_targets(self, targets):
-        if targets == 0:
-            return "Ground"
-        elif targets == 1:
-            return "Air"
-        else:
-            return "Air & Ground"
-
-    def card_level(self, level, stats: list, rarity, card_type):
-        """Get stats by selected level"""
-
-        start = base_card_levels[rarity.lower()]
-
-        if level < start:
-            return start
-
-        level -= start - 1
-
-        new_stats = []
-
-        for stat in stats:
-            if stat != 0:
-                if card_type == 'airdrop':
-                    upgrader = 0.5
-                else:
-                    upgrader = stat/10
-                i = 1
-                while i < level:
-                    stat += upgrader
-                    i += 1
-                if card_type == 'airdrop':
-                    new_stats.append(stat)
-                else:
-                    new_stats.append(int(stat))
-            else:
-                new_stats.append(stat)
-        return new_stats
 
     @commands.group(name="squad", autohelp=False)
     async def _squad(self, ctx, member: Optional[discord.Member] = None):
@@ -847,6 +801,66 @@ class RushWars(BaseCog):
             log.exception(ex)
             return
 
+    def card_search(self, name):
+        files = ['troops.csv', 'airdrops.csv',
+                 'defenses.csv', 'commanders.csv']
+        for file in files:
+            fp = self.path / file
+            try:
+                with fp.open('rt', encoding='iso-8859-15') as f:
+                    reader = csv.DictReader(f, delimiter=',')
+                    for row in reader:
+                        if row['Name'] == name:
+                            Card = namedtuple('Name', reader.fieldnames)
+                            card_type = file.split('.')[0]
+                            # remove trailing "s"
+                            card_type = card_type[:-1]
+                            return (card_type, Card(**row))
+                        else:
+                            continue
+            except FileNotFoundError:
+                log.exception(
+                    f"{file} file could not be found in Rush Wars data folder.")
+                continue
+
+    def card_targets(self, targets):
+        if targets == 0:
+            return "Ground"
+        elif targets == 1:
+            return "Air"
+        else:
+            return "Air & Ground"
+
+    def card_level(self, level, stats: list, rarity, card_type):
+        """Get stats by selected level"""
+
+        start = base_card_levels[rarity.lower()]
+
+        if level < start:
+            return start
+
+        level -= start - 1
+
+        new_stats = []
+
+        for stat in stats:
+            if stat != 0:
+                if card_type == 'airdrop':
+                    upgrader = 0.5
+                else:
+                    upgrader = stat/10
+                i = 1
+                while i < level:
+                    stat += upgrader
+                    i += 1
+                if card_type == 'airdrop':
+                    new_stats.append(stat)
+                else:
+                    new_stats.append(int(stat))
+            else:
+                new_stats.append(stat)
+        return new_stats
+    
     @staticmethod
     def color_lookup(rarity):
         colors = {"Common": 0xAE8F6F, "Rare": 0x74BD9C,
@@ -948,3 +962,22 @@ class RushWars(BaseCog):
         except Exception as ex:
             log.exception(ex)
             return
+
+    def rush_strings(self, data):
+        """To return strings containing card information."""
+        for item in data:
+            card_name = item[0]
+            card_emote = self.card_emotes(card_name)
+            count = item[1]
+            if count <= 0:
+                continue
+            return f"{card_emote} {card_name} x{count}\n"
+
+    async def rush_card_level(self, ctx, card_name, card_type):
+        """Return the level of card user owns."""
+        try:
+            async with self.config.user(ctx.author).cards() as cards:
+                data = cards[card_type]
+                for item in data.keys():
+                    if card_name == item:
+                        return data[item][0]
