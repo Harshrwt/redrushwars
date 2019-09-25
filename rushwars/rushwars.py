@@ -470,7 +470,7 @@ class RushWars(BaseCog):
 
         total_selected = self.total_selected(card, data)
         if total_selected >= capacity:
-            return await ctx.send("Chopper is already full.")
+            return await ctx.send(f"Chopper is already full. Units: {total_selected}")
 
         # check if user owns the card
         try:
@@ -608,7 +608,7 @@ class RushWars(BaseCog):
                     return await ctx.send("Reset cancelled by the user.")
 
     @commands.group(name="defense", autohelp=False)
-    async def _defense(self,ctx):
+    async def _defense(self, ctx):
         """Lookup your defense. Subcommands give more defense functions."""
 
         if not ctx.invoked_subcommand:
