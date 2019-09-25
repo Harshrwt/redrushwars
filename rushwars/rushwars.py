@@ -165,22 +165,13 @@ class RushWars(BaseCog):
         for troop in troops.keys():
             stats = self.card_search(troop)[1]
             level = await self.rush_card_level(ctx, troop.title(), "troops")
-            await ctx.send(level)
-            await ctx.send(type(level))
             lvl_stats = [int(stats.Hp), int(stats.Att)]
             upd_stats = self.card_level(
                 level, lvl_stats, stats.Rarity, "troops")
-
-            # return await ctx.send(type(upd_stats))
             
             count = troops[troop]
-            # return await ctx.send(type(count))
             
-            # return await ctx.send(upd_stats[0])
-            try:
-                hp = hp + (upd_stats[0] * 3)
-            except:
-                return await ctx.send(f"{upd_stats} {type(upd_stats)}")
+            hp += upd_stats[0] * count
             # return await ctx.send(hp)
             att = upd_stats[1] * count
             attps += (att/float(stats.AttSpeed))
@@ -545,6 +536,8 @@ class RushWars(BaseCog):
                         if card == sqd_card:
                             if data[sqd_card] >= number:
                                 data[sqd_card] -= number
+                                if data[sqd_card] == 0:
+                                    del data[sqd_card]
                                 break
                             else:
                                 return await ctx.send(f"Number of {card.title()} cards in squad are less than {number}.")
