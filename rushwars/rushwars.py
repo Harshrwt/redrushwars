@@ -892,7 +892,7 @@ class RushWars(BaseCog):
                 return
             except Exception as ex:
                 return 
-        return card_type
+        return cards_unlocked
         # update cards to include newly unlocked cards
         # try:
         #     async with self.config.user(ctx.author).cards() as cards:
