@@ -170,11 +170,11 @@ class RushWars(BaseCog):
             upd_stats = self.card_level(
                 level, lvl_stats, stats.Rarity, "troops")
 
-            return await ctx.send(upd_stats)
+            # return await ctx.send(upd_stats)
             
             count = troops[troop]
             
-            hp += upd_stats[0] * count
+            hp += (upd_stats[0]) * count
             att = upd_stats[1] * count
             attps += (att/float(stats.AttSpeed))
 
