@@ -608,7 +608,7 @@ class RushWars(BaseCog):
                     return await ctx.send("Reset cancelled by the user.")
 
     @commands.group(name="defense", autohelp=False)
-    async def _squad(self,ctx):
+    async def _defense(self,ctx):
         """Lookup your defense. Subcommands give more defense functions. 
 
         save:  Save current squad - `[p]squad save (squad_name)`
