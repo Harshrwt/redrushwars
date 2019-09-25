@@ -66,12 +66,12 @@ default_user = {
 }
 
 default_defenses = [
-    {"Troopers": 4, "Pitcher": 0, "Shields": 0},
-    {"Troopers": 0, "Pitcher": 4, "Shields": 0},
-    {"Troopers": 0, "Pitcher": 0, "Shields": 4},
-    {"Troopers": 2, "Pitcher": 2, "Shields": 0},
-    {"Troopers": 1, "Pitcher": 0, "Shields": 3},
-    {"Troopers": 0, "Pitcher": 3, "Shields": 1}
+    {"Troopers": 4},
+    {"Pitcher": 4},
+    {"Shields": 4},
+    {"Troopers": 2, "Pitcher": 2,},
+    {"Troopers": 1, "Shields": 3},
+    {"Pitcher": 3, "Shields": 1}
 ]
 
 base_card_levels = {
