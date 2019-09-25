@@ -827,7 +827,7 @@ class RushWars(BaseCog):
         except Exception as ex:
             log.exception(ex)
             return
-        await ctx.send(embed)
+        await ctx.send(embed=embed)
     
     @staticmethod
     def color_lookup(rarity):
