@@ -789,7 +789,7 @@ class RushWars(BaseCog):
 
     @_defense.command(name="reset")
     async def defense_reset(self, ctx):
-         """Remove all cards from defense: `[p]defense reset`"""
+        """Remove all cards from defense: `[p]defense reset`"""
         msg = await ctx.send(f"Are you sure you want to reset your defense?")
         start_adding_reactions(msg, ReactionPredicate.YES_OR_NO_EMOJIS)
 
@@ -805,6 +805,11 @@ class RushWars(BaseCog):
                 return
         else:
             return await ctx.send("Reset cancelled by the user.")
+    
+    @commands.command()
+    async def set_hq(self, ctx, lvl):
+        unlocked = self.level_up_hq(ctx, lvl)
+        return await ctx.send(unlocked)
     
     @staticmethod
     def color_lookup(rarity):
@@ -850,23 +855,6 @@ class RushWars(BaseCog):
         }
         return emotes[airdrop_ability]
 
-    def card_exist(self, card_name):
-        files = ['troops.csv', 'airdrops.csv', 'defenses.csv', 'commanders.csv']
-        for file in files: 
-            fp = self.path / file
-            try:
-                with fp.open('rt', encoding='iso-8859-15') as f:
-                    reader = csv.DictReader(f, delimiter=',')
-                    for row in reader:
-                        if row['Name'] == card_name:
-                            card_type = file.split('.')[0]
-                            return card_type
-                        else:
-                            continue
-            except FileNotFoundError:
-                log.exception(f"{file} file could not be found in Rush Wars data folder.")
-                continue
-
     def total_selected(self, card, data):
         total = 0
         for item in data.keys():
@@ -876,3 +864,31 @@ class RushWars(BaseCog):
             number = data[item]
             total += (number * card_space)
         return total
+
+    async def level_up_hq(self, ctx, lvl):
+        """Function to handle HQ level ups."""
+        # get current hq level 
+        # old_hq = await self.config.user(ctx.author).hq()
+        new_hq = lvl
+
+        # check which cards are unlocked at the new HQ level
+        cards_unlocked = []
+        files = ['troops.csv', 'airdrops.csv',
+            'defenses.csv', 'commanders.csv']
+        for file in files:
+            fp = self.path / file
+            try:
+                with fp.open('rt', encoding='iso-8859-15') as f:
+                    reader = csv.DictReader(f, delimiter=',')
+                    for row in reader:
+                        if row['UnlockLvl'] == new_hq:
+                            cards_unlocked.append(row['Name'])
+                            continue
+        return cards_unlocked
+        # # update cards to include newly unlocked cards
+        # try:
+        #     async with self.config.user(ctx.author).active() as active:
+        #         pass
+        # except Exception as ex:
+        #     log.exception(ex)
+        #     return
