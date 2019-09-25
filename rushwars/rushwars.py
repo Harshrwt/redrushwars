@@ -55,7 +55,7 @@ default_user = {
             },
             "active": {
                 "troops": {"Troopers": 0, "Pitcher": 0, "Shields": 0},
-                "airdrops": {"Arcade":0},
+                "airdrops": {"Arcade": 0},
                 "defenses": {"Troopers": 0},
                 "commanders": {},
             },
@@ -95,11 +95,6 @@ chopper_capacity = {
     8: (10, 2, 13)
 }
 
-TROOPS: dict = None
-AIRDROPS: dict = None
-DEFENSES: dict = None
-COMMANDERS: dict = None
-
 
 class RushWars(BaseCog):
     """Simulate Rush Wars"""
@@ -120,23 +115,23 @@ class RushWars(BaseCog):
     @rushwars.command()
     async def version(self, ctx):
         """Display running version of Rush Wars cog
-        
+
             Returns:
                 Text output of your installed version of Rush Wars.
         """
         await ctx.send(f"You are running Rush Wars version {__version__}")
 
     @commands.command()
-    async def rush(self, ctx, *, member:discord.Member=None):
+    async def rush(self, ctx, *, member: discord.Member = None):
         """Attack a base!"""
 
         if member is not None:
             if member.id == ctx.author.id:
                 return await ctx.send("You can't battle against yourself!")
-        
+
         try:
             async with self.config.user(ctx.author).active() as active:
-                troops =  active["troops"]
+                troops = active["troops"]
                 airdrops = active["airdrops"]
                 # commanders = active["commanders"]
                 player = ctx.author.name
@@ -166,14 +161,19 @@ class RushWars(BaseCog):
             count = airdrops[airdrop]
             ability = airdrop_stats.Ability
             if ability == "Damage":
-                att += int(airdrop_stats.Value) * float(airdrop_stats.Duration) * count
+                att += int(airdrop_stats.Value) * \
+                           float(airdrop_stats.Duration) * count
             elif ability == "Boost":
-                att += int(airdrop_stats.Value) * float(airdrop_stats.Duration) * count
-                hp += int(airdrop_stats.Value) * float(airdrop_stats.Duration) * count
+                att += int(airdrop_stats.Value) * \
+                           float(airdrop_stats.Duration) * count
+                hp += int(airdrop_stats.Value) * \
+                          float(airdrop_stats.Duration) * count
             elif ability == "Heal":
-                hp += int(airdrop_stats.Value) * float(airdrop_stats.Duration) * count
+                hp += int(airdrop_stats.Value) * \
+                          float(airdrop_stats.Duration) * count
             elif ability in ["Invisibility", "Freeze"]:
-                def_att -= int(airdrop_stats.Value) * float(airdrop_stats.Duration) * count
+                def_att -= int(airdrop_stats.Value) * \
+                               float(airdrop_stats.Duration) * count
 
         if member is not None:
             try:
@@ -222,10 +222,14 @@ class RushWars(BaseCog):
                 continue
             defense_str += f"{card_emote} {card_name} x{count}\n"
 
-        embed = discord.Embed(colour=0x999966, title="Battle Info", description="Will you get mega rich after this battle?")
-        embed.set_author(name=f"{player} vs {opponent}", icon_url="https://cdn.discordapp.com/attachments/622323508755693581/626058519929684027/Leaderboard.png")
-        embed.add_field(name="Attack <:RW_Attck:625783202836905984>", value=attack_str)
-        embed.add_field(name="Defense <:RW_Defenses:626339085501333504>", value=defense_str)
+        embed = discord.Embed(colour=0x999966, title="Battle Info",
+                              description="Will you get mega rich after this battle?")
+        embed.set_author(name=f"{player} vs {opponent}",
+                         icon_url="https://cdn.discordapp.com/attachments/622323508755693581/626058519929684027/Leaderboard.png")
+        embed.add_field(
+            name="Attack <:RW_Attck:625783202836905984>", value=attack_str)
+        embed.add_field(
+            name="Defense <:RW_Defenses:626339085501333504>", value=defense_str)
         await ctx.send(embed=embed)
 
         if def_hp/att < hp/def_att:
@@ -234,7 +238,7 @@ class RushWars(BaseCog):
             await ctx.send("You lose!")
 
     @commands.command()
-    async def card(self, ctx, card_name: str, level:int=None):
+    async def card(self, ctx, card_name: str, level: int = None):
         """Search for a card in the Rush Wars universe.
             Examples:
                 `[p]card shields`
@@ -247,7 +251,7 @@ class RushWars(BaseCog):
         data = self.card_search(card_name.title())
         if data is None:
             return await ctx.send("Card with that name could not be found.")
-        
+
         card_type = data[0]
         card = data[1]
 
@@ -264,14 +268,17 @@ class RushWars(BaseCog):
         if level is None:
             level = base_card_levels[(card.Rarity).lower()]
 
-        embed = discord.Embed(colour=color, title=card.Name, description=description, url=url)
+        embed = discord.Embed(colour=color, title=card.Name,
+                              description=description, url=url)
         embed.set_thumbnail(url=thumbnail_url)
-        embed.add_field(name="Level <:RW_Level:625788888480350216>", value=level)
+        embed.add_field(
+            name="Level <:RW_Level:625788888480350216>", value=level)
 
         if card_type == 'troop' or card_type == 'defense':
             lvl_stats = [int(card.Hp), int(card.Att)]
-            upd_stats = self.card_level(level, lvl_stats, card.Rarity, card_type)
-        
+            upd_stats = self.card_level(
+                level, lvl_stats, card.Rarity, card_type)
+
             if isinstance(upd_stats, int):
                 await ctx.send((f"{card.Rarity} starts at level {upd_stats}! Showing level {upd_stats} stats..."))
                 level = upd_stats
@@ -281,20 +288,29 @@ class RushWars(BaseCog):
 
             dps = int(upd_stats[1]/float(card.AttSpeed))
 
-            embed.add_field(name="Health <:RW_Health:625786278058917898>", value=upd_stats[0])
-            embed.add_field(name="Damage <:RW_Damage:625786276938907659>", value=upd_stats[1])
-            embed.add_field(name="Damage per second <:RW_DPS:625786277903466498>", value=dps)
+            embed.add_field(
+                name="Health <:RW_Health:625786278058917898>", value=upd_stats[0])
+            embed.add_field(
+                name="Damage <:RW_Damage:625786276938907659>", value=upd_stats[1])
+            embed.add_field(
+                name="Damage per second <:RW_DPS:625786277903466498>", value=dps)
             if card_type == 'troop':
-                embed.add_field(name="Squad Size <:RW_Count:625786275802382347>", value=card.Count)
-                embed.add_field(name="Space <:RW_Space:625783199670206486>", value=card.Space)
+                embed.add_field(
+                    name="Squad Size <:RW_Count:625786275802382347>", value=card.Count)
+                embed.add_field(
+                    name="Space <:RW_Space:625783199670206486>", value=card.Space)
             else:
-                embed.add_field(name="Space <:RW_Defense:626338600467824660>", value=card.Space)
-            embed.add_field(name="Targets <:RW_Targets:625786278096535574>", value=target)
-            embed.add_field(name="Attack Speed <:RW_AttSpeed:625787097709543427>", value=f"{card.AttSpeed}s")
-        
+                embed.add_field(
+                    name="Space <:RW_Defense:626338600467824660>", value=card.Space)
+            embed.add_field(
+                name="Targets <:RW_Targets:625786278096535574>", value=target)
+            embed.add_field(
+                name="Attack Speed <:RW_AttSpeed:625787097709543427>", value=f"{card.AttSpeed}s")
+
         elif card_type == 'airdrop':
             lvl_stats = [float(card.Duration)]
-            upd_stats = self.card_level(level, lvl_stats, card.Rarity, card_type)
+            upd_stats = self.card_level(
+                level, lvl_stats, card.Rarity, card_type)
 
             if isinstance(upd_stats, int):
                 await ctx.send((f"{card.Rarity} starts at level {upd_stats}! Showing level {upd_stats} stats..."))
@@ -303,17 +319,23 @@ class RushWars(BaseCog):
 
             value_emote = self.airdrop_value_emotes(card.Ability)
 
-            embed.add_field(name=f"{card.Ability} {value_emote}", value=card.Value)
-            embed.add_field(name="Duration <:Duration:626042235753857034>", value=str(upd_stats[0])+"s")
-            embed.add_field(name="Space <:RW_Airdrop:626000292810588164>", value=card.Space)
-            
-        embed.add_field(name="Rarity <:RW_Rarity:625783200983154701>", value=card.Rarity)
-        embed.add_field(name="HQ Level <:RW_HQ:625787531664818224>", value=card.UnlockLvl)
+            embed.add_field(
+                name=f"{card.Ability} {value_emote}", value=card.Value)
+            embed.add_field(
+                name="Duration <:Duration:626042235753857034>", value=str(upd_stats[0])+"s")
+            embed.add_field(
+                name="Space <:RW_Airdrop:626000292810588164>", value=card.Space)
+
+        embed.add_field(
+            name="Rarity <:RW_Rarity:625783200983154701>", value=card.Rarity)
+        embed.add_field(
+            name="HQ Level <:RW_HQ:625787531664818224>", value=card.UnlockLvl)
         await ctx.send(embed=embed)
 
     def card_search(self, name):
-        files = ['troops.csv', 'airdrops.csv', 'defenses.csv', 'commanders.csv']
-        for file in files: 
+        files = ['troops.csv', 'airdrops.csv',
+            'defenses.csv', 'commanders.csv']
+        for file in files:
             fp = self.path / file
             try:
                 with fp.open('rt', encoding='iso-8859-15') as f:
@@ -328,7 +350,8 @@ class RushWars(BaseCog):
                         else:
                             continue
             except FileNotFoundError:
-                log.exception(f"{file} file could not be found in Rush Wars data folder.")
+                log.exception(
+                    f"{file} file could not be found in Rush Wars data folder.")
                 continue
 
     def card_targets(self, targets):
@@ -370,8 +393,8 @@ class RushWars(BaseCog):
         return new_stats
 
     @commands.group(name="squad", autohelp=False)
-    async def _squad(self,ctx, member: Optional[discord.Member]=None):
-        """Lookup your or any other server member's squad. Subcommands give more squad functions. 
+    async def _squad(self, ctx, member: Optional[discord.Member] = None):
+        """Lookup your or any other server member's squad. Subcommands give more squad functions.
 
         save:  Save current squad - `[p]squad save (squad_name)`
         """
@@ -384,16 +407,18 @@ class RushWars(BaseCog):
             try:
                 async with self.config.user(user).active() as active:
                     att_data = [
-                        active["troops"], 
-                        active["airdrops"], 
+                        active["troops"],
+                        active["airdrops"],
                         active["commanders"]
                     ]
             except Exception as ex:
                 return await ctx.send(f"Error with character sheet!")
                 log.exception(f"Error with character sheet: {ex}!")
 
-            embed = discord.Embed(colour=0x999966, title="Squad", description="Is your squad strong enough to kick butt and get mega rich?")
-            embed.set_author(name=ctx.author.name, icon_url="https://cdn.discordapp.com/attachments/626063027543736320/626063120263020574/squad-icon.png")
+            embed = discord.Embed(colour=0x999966, title="Squad",
+                                  description="Is your squad strong enough to kick butt and get mega rich?")
+            embed.set_author(
+                name=ctx.author.name, icon_url="https://cdn.discordapp.com/attachments/626063027543736320/626063120263020574/squad-icon.png")
             i = 1
             for items in att_data:
                 if i == 1:
@@ -415,25 +440,25 @@ class RushWars(BaseCog):
                         if count <= 0:
                             continue
                         sqd_str += f"{card_emote} `{card_name}` x{count}\n"
-                
+
                 if sqd_str == "":
                     sqd_str = f"No {kind.lower()} in squad."
                 type_emote = self.type_emotes(kind)
-                embed.add_field(name=f"{kind} {type_emote}", value=sqd_str)  
-    
+                embed.add_field(name=f"{kind} {type_emote}", value=sqd_str)
+
             await ctx.send(embed=embed)
-    
+
     @_squad.command(name="add")
     async def squad_add(self, ctx, card, number=1):
         """Add cards to your squad: `[p]squad add card [number]`
-            Examples: 
+            Examples:
                 `[p]squad add troopers`
                 `[p]squad add pitcher 5`
                 `[p]squad add "sneaky ninja"`
                 `[p]squad add "rocket trucks" 2`
-        """    
+        """
         card = card.title()
-        
+
         card_info = self.card_search(card)
 
         if not card_info:
@@ -491,7 +516,7 @@ class RushWars(BaseCog):
             if card == item:
                 owns = True
                 break
-        
+
         if owns:
             if total_selected + (number * card_space) > capacity:
                 return await ctx.send("Adding the card(s) will exceed chopper capacity.")
@@ -515,7 +540,7 @@ class RushWars(BaseCog):
     @_squad.command(name="remove")
     async def squad_remove(self, ctx, card, number=1):
         """Remove cards from squad: `[p]squad remove card [number]`
-        Examples: 
+        Examples:
                 `[p]squad remove troopers`
                 `[p]squad remove pitcher 5`
                 `[p]squad remove "sneaky ninja"`
@@ -523,14 +548,15 @@ class RushWars(BaseCog):
         """
         if number < 1:
             return await ctx.send("Must remove at least one card.")
-        
+
         try:
             async with self.config.user(ctx.author).active() as active:
-                cards_selected = [active["troops"], active["airdrops"], active["commanders"]]
+                cards_selected = [active["troops"],
+                    active["airdrops"], active["commanders"]]
         except:
             log.exception("Error with character sheet.")
             return
-        
+
         card = card.title()
 
         selected = False
@@ -545,7 +571,7 @@ class RushWars(BaseCog):
                     elif i == 2:
                         card_type = "airdrops"
                     elif i == 3:
-                        card_type = "commanders"     
+                        card_type = "commanders"
                     break
 
         if selected:
@@ -564,13 +590,13 @@ class RushWars(BaseCog):
                 return
         else:
             return await ctx.send(f"{card.title()} is not in squad.")
-        
+
         await ctx.send(f"{number} {card.title()} card(s) removed from squad.")
 
     @_squad.command(name="reset")
     async def squad_reset(self, ctx, card_type=None):
-        """Remove all cards of the optionally specified type. If no type is specified, all cards will be removed. 
-        Examples: 
+        """Remove all cards of the optionally specified type. If no type is specified, all cards will be removed.
+        Examples:
                 `[p]squad reset`
                 `[p]squad reset airdrops`
         """
@@ -582,7 +608,7 @@ class RushWars(BaseCog):
             pred = ReactionPredicate.yes_or_no(msg, ctx.author)
             await ctx.bot.wait_for("reaction_add", check=pred)
             if pred.result is True:
-                for category in categories: 
+                for category in categories:
                     try:
                         async with self.config.user(ctx.author).active() as active:
                             active[category] = {}
@@ -625,8 +651,10 @@ class RushWars(BaseCog):
                 return await ctx.send(f"Error with character sheet!")
                 log.exception(f"Error with character sheet: {ex}!")
 
-            embed = discord.Embed(colour=0x999966, title="Defense", description="Is your defense strong enough to protect your treasures?")
-            embed.set_author(name=ctx.author.name, icon_url="https://cdn.discordapp.com/attachments/626063027543736320/626338507958386697/Defense.png")
+            embed = discord.Embed(colour=0x999966, title="Defense",
+                                  description="Is your defense strong enough to protect your treasures?")
+            embed.set_author(
+                name=ctx.author.name, icon_url="https://cdn.discordapp.com/attachments/626063027543736320/626338507958386697/Defense.png")
             def_str = ""
             # card_info = [(item, items[item]) for item in items.keys()]
             for item in defense.keys():
@@ -637,25 +665,25 @@ class RushWars(BaseCog):
                     if count <= 0:
                         continue
                     def_str += f"{card_emote} `{card_name}` x{count}\n"
-            
+
             if def_str == "":
                 def_str = "No defenses in squad."
             emote = self.type_emotes("Defenses")
-            embed.add_field(name=f"Defenses {emote}", value=def_str)  
-    
+            embed.add_field(name=f"Defenses {emote}", value=def_str)
+
             await ctx.send(embed=embed)
-    
+
     @_defense.command(name="add")
     async def defense_add(self, ctx, card, number=1):
         """Add cards to your defense: `[p]defense add card [number]`
-            Examples: 
+            Examples:
                 `[p]defense add troopers`
                 `[p]defense add mortar 2`
                 `[p]defense add "rocket trap"`
                 `[p]defense add "cluster cake" 2`
-        """    
+        """
         card = card.title()
-        
+
         card_info = self.card_search(card)
 
         if not card_info:
@@ -667,7 +695,7 @@ class RushWars(BaseCog):
 
         card_space = int(card_info[1].Space)
         chopperLvl = await self.config.user(ctx.author).chopper()
-        
+
         try:
             async with self.config.user(ctx.author).active() as active:
                 data = active["defenses"]
@@ -679,7 +707,7 @@ class RushWars(BaseCog):
         total_selected = self.total_selected(card, data)
         if total_selected >= capacity:
             return await ctx.send(f"Defense is already full. Remove some cards first.")
-        
+
         # check if user owns the card
         try:
             async with self.config.user(ctx.author).cards() as cards:
@@ -693,7 +721,7 @@ class RushWars(BaseCog):
             if card == item:
                 owns = True
                 break
-        
+
         if owns:
             if total_selected + (number * card_space) > capacity:
                 return await ctx.send("Adding the card(s) will exceed defense capacity.")
@@ -713,11 +741,11 @@ class RushWars(BaseCog):
             return await ctx.send("You have not unlocked the card.")
 
         await ctx.send(f"{number} {card.title()} card(s) added to defense.")
-    
+
     @_defense.command(name="remove")
     async def defense_remove(self, ctx, card, number=1):
         """Remove cards from defense: `[p]defense remove card [number]`
-        Examples: 
+        Examples:
                 `[p]defense remove troopers`
                 `[p]defense remove pitcher 5`
                 `[p]defense remove "sneaky ninja"`
@@ -725,14 +753,14 @@ class RushWars(BaseCog):
         """
         if number < 1:
             return await ctx.send("Must remove at least one card.")
-        
+
         try:
             async with self.config.user(ctx.author).active() as active:
                 data = active["defenses"]
         except:
             log.exception("Error with character sheet.")
             return
-        
+
         card = card.title()
 
         selected = False
@@ -756,9 +784,9 @@ class RushWars(BaseCog):
                 return
         else:
             return await ctx.send(f"{card.title()} is not in defense.")
-        
+
         await ctx.send(f"{number} {card.title()} card(s) removed from defense.")
-    
+
     @_defense.command(name="reset")
     async def defense_reset(self, ctx):
          """Remove all cards from defense: `[p]defense reset`"""
