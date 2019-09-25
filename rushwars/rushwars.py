@@ -173,7 +173,7 @@ class RushWars(BaseCog):
             # return await ctx.send(type(upd_stats))
             
             count = troops[troop]
-            return await ctx.send(count)
+            return await ctx.send(type(count))
             
             # return await ctx.send(upd_stats[0])
             # hp = hp + (upd_stats[0] * 3)
