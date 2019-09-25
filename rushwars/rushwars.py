@@ -609,10 +609,7 @@ class RushWars(BaseCog):
 
     @commands.group(name="defense", autohelp=False)
     async def _defense(self,ctx):
-        """Lookup your defense. Subcommands give more defense functions. 
-
-        save:  Save current squad - `[p]squad save (squad_name)`
-        """
+        """Lookup your defense. Subcommands give more defense functions."""
 
         if not ctx.invoked_subcommand:
             try:
@@ -623,7 +620,7 @@ class RushWars(BaseCog):
                 log.exception(f"Error with character sheet: {ex}!")
 
             embed = discord.Embed(colour=0x999966, title="Defense", description="Is your defense strong enough to protect your treasures?")
-            embed.set_author(name=ctx.author.name, icon_url="https://cdn.discordapp.com/attachments/626063027543736320/626063120263020574/squad-icon.png")
+            embed.set_author(name=ctx.author.name, icon_url="https://cdn.discordapp.com/attachments/626063027543736320/626338507958386697/Defense.png")
             def_str = ""
             # card_info = [(item, items[item]) for item in items.keys()]
             for item in defense.keys():
