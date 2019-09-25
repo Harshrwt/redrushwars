@@ -30,7 +30,7 @@ __version__ = "0.0.1"
 __author__ = "Snowsee"
 
 # (level, number of cards)
-default_card_stats = (1, 0)
+default_card_stats = (1, 1)
 
 default_user = {
             "xp": 0,
@@ -866,13 +866,12 @@ class RushWars(BaseCog):
             total += (number * card_space)
         return total
 
-    def level_up_hq(self, ctx, lvl):
+    async def level_up_hq(self, ctx, lvl):
         """Function to handle HQ level ups."""
         # get current hq level 
-        old_hq = self.config.user(ctx.author).hq()
+        old_hq = await self.config.user(ctx.author).hq()
         new_hq = old_hq + 1
-        if new_hq is None:
-            return [new_hq]
+
         # check which cards are unlocked at the new HQ level
         cards_unlocked = []
         files = ['troops.csv', 'airdrops.csv',
@@ -889,7 +888,7 @@ class RushWars(BaseCog):
             except FileNotFoundError:
                 log.exception("File not found.")
                 return
-        return cards_unlocked
+        return await cards_unlocked
         # # update cards to include newly unlocked cards
         # try:
         #     async with self.config.user(ctx.author).active() as active:
