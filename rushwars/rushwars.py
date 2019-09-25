@@ -278,7 +278,7 @@ class RushWars(BaseCog):
                 level = upd_stats
                 upd_stats = lvl_stats
 
-            target = self.troop_targets(card.Targets)
+            target = self.card_targets(int(card.Targets))
 
             dps = int(upd_stats[1]/float(card.AttSpeed))
 
@@ -332,7 +332,7 @@ class RushWars(BaseCog):
                 log.exception(f"{file} file could not be found in Rush Wars data folder.")
                 continue
 
-    def troop_targets(self, targets):
+    def card_targets(self, targets):
         if targets == 0:
             return "Ground"
         elif targets == 1:
