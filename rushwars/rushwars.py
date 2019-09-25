@@ -808,7 +808,7 @@ class RushWars(BaseCog):
     
     @commands.command()
     async def set_hq(self, ctx, lvl):
-        unlocked = self.level_up_hq(ctx, lvl)
+        unlocked = await self.level_up_hq(ctx, lvl)
         for card in unlocked:
             await ctx.send(card)
     
@@ -888,7 +888,7 @@ class RushWars(BaseCog):
             except FileNotFoundError:
                 log.exception("File not found.")
                 return
-        return await cards_unlocked
+        return cards_unlocked
         # # update cards to include newly unlocked cards
         # try:
         #     async with self.config.user(ctx.author).active() as active:
