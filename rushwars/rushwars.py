@@ -974,7 +974,7 @@ class RushWars(BaseCog):
             card_name = item[0]
             card_emote = self.card_emotes(card_name)
             count = item[1]
-            if count <= 0:
+            if int(count) <= 0:
                 continue
             return f"{card_emote} {card_name} x{count}\n"
 
