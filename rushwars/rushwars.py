@@ -831,7 +831,7 @@ class RushWars(BaseCog):
                         try:
                             embed.add_field(name=f"{emote} `{item}`", value=f"Level: {level}\nFound: {found}")
                         except:
-                            pass
+                            embed.add_field(value=f"No {card_type} unlocked.")
                     embeds.append(embed)
                     # if card_str == "":
                     #     card_str = f"No {card_type} unlocked."
