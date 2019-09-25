@@ -897,7 +897,7 @@ class RushWars(BaseCog):
             "Paratroopers": "<:Paratroopers:626008231478558732>",
             "Invisibility": "<:Invisibility:626008231713439794>",
             "Satellite": "<:Satellite:626010083406643200>",
-            "Cannon": "<:Cannon:123432123>"
+            "Cannon": "<:Cannon:626527978368794663>"
         }
         try:
             return emotes[card_name]
