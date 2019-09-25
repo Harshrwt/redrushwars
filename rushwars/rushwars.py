@@ -874,7 +874,12 @@ class RushWars(BaseCog):
             hq = int(lvl)
 
         # check which cards are unlocked at the new HQ level
-        cards_unlocked = {}
+        cards_unlocked = {
+            "troops": [],
+            "airdrops": [],
+            "defenses": [],
+            "commanders": []
+        }
         files = ['troops.csv', 'airdrops.csv',
             'defenses.csv', 'commanders.csv']
         for file in files:
@@ -885,18 +890,21 @@ class RushWars(BaseCog):
                     for row in reader:
                         if int(row['UnlockLvl']) == hq:
                             card_type = file.split('.')[0]
-                            cards_unlocked[row['Name']] = card_type
+                            cards_unlocked[card_type].append(row['Name'])
                             continue
             except FileNotFoundError:
                 log.exception("File not found.")
                 return
             except Exception as ex:
                 return 
-        return cards_unlocked
+        # return cards_unlocked
         # update cards to include newly unlocked cards
-        # try:
-        #     async with self.config.user(ctx.author).cards() as cards:
-                
-        # except Exception as ex:
-        #     log.exception(ex)
-        #     return
+        try:
+            async with self.config.user(ctx.author).cards() as cards:
+                for card_type in ['troops', 'airdrops', 'defenses', 'commanders']:
+                    for card in cards_unlocked[card_type]:
+                        if card not in list(cards[card_type]):
+                            cards[card_type][card] = (1,0)
+        except Exception as ex:
+            log.exception(ex)
+            return
