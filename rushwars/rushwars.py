@@ -832,8 +832,8 @@ class RushWars(BaseCog):
                         if found < 1:
                             found = "Not Found"
                         try:
-                            val_str = "<:RW_XP:625783207518011412> Level: {level}\n" \
-                                "<:RW_Cards:626415485327507465> Cards: {found}\n"
+                            val_str = f"Level: {level}\n" \
+                                f"Cards: {found}\n"
                             embed.add_field(
                                 name=f"`{item}` {emote}", value=val_str)
                         except:
