@@ -807,10 +807,7 @@ class RushWars(BaseCog):
             return await ctx.send("Reset cancelled by the user.")
     
     @commands.command()
-    async def set_hq(self, ctx, lvl=None):
-        if lvl is None:
-            lvl = await self.config.user(ctx.author).hq()
-            await ctx.send(lvl)
+    async def set_hq(self, ctx, lvl:int=None):
         unlocked = await self.level_up_hq(ctx, int(lvl))
         for card in unlocked:
             await ctx.send(card)
@@ -869,10 +866,15 @@ class RushWars(BaseCog):
             total += (number * card_space)
         return total
 
-    async def level_up_hq(self, ctx, lvl):
+    async def level_up_hq(self, ctx, lvl:int=None):
         """Function to handle HQ level ups."""
         # get current hq level 
-        new_hq = lvl
+        if lvl is None:
+            old_lvl = await self.config.user(ctx.author).hq()
+        else:
+            old_lvl = lvl
+        
+        new_hq = old_lvl
 
         # check which cards are unlocked at the new HQ level
         cards_unlocked = []
@@ -884,7 +886,7 @@ class RushWars(BaseCog):
                 with fp.open('rt', encoding='iso-8859-15') as f:
                     reader = csv.DictReader(f, delimiter=',')
                     for row in reader:
-                        if row['UnlockLvl'] == new_hq:
+                        if int(row['UnlockLvl']) == new_hq:
                             cards_unlocked.append(row['Name'])
                             continue
             except FileNotFoundError:
