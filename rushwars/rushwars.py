@@ -470,7 +470,7 @@ class RushWars(BaseCog):
 
         total_selected = self.total_selected(card, data)
         if total_selected >= capacity:
-            return await ctx.send(f"Chopper is already full. Units: {total_selected}")
+            return await ctx.send(f"Chopper is already full. ({total_selected}/{capacity})")
 
         # check if user owns the card
         try:
@@ -638,6 +638,75 @@ class RushWars(BaseCog):
             embed.add_field(name=f"Defenses {emote}", value=def_str)  
     
             await ctx.send(embed=embed)
+    
+    @_defense.command(name="add")
+    async def defense_add(self, ctx, card, number=1):
+        """Add cards to your defense: `[p]defense add card [number]`
+            Examples: 
+                `[p]defense add troopers`
+                `[p]defense add mortar 2`
+                `[p]defense add "rocket trap"`
+                `[p]defense add "cluster cake" 2`
+        """    
+        card = card.title()
+        
+        card_info = self.card_search(card)
+
+        if not card_info:
+            return await ctx.send(f"{card.title()} does not exist.")
+
+        card_type = str(card_info[0]) + "s"
+        if card_type not in ["troops", "defenses"]:
+            return await ctx.send(f"{card.title()} is not a valid defense card.")
+
+        card_space = int(card_info[1].Space)
+        chopperLvl = await self.config.user(ctx.author).chopper()
+        
+        try:
+            async with self.config.user(ctx.author).active() as active:
+                data = active["defenses"]
+        except:
+            log.exception("Error with character sheet.")
+            return
+        capacity = chopper_capacity[chopperLvl][2]
+
+        total_selected = self.total_selected(card, data)
+        if total_selected >= capacity:
+            return await ctx.send(f"No space for this unit. ({total_selected}/{capacity})")
+        
+        # check if user owns the card
+        try:
+            async with self.config.user(ctx.author).cards() as cards:
+                owned = cards[card_type]
+        except:
+            log.exception("Error with character sheet.")
+            return
+
+        owns = False
+        for item in owned.keys():
+            if card == item:
+                owns = True
+                break
+        
+        if owns:
+            if total_selected + (number * card_space) > capacity:
+                return await ctx.send("Adding the card(s) will exceed defense capacity.")
+            try:
+                async with self.config.user(ctx.author).active() as active:
+                    data = active["defenses"]
+                    for def_card in data.keys():
+                        if card == def_card:
+                            data[def_card] += number
+                            break
+                    else:
+                        data[card] = number
+            except:
+                log.exception("Error with character sheet.")
+                return
+        else:
+            return await ctx.send("You have not unlocked the card.")
+
+        await ctx.send(f"{number} {card.title()} card(s) added to defense.")
     
     @staticmethod
     def color_lookup(rarity):
