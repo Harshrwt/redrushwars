@@ -810,7 +810,7 @@ class RushWars(BaseCog):
     async def set_hq(self, ctx, lvl):
         unlocked = self.level_up_hq(ctx, lvl)
         for card in unlocked:
-            return await ctx.send(card)
+            await ctx.send(card)
     
     @staticmethod
     def color_lookup(rarity):
@@ -884,6 +884,7 @@ class RushWars(BaseCog):
                     for row in reader:
                         if row['UnlockLvl'] == new_hq:
                             cards_unlocked.append(row['Name'])
+                            continue
             except FileNotFoundError:
                 log.exception("File not found.")
                 return
