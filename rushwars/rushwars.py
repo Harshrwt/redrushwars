@@ -170,7 +170,7 @@ class RushWars(BaseCog):
                 level, lvl_stats, stats.Rarity, "troops")
             
             count = troops[troop]
-            
+
             hp += upd_stats[0] * count
             # return await ctx.send(hp)
             att = upd_stats[1] * count
@@ -186,7 +186,7 @@ class RushWars(BaseCog):
             
             count = airdrops[airdrop]
             
-            duration = upd_stats[1] * count
+            duration = upd_stats[0] * count
 
             ability = stats.Ability
             if ability == "Damage":
