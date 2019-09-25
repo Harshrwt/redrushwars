@@ -871,7 +871,7 @@ class RushWars(BaseCog):
     async def level_up_hq(self, ctx, lvl):
         """Function to handle HQ level ups."""
         # get current hq level 
-        new_hq = old_hq
+        new_hq = lvl
 
         # check which cards are unlocked at the new HQ level
         cards_unlocked = []
