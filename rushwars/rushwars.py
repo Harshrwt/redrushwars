@@ -66,12 +66,12 @@ default_user = {
 }
 
 default_defenses = [
-    {"Troopers": (4, 1), "Pitcher": (0, 1), "Shields": (0, 1)},
-    {"Troopers": (0, 1), "Pitcher": (4, 1), "Shields": (0, 1)},
-    {"Troopers": (0, 1), "Pitcher": (0, 1), "Shields": (4, 1)},
-    {"Troopers": (2, 1), "Pitcher": (2, 1), "Shields": (0, 1)},
-    {"Troopers": (1, 1), "Pitcher": (0, 1), "Shields": (3, 1)},
-    {"Troopers": (0, 1), "Pitcher": (3, 1), "Shields": (1, 1)}
+    {"Troopers": 4, "Pitcher": 0, "Shields": 0},
+    {"Troopers": 0, "Pitcher": 4, "Shields": 0},
+    {"Troopers": 0, "Pitcher": 0, "Shields": 4},
+    {"Troopers": 2, "Pitcher": 2, "Shields": 0},
+    {"Troopers": 1, "Pitcher": 0, "Shields": 3},
+    {"Troopers": 0, "Pitcher": 3, "Shields": 1}
 ]
 
 base_card_levels = {
@@ -155,6 +155,7 @@ class RushWars(BaseCog):
         attps = 0
         def_hp = 0
         def_attps = 0
+        user_avg_levels = [0, 0]    #[iterations, value]
 
         sel_trp = sum(troops.values())
         sel_ardp = sum(airdrops.values())
@@ -175,6 +176,9 @@ class RushWars(BaseCog):
             # return await ctx.send(hp)
             att = upd_stats[1] * count
             attps += (att/float(stats.AttSpeed))
+
+            user_avg_levels[0] += 1
+            user_avg_levels[1] += level
 
         for airdrop in airdrops.keys():
             stats = self.card_search(airdrop)[1]
@@ -199,18 +203,23 @@ class RushWars(BaseCog):
             elif ability in ["Invisibility", "Freeze"]:
                 def_attps -= int(stats.Value) * duration
 
+            user_avg_levels[0] += 1
+            user_avg_levels[1] += level
+
+        user_avg_level = round(user_avg_levels[1]/user_avg_levels[0])
+        
         for defense in defenses.keys():
             stats = self.card_search(defense)[1]
             if member:
                 level = await self.rush_card_level(ctx, defense.title(), "defenses")
-                count = defenses[defense]
             else:
-                level = defenses[defense][1]
-                count = defenses[defense][0]
-
+                level = random.choice(range(user_avg_level-1, user_avg_level+2))
+            
             lvl_stats = [int(stats.Hp), int(stats.Att)]
             upd_stats = self.card_level(
                 level, lvl_stats, stats.Rarity, "defenses")
+            
+            count = defenses[defense]
             
             def_hp += upd_stats[0] * count
             def_att = upd_stats[1] * count
@@ -974,7 +983,7 @@ class RushWars(BaseCog):
             card_name = item[0]
             card_emote = self.card_emotes(card_name)
             count = item[1]
-            if int(count) <= 0:
+            if count <= 0:
                 continue
             return f"{card_emote} {card_name} x{count}\n"
 
