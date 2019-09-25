@@ -66,12 +66,12 @@ default_user = {
 }
 
 default_defenses = [
-    {"Troopers": 4, "Pitcher": 0, "Shields": 0},
-    {"Troopers": 0, "Pitcher": 4, "Shields": 0},
-    {"Troopers": 0, "Pitcher": 0, "Shields": 4},
-    {"Troopers": 2, "Pitcher": 2, "Shields": 0},
-    {"Troopers": 1, "Pitcher": 0, "Shields": 3},
-    {"Troopers": 0, "Pitcher": 3, "Shields": 1}
+    {"Troopers": (4, 1), "Pitcher": (0, 1), "Shields": (0, 1)},
+    {"Troopers": (0, 1), "Pitcher": (4, 1), "Shields": (0, 1)},
+    {"Troopers": (0, 1), "Pitcher": (0, 1), "Shields": (4, 1)},
+    {"Troopers": (2, 1), "Pitcher": (2, 1), "Shields": (0, 1)},
+    {"Troopers": (1, 1), "Pitcher": (0, 1), "Shields": (3, 1)},
+    {"Troopers": (0, 1), "Pitcher": (3, 1), "Shields": (1, 1)}
 ]
 
 base_card_levels = {
@@ -201,13 +201,16 @@ class RushWars(BaseCog):
 
         for defense in defenses.keys():
             stats = self.card_search(defense)[1]
-            level = await self.rush_card_level(ctx, defense.title(), "defenses")
-            
+            if member:
+                level = await self.rush_card_level(ctx, defense.title(), "defenses")
+                count = defenses[defense]
+            else:
+                level = defenses[defense][1]
+                count = defenses[defense][0]
+
             lvl_stats = [int(stats.Hp), int(stats.Att)]
             upd_stats = self.card_level(
                 level, lvl_stats, stats.Rarity, "defenses")
-            
-            count = defenses[defense]
             
             def_hp += upd_stats[0] * count
             def_att = upd_stats[1] * count
