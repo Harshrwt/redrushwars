@@ -476,7 +476,7 @@ class RushWars(BaseCog):
 
         total_selected = self.total_selected(card, data)
         if total_selected >= capacity:
-            return await ctx.send("Chopper is already full.")
+            return await ctx.send("Chopper is already full. Remove some cards first.")
 
         # check if user owns the card
         try:
@@ -678,7 +678,7 @@ class RushWars(BaseCog):
 
         total_selected = self.total_selected(card, data)
         if total_selected >= capacity:
-            return await ctx.send(f"No space for this unit. {total_selected}")
+            return await ctx.send(f"Defense is already full. Remove some cards first.")
         
         # check if user owns the card
         try:
@@ -758,6 +758,25 @@ class RushWars(BaseCog):
             return await ctx.send(f"{card.title()} is not in defense.")
         
         await ctx.send(f"{number} {card.title()} card(s) removed from defense.")
+    
+    @_defense.command(name="reset")
+    async def defense_reset(self, ctx):
+         """Remove all cards from defense: `[p]defense reset`"""
+        msg = await ctx.send(f"Are you sure you want to reset your defense?")
+        start_adding_reactions(msg, ReactionPredicate.YES_OR_NO_EMOJIS)
+
+        pred = ReactionPredicate.yes_or_no(msg, ctx.author)
+        await ctx.bot.wait_for("reaction_add", check=pred)
+        if pred.result is True:
+            try:
+                async with self.config.user(ctx.author).active() as active:
+                    active["defenses"].clear()
+                    await ctx.send(f"Defense reset.")
+            except:
+                log.exception("Error with character sheet.")
+                return
+        else:
+            return await ctx.send("Reset cancelled by the user.")
     
     @staticmethod
     def color_lookup(rarity):
