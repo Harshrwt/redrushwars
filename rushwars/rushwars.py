@@ -809,7 +809,8 @@ class RushWars(BaseCog):
     @commands.command()
     async def set_hq(self, ctx, lvl):
         unlocked = self.level_up_hq(ctx, lvl)
-        return await ctx.send(unlocked)
+        for card in unlocked:
+            return await ctx.send(card)
     
     @staticmethod
     def color_lookup(rarity):
