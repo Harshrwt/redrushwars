@@ -176,7 +176,10 @@ class RushWars(BaseCog):
             # return await ctx.send(type(count))
             
             # return await ctx.send(upd_stats[0])
-            hp = hp + (upd_stats[0] * 3)
+            try:
+                hp = hp + (upd_stats[0] * 3)
+            except:
+                return await ctx.send(f"{upd_stats} {type(upd_stats)}")
             # return await ctx.send(hp)
             att = upd_stats[1] * count
             attps += (att/float(stats.AttSpeed))
