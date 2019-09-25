@@ -866,7 +866,7 @@ class RushWars(BaseCog):
             total += (number * card_space)
         return total
 
-    async def level_up_hq(self, ctx, lvl):
+    def level_up_hq(self, ctx, lvl):
         """Function to handle HQ level ups."""
         # get current hq level 
         # old_hq = await self.config.user(ctx.author).hq()
