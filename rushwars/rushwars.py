@@ -172,7 +172,7 @@ class RushWars(BaseCog):
             
             count = troops[troop]
             
-            hp += upd_stats[0] * count
+            hp += (upd_stats[0] * count)
             att = upd_stats[1] * count
             attps += (att/float(stats.AttSpeed))
 
@@ -190,14 +190,14 @@ class RushWars(BaseCog):
 
             ability = stats.Ability
             if ability == "Damage":
-                attps += int(stats.Value) * duration
+                attps += (int(stats.Value) * duration)
             elif ability == "Boost":
-                attps += int(stats.Value) * duration
-                hp += int(stats.Value) * duration
+                attps += (int(stats.Value) * duration)
+                hp += (int(stats.Value) * duration)
             elif ability == "Heal":
-                hp += int(stats.Value) * duration
+                hp += (int(stats.Value) * duration)
             elif ability in ["Invisibility", "Freeze"]:
-                def_attps -= int(stats.Value) * duration
+                def_attps -= (int(stats.Value) * duration)
 
         for defense in defenses.keys():
             stats = self.card_search(defense)[1]
@@ -209,7 +209,7 @@ class RushWars(BaseCog):
             
             count = defenses[defense]
             
-            def_hp += upd_stats[0] * count
+            def_hp += (upd_stats[0] * count)
             def_att = upd_stats[1] * count
             def_attps += (def_att/float(stats.AttSpeed))
 
