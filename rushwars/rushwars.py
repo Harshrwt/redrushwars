@@ -832,7 +832,7 @@ class RushWars(BaseCog):
                             embed.add_field(name=f"{emote} `{item}`", value=f"Level: {level}\nFound: {found}")
                         except:
                             pass
-                        embeds.append(embed)
+                    embeds.append(embed)
                     # if card_str == "":
                     #     card_str = f"No {card_type} unlocked."
                 await menu(ctx, embeds, DEFAULT_CONTROLS)
