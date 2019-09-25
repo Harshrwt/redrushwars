@@ -269,9 +269,7 @@ class RushWars(BaseCog):
         embed.set_thumbnail(url=thumbnail_url)
         embed.add_field(name="Level <:RW_Level:625788888480350216>", value=level)
 
-        if card_type == 'troop':
-            target = self.troop_targets(card.Targets)
-
+        if card_type == 'troop' or card_type == 'defense':
             lvl_stats = [int(card.Hp), int(card.Att)]
             upd_stats = self.card_level(level, lvl_stats, card.Rarity, card_type)
         
@@ -287,8 +285,11 @@ class RushWars(BaseCog):
             embed.add_field(name="Health <:RW_Health:625786278058917898>", value=upd_stats[0])
             embed.add_field(name="Damage <:RW_Damage:625786276938907659>", value=upd_stats[1])
             embed.add_field(name="Damage per second <:RW_DPS:625786277903466498>", value=dps)
-            embed.add_field(name="Squad Size <:RW_Count:625786275802382347>", value=card.Count)
-            embed.add_field(name="Space <:RW_Space:625783199670206486>", value=card.Space)
+            if card_type == 'troop':
+                embed.add_field(name="Squad Size <:RW_Count:625786275802382347>", value=card.Count)
+                embed.add_field(name="Space <:RW_Space:625783199670206486>", value=card.Space)
+            else:
+                embed.add_field(name="Space <:RW_Defense:625804692760559636>", value=card.Space)
             embed.add_field(name="Targets <:RW_Targets:625786278096535574>", value=target)
             embed.add_field(name="Attack Speed <:RW_AttSpeed:625787097709543427>", value=f"{card.AttSpeed}s")
         
