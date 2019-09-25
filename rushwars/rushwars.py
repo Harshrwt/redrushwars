@@ -69,7 +69,7 @@ default_defenses = [
     {"Troopers": 4},
     {"Pitcher": 4},
     {"Shields": 4},
-    {"Troopers": 2, "Pitcher": 2,},
+    {"Troopers": 2, "Pitcher": 2},
     {"Troopers": 1, "Shields": 3},
     {"Pitcher": 3, "Shields": 1}
 ]
@@ -214,7 +214,9 @@ class RushWars(BaseCog):
                 level = await self.rush_card_level(ctx, defense.title(), "defenses")
             else:
                 level = random.choice(range(user_avg_level-1, user_avg_level+2))
-            
+                if level < 1:
+                    level = 1
+
             lvl_stats = [int(stats.Hp), int(stats.Att)]
             upd_stats = self.card_level(
                 level, lvl_stats, stats.Rarity, "defenses")
@@ -991,10 +993,15 @@ class RushWars(BaseCog):
         """Return the level of card user owns."""
         try:
             async with self.config.user(ctx.author).cards() as cards:
-                data = cards[card_type]
-                for item in data.keys():
-                    if card_name == item:
-                        return data[item][0]
+                if card_type == "defenses":
+                    card_types = ["troops", "defenses"]
+                else:
+                    card_types = [card_type]
+                for ctype in card_types:
+                    data = cards[ctype]
+                    for item in data.keys():
+                        if card_name == item:
+                            return data[item][0]
         except:
             log.exception("Error with character sheet.")
             return
