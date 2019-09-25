@@ -807,7 +807,9 @@ class RushWars(BaseCog):
             return await ctx.send("Reset cancelled by the user.")
     
     @commands.command()
-    async def set_hq(self, ctx, lvl):
+    async def set_hq(self, ctx, lvl=None):
+        if lvl is None:
+            lvl = await self.config.user(ctx.author).hq()
         unlocked = await self.level_up_hq(ctx, lvl)
         for card in unlocked:
             await ctx.send(card)
@@ -869,7 +871,6 @@ class RushWars(BaseCog):
     async def level_up_hq(self, ctx, lvl):
         """Function to handle HQ level ups."""
         # get current hq level 
-        old_hq = await self.config.user(ctx.author).hq()
         new_hq = old_hq
 
         # check which cards are unlocked at the new HQ level
