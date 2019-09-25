@@ -869,9 +869,9 @@ class RushWars(BaseCog):
     async def level_up_hq(self, ctx, lvl):
         """Function to handle HQ level ups."""
         # get current hq level 
-        old_hq = await self.config.user(ctx.author).hq()
-        new_hq = old_hq + 1
-        return [new_hq]
+        # old_hq = await self.config.user(ctx.author).hq()
+        new_hq = lvl
+
         # check which cards are unlocked at the new HQ level
         cards_unlocked = []
         files = ['troops.csv', 'airdrops.csv',
