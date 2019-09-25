@@ -481,7 +481,7 @@ class RushWars(BaseCog):
         owns = False
         for item in owned.keys():
             if card == item:
-                if item[owned][1] >= 1:
+                if owned[item][1] >= 1:
                     owns = True
                     break
 
@@ -689,7 +689,7 @@ class RushWars(BaseCog):
         owns = False
         for item in owned.keys():
             if card == item:
-                if item[owned][1] >= 1:
+                if owned[item][1] >= 1:
                     owns = True
                     break
 
