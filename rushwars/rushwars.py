@@ -637,7 +637,7 @@ class RushWars(BaseCog):
             
             if def_str == "":
                 def_str = "No defenses in squad."
-            emote = self.type_emotes("defense")
+            emote = self.type_emotes("Defenses")
             embed.add_field(name=f"Defenses {emote}", value=def_str)  
     
             await ctx.send(embed=embed)
