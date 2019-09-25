@@ -174,7 +174,9 @@ class RushWars(BaseCog):
             
             count = troops[troop]
             
-            hp += (upd_stats[0]) * count
+            # hp += (upd_stats[0]) * count
+            ha = upd_stats[0]
+            return await ctx.send(ha)
             att = upd_stats[1] * count
             attps += (att/float(stats.AttSpeed))
 
