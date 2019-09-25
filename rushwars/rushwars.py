@@ -714,6 +714,51 @@ class RushWars(BaseCog):
 
         await ctx.send(f"{number} {card.title()} card(s) added to defense.")
     
+    @_defense.command(name="remove")
+    async def defense_remove(self, ctx, card, number=1):
+        """Remove cards from defense: `[p]defense remove card [number]`
+        Examples: 
+                `[p]defense remove troopers`
+                `[p]defense remove pitcher 5`
+                `[p]defense remove "sneaky ninja"`
+                `[p]defense remove "rocket trucks" 2`
+        """
+        if number < 1:
+            return await ctx.send("Must remove at least one card.")
+        
+        try:
+            async with self.config.user(ctx.author).active() as active:
+                data = active["defenses"]
+        except:
+            log.exception("Error with character sheet.")
+            return
+        
+        card = card.title()
+
+        selected = False
+        for item in data.keys():
+            if item == card:
+                selected = True
+
+        if selected:
+            try:
+                async with self.config.user(ctx.author).active() as active:
+                    data = active["defenses"]
+                    for def_card in data.keys():
+                        if card == def_card:
+                            if data[def_card] >= number:
+                                data[def_card] -= number
+                                break
+                            else:
+                                return await ctx.send(f"Number of {card.title()} cards in defense are less than {number}.")
+            except:
+                log.exception("Error with character sheet.")
+                return
+        else:
+            return await ctx.send(f"{card.title()} is not in defense.")
+        
+        await ctx.send(f"{number} {card.title()} card(s) removed from defense.")
+    
     @staticmethod
     def color_lookup(rarity):
         colors = {"Common": 0xAE8F6F, "Rare": 0x74BD9C, "Epic": 0xB77AE0, "Commander": 0xF7EE85}
