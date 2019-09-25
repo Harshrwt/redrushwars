@@ -175,7 +175,7 @@ class RushWars(BaseCog):
             count = troops[troop]
             
             # return await ctx.send(upd_stats[0])
-            hp = upd_stats[0]
+            hp = hp + upd_stats[0]
             # ha = upd_stats[0]
             return await ctx.send(hp)
             att = upd_stats[1] * count
@@ -296,7 +296,7 @@ class RushWars(BaseCog):
         if card_type == 'troop' or card_type == 'defense':
             lvl_stats = [int(card.Hp), int(card.Att)]
             upd_stats = self.card_level(
-                level, lvl_stats, card.Rarity, card_type)
+                level, lvl_stats, card.Rarity, card_type+"s")
 
             if isinstance(upd_stats, int):
                 await ctx.send((f"{card.Rarity} starts at level {upd_stats}! Showing level {upd_stats} stats..."))
@@ -329,7 +329,7 @@ class RushWars(BaseCog):
         elif card_type == 'airdrop':
             lvl_stats = [float(card.Duration)]
             upd_stats = self.card_level(
-                level, lvl_stats, card.Rarity, card_type)
+                level, lvl_stats, card.Rarity, card_type+"s")
 
             if isinstance(upd_stats, int):
                 await ctx.send((f"{card.Rarity} starts at level {upd_stats}! Showing level {upd_stats} stats..."))
@@ -850,7 +850,7 @@ class RushWars(BaseCog):
 
         for stat in stats:
             if stat != 0:
-                if card_type == 'airdrop':
+                if card_type == 'airdrops':
                     upgrader = 0.5
                 else:
                     upgrader = stat/10
@@ -858,7 +858,7 @@ class RushWars(BaseCog):
                 while i < level:
                     stat += upgrader
                     i += 1
-                if card_type == 'airdrop':
+                if card_type == 'airdrops':
                     new_stats.append(stat)
                 else:
                     new_stats.append(int(stat))
