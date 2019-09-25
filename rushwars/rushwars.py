@@ -870,11 +870,9 @@ class RushWars(BaseCog):
         """Function to handle HQ level ups."""
         # get current hq level 
         if lvl is None:
-            old_lvl = await self.config.user(ctx.author).hq()
+            hq = await self.config.user(ctx.author).hq() + 1
         else:
-            old_lvl = int(lvl)
-        
-        new_hq = old_lvl
+            hq = int(lvl)
 
         # check which cards are unlocked at the new HQ level
         cards_unlocked = []
@@ -886,7 +884,7 @@ class RushWars(BaseCog):
                 with fp.open('rt', encoding='iso-8859-15') as f:
                     reader = csv.DictReader(f, delimiter=',')
                     for row in reader:
-                        if int(row['UnlockLvl']) == new_hq:
+                        if int(row['UnlockLvl']) == hq:
                             cards_unlocked.append(row['Name'])
                             continue
             except FileNotFoundError:
