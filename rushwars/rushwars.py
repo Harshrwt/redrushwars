@@ -887,7 +887,7 @@ class RushWars(BaseCog):
             except FileNotFoundError:
                 log.exception("File not found.")
                 return
-        return await cards_unlocked
+        return cards_unlocked
         # # update cards to include newly unlocked cards
         # try:
         #     async with self.config.user(ctx.author).active() as active:
