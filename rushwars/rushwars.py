@@ -677,7 +677,7 @@ class RushWars(BaseCog):
         capacity = chopper_capacity[chopperLvl][2]
 
         total_selected = self.total_selected(card, data)
-        if total_selected >= capacity:
+        if total_selected > capacity:
             return await ctx.send(f"No space for this unit. {total_selected}")
         
         # check if user owns the card
@@ -778,7 +778,7 @@ class RushWars(BaseCog):
             "Paratroopers": "<:Paratroopers:626008231478558732>",
             "Invisibility": "<:Invisibility:626008231713439794>",
             "Satellite": "<:Satellite:626010083406643200>",
-            "": ""
+            "Cannon": "<:Cannon:123432123>"
         }
         return emotes[card_name]
 
