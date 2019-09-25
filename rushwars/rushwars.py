@@ -806,10 +806,28 @@ class RushWars(BaseCog):
         else:
             return await ctx.send("Reset cancelled by the user.")
     
-    @commands.command()
+    @commands.command(name="sethq")
     async def set_hq(self, ctx, lvl:int=None):
-        unlocked = await self.level_up_hq(ctx, lvl)
-        await ctx.send(unlocked)
+        await self.level_up_hq(ctx, lvl)
+        await ctx.send("Done")
+
+    @commands.command(name="cards")
+    async def cards(self, ctx):
+        """Shows all the cards you can unlock."""
+        embed = discord.Embed(colour=0x999966, title="Cards")
+        try:
+            async with self.config.user(ctx.author).cards() as cards:
+                card_str = ""
+                for card_type in ['troops', 'airdrops', 'defenses', 'commanders']:
+                    data = cards[card_type]
+                    for item in data.keys():
+                        card_str += f"{item}\nLevel: {data[item][0]}\nFound: {data[item][1]}\n\n"
+                    emote = self.type_emotes(card_type.title())
+                    embed.add_field(name=f"`{card_str.upper()} {emote}`", value=card_str)
+        except Exception as ex:
+            log.exception(ex)
+            return
+        await ctx.send(embed)
     
     @staticmethod
     def color_lookup(rarity):
