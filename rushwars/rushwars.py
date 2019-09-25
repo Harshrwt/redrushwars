@@ -166,7 +166,7 @@ class RushWars(BaseCog):
             stats = self.card_search(troop)[1]
             level = await self.rush_card_level(ctx, troop.title(), "troops")
             await ctx.send(level)
-            return await ctx.send(type(level))
+            await ctx.send(type(level))
             lvl_stats = [int(stats.Hp), int(stats.Att)]
             upd_stats = self.card_level(
                 level, lvl_stats, stats.Rarity, "troops")
