@@ -827,7 +827,7 @@ class RushWars(BaseCog):
                         card_str = f"No {card_type} unlocked."
                     
                     emote = self.type_emotes(card_type.title())
-                    embed.add_field(name=f"`{card_str.upper()} {emote}`", value=card_str)
+                    embed.add_field(name=f"`{card_type.upper()} {emote}`", value=card_str)
         except Exception as ex:
             log.exception(ex)
             return
