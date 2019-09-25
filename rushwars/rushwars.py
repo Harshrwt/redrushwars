@@ -47,11 +47,7 @@ default_user = {
                 "airdrops": {
                     "Arcade": default_card_stats,
                 },
-                "defenses": {
-                    "Bomb": default_card_stats,
-                    "Mines": default_card_stats,
-                    "Cannon": default_card_stats,
-                },
+                "defenses": {},
                 "commanders": {},
             },
             "active": {
@@ -611,6 +607,41 @@ class RushWars(BaseCog):
                 else:
                     return await ctx.send("Reset cancelled by the user.")
 
+    @commands.group(name="defense", autohelp=False)
+    async def _squad(self,ctx):
+        """Lookup your defense. Subcommands give more defense functions. 
+
+        save:  Save current squad - `[p]squad save (squad_name)`
+        """
+
+        if not ctx.invoked_subcommand:
+            try:
+                async with self.config.user(ctx.author).active() as active:
+                   defense = active["defense"]
+            except Exception as ex:
+                return await ctx.send(f"Error with character sheet!")
+                log.exception(f"Error with character sheet: {ex}!")
+
+            embed = discord.Embed(colour=0x999966, title="Defense", description="Is your defense strong enough to protect your treasures?")
+            embed.set_author(name=ctx.author.name, icon_url="https://cdn.discordapp.com/attachments/626063027543736320/626063120263020574/squad-icon.png")
+            def_str = ""
+            # card_info = [(item, items[item]) for item in items.keys()]
+            for item in defense.keys():
+                if item:
+                    card_name = item
+                    card_emote = self.card_emotes(card_name)
+                    count = defense[item]
+                    if count <= 0:
+                        continue
+                    def_str += f"{card_emote} `{card_name}` x{count}\n"
+            
+            if def_str == "":
+                def_str = "No defenses in squad."
+            emote = self.type_emotes("defense")
+            embed.add_field(name=f"Defenses {emote}", value=def_str)  
+    
+            await ctx.send(embed=embed)
+    
     @staticmethod
     def color_lookup(rarity):
         colors = {"Common": 0xAE8F6F, "Rare": 0x74BD9C, "Epic": 0xB77AE0, "Commander": 0xF7EE85}
@@ -629,7 +660,8 @@ class RushWars(BaseCog):
             "Fridge": "<:Fridge:626008230279118848>",
             "Paratroopers": "<:Paratroopers:626008231478558732>",
             "Invisibility": "<:Invisibility:626008231713439794>",
-            "Satellite": "<:Satellite:626010083406643200>"
+            "Satellite": "<:Satellite:626010083406643200>",
+            "": ""
         }
         return emotes[card_name]
 
