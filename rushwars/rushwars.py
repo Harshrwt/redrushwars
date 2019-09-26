@@ -116,6 +116,16 @@ LEAGUES = {
     "Elite": (10000, 12000)
 }
 
+STAT_EMOTES = {
+    "Experience": "<:RW_XP:625783207518011412>",
+    "Stars": "<:RW_Stars:626716336797777921>",
+    "HQ": "<:RW_HQ:625787531664818224>",
+    "Gold": "<:RW_Gold:625783196394717267>",
+    "Gems": "<:RW_Gem:625783196558295065>",
+    "Attack Stars": "<:RW_Attck:625783202836905984>",
+    "Defense Stars": "<:RW_Defense:626338600467824660>",
+    "Keys": "<:RW_Key:625783197963255838>"
+}
 
 class RushWars(BaseCog):
     """Simulate Rush Wars"""
@@ -874,14 +884,14 @@ class RushWars(BaseCog):
 
         embed = discord.Embed(colour=0x999966, title="Profile", description="Are your stats enough to get mega rich?")
         embed.set_thumbnail(url=league_url)
-        embed.add_field(name="Experience", value=lvl)
-        embed.add_field(name="Stars", value=total_stars)
-        embed.add_field(name="HQ Level", value=hq)
-        embed.add_field(name="Keys", value=f"{keys/5}")
-        embed.add_field(name="Attack Stars", value=att_stars)
-        embed.add_field(name="Defense Stars", value=def_stars)
-        embed.add_field(name="Gold", value=gold)
-        embed.add_field(name="Gems", value=gems)
+        embed.add_field(name="Experience", value=f"{STAT_EMOTES['Experience']}{lvl}")
+        embed.add_field(name="HQ Level", value=f"{STAT_EMOTES['HQ']}{hq}")
+        embed.add_field(name="Keys", value=f"{STAT_EMOTES['Keys']}{keys}/5")
+        embed.add_field(name="Stars", value=f"{STAT_EMOTES['Stars']}{total_stars}")
+        embed.add_field(name="Attack Stars", value=f"{STAT_EMOTES['Attack Stars']}{att_stars}")
+        embed.add_field(name="Defense Stars", value=f"{STAT_EMOTES['Defense Stars']}{def_stars}")
+        embed.add_field(name="Gold", value=f"{STAT_EMOTES['Gold']}{gold}")
+        embed.add_field(name="Gems", value=f"{STAT_EMOTES['Gems']}{gems}")
 
         await ctx.send(embed=embed)
     
