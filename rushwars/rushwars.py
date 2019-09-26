@@ -58,9 +58,12 @@ default_user = {
         "defenses": {},
         "commanders": {},
     },
-    "stars": 0,
+    "stars": {
+        "attack": 0,
+        "defense": 0
+    },
     "keys": 5,
-    # "gold": 200,
+    "gold": 200,
     "gems": 150,
 }
 
@@ -92,6 +95,25 @@ chopper_capacity = {
     6: (8, 2, 11),
     7: (9, 2, 12),
     8: (10, 2, 13)
+}
+
+TOTAL_CARDS = 43
+
+LEAGUE_ICONS_BASE_URL = "https://www.rushstats.com/assets/league/"
+# (lower limit, upper limit)
+LEAGUES = {
+    "Rookie": (0, 200),
+    "Bronze": (200, 600),
+    "Silver": (600, 1200),
+    "Gold": (1200, 1800),
+    "Specialist": (1800, 2400),
+    "Ninja": (2400, 3000),
+    "Destroyer": (3000, 4000),
+    "Champion": (4000, 5200),
+    "Legend": (5200, 6500),
+    "Supreme": (6500, 8000),
+    "Superstar": (8000, 10000),
+    "Elite": (10000, 12000)
 }
 
 
@@ -818,6 +840,51 @@ class RushWars(BaseCog):
             log.exception(ex)
             return
 
+    @commands.command(name="profile")
+    async def profile(self, ctx, member:discord.Member=None):
+        """Lookup your or another member's profile stats."""
+        stats = ["lvl", "hq", "chopper", "stars", "keys", "gold", "gems"]
+
+        try:
+            hq = await self.config.user(ctx.author).hq()
+            chopper = await self.config.user(ctx.author).chopper()
+            keys = await self.config.user(ctx.author).keys()
+            gold = await self.config.user(ctx.author).gold()
+            gems = await self.config.user(ctx.author).gems()
+            lvl = await self.config.user(ctx.author).lvl()
+        except:
+            log.exception("Error with character sheet.")
+            return
+
+        try:
+            async with self.config.user(ctx.author).stars() as stars:
+                att_stars = stars["attack"]
+                def_stars = stars["defense"]
+        except:
+            log.exception("Error with character sheet.")
+            return
+        
+        total_stars = att_stars + def_stars
+
+        # get user league 
+        for item in LEAGUES.keys():
+            if total_stars in LEAGUES[item]:
+                league = item
+        league_url = f"{LEAGUE_ICONS_BASE_URL}{league}.png"
+
+        embed = discord.Embed(colour=0x999966, title="Profile", description="Are your stats enough to get mega rich?")
+        embed.set_thumbnail(url=league_url)
+        embed.add_field(name="Experience", value=lvl)
+        embed.add_field(name="Stars", value=total_stars)
+        embed.add_field(name="HQ Level", value=hq)
+        embed.add_field(name="Keys", value=f"{keys/5}")
+        embed.add_field(name="Attack Stars", value=att_stars)
+        embed.add_field(name="Defense Stars", value=def_stars)
+        embed.add_field(name="Gold", value=gold)
+        embed.add_field(name="Gems", value=gems)
+
+        await ctx.send(embed=embed)
+    
     def card_search(self, name):
         files = ['troops.csv', 'airdrops.csv',
                  'defenses.csv', 'commanders.csv']
@@ -1008,3 +1075,7 @@ class RushWars(BaseCog):
         except:
             log.exception("Error with character sheet.")
             return
+
+    async def get_rewards(self, ctx, stars):
+        available_gold_in_mine = random.choice(range(30, 70))
+        reward_gold = available_gold_in_mine * stars
