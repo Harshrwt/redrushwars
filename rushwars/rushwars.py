@@ -908,7 +908,8 @@ class RushWars(BaseCog):
         # return await ctx.send(total_stars)
         # get user league 
         for item in LEAGUES.keys():
-            if total_stars in range(LEAGUES[item]):
+            low, high = LEAGUES[item]
+            if total_stars in range(low, high):
                 league = item
         league_url = f"{LEAGUE_ICONS_BASE_URL}{league}.png"
         
@@ -1139,7 +1140,8 @@ class RushWars(BaseCog):
         i = 0
         for league in LEAGUES.keys():
             i += 1
-            if total_stars in range(LEAGUES[league]):
+            low, high = LEAGUES[league]
+            if total_stars in range(low, high):
                 single_star_xp = i
                 break
         reward_xp = single_star_xp * reward_stars
