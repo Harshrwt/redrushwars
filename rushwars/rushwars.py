@@ -157,7 +157,10 @@ class RushWars(BaseCog):
 
     async def initialize(self):
         """This will load all the bundled data into respective variables."""
-        xp_levels_fp = bundled_data_path(self) / "xp_levels.json"
+        try:
+            xp_levels_fp = bundled_data_path(self) / "xp_levels.json"
+        except:
+            log.exception("Error with file path.")
 
         with xp_levels_fp.open("r") as f:
             XP_LEVELS = json.load(f)
