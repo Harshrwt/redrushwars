@@ -125,7 +125,19 @@ STAT_EMOTES = {
     "Attack Stars": "<:RW_Attck:625783202836905984>",
     "Defense Stars": "<:RW_Defense:626338600467824660>",
     "Keys": "<:RW_Key:625783197963255838>",
-    "Chopper": "<:RW_Chopper:626718677986967553>"
+    "Chopper": "<:RW_Chopper:626718677986967553>",
+    "Rookie": "<:Rookie:626724912509485057>",
+    "Bronze": "<:Bronze:626724908008734730>",
+    "Silver": "<:Silver:626724911901310976>",
+    "Gold": "<:Gold:626724912408821771>",
+    "Specialist": "<:Specialist:626724911750053889>",
+    "Ninja": "<:Ninja:626724910420721684>",
+    "Destroyer": "<:Destroyer:626724909887914004>",
+    "Champion": "<:Champion:626724909996834826>",
+    "Legend": "<:Legend:626724911850848267>",
+    "Supreme": "<:Supreme:626724913562255360>",
+    "Superstar": "<:Superstar:626724912681451531>",
+    "Elite": "<:Elite:626724913058807809>"
 }
 
 LEVEL_BASE_URL = "https://www.rushstats.com/assets/level/"
@@ -884,16 +896,16 @@ class RushWars(BaseCog):
         league_url = f"{LEAGUE_ICONS_BASE_URL}{league}.png"
 
         embed = discord.Embed(colour=0x999966)
-        embed.set_thumbnail(url=league_url)
+        # embed.set_thumbnail(url=league_url)
         embed.set_author(name=f"{ctx.author.name}'s Profile", icon_url=f"{LEVEL_BASE_URL}{lvl}.png")
-        embed.add_field(name=f"HQ Level {STAT_EMOTES['HQ']}", value=f"{hq}")
-        embed.add_field(name=f"Chopper Level {STAT_EMOTES['Chopper']}", value=f"{chopper}")
-        embed.add_field(name=f"Keys {STAT_EMOTES['Keys']} ", value=f"{keys}/5")
-        embed.add_field(name=f"Stars {STAT_EMOTES['Stars']} ", value=f"{total_stars}")
-        embed.add_field(name=f"Attack Stars {STAT_EMOTES['Attack Stars']}", value=f"{att_stars}")
-        embed.add_field(name=f"Defense Stars {STAT_EMOTES['Defense Stars']}", value=f"{def_stars}")
-        embed.add_field(name=f"Gold {STAT_EMOTES['Gold']} ", value=f"{gold}")
-        embed.add_field(name=f"Gems {STAT_EMOTES['Gems']} ", value=f"{gems}")
+        embed.add_field(name="HQ Level", value=f"{STAT_EMOTES['HQ']} {hq}")
+        embed.add_field(name="Chopper Level", value=f"{STAT_EMOTES['Chopper']} {chopper}")
+        embed.add_field(name="Keys", value=f"{STAT_EMOTES['Keys']} {keys}/5")
+        embed.add_field(name="Stars", value=f"{STAT_EMOTES[league]} {total_stars}")
+        embed.add_field(name="Attack Stars", value=f"{STAT_EMOTES['Attack Stars']} {att_stars}")
+        embed.add_field(name="Defense Stars", value=f"{STAT_EMOTES['Defense Stars']} {def_stars}")
+        embed.add_field(name="Gold", value=f"{STAT_EMOTES['Gold']} {gold}")
+        embed.add_field(name="Gems", value=f"{STAT_EMOTES['Gems']} {gems}")
 
         await ctx.send(embed=embed)
     
