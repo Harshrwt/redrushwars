@@ -167,8 +167,6 @@ class RushWars(BaseCog):
         with xp_levels_fp.open("r") as f:
             self.XP_LEVELS = json.load(f)
 
-        Config.clear_all(self)
-
     @commands.group(autohelp=True)
     async def rushwars(self, ctx):
         """This is the list of Rush Wars commands you can use."""
@@ -470,14 +468,18 @@ class RushWars(BaseCog):
             for items in att_data:
                 if i == 1:
                     kind = "Troops"
+                    capacity = chopper_capacity[0]
                 elif i == 2:
                     kind = "Airdrops"
+                    capacity = chopper_capacity[1]
                 elif i == 3:
                     kind = "Commanders"
+                    capacity = 1
                 else:
                     break
                 i += 1
                 sqd_str = ""
+                total_type = 0
                 # card_info = [(item, items[item]) for item in items.keys()]
                 for item in items.keys():
                     if item:
@@ -487,11 +489,15 @@ class RushWars(BaseCog):
                         if count <= 0:
                             continue
                         sqd_str += f"{card_emote} `{card_name}` x{count}\n"
-
+                        
+                        card_space = (self.card_search(card_name)[1]).Space
+                        total_type += count * card_space
+                
                 if sqd_str == "":
                     sqd_str = f"No {kind.lower()} in squad."
                 type_emote = self.type_emotes(kind)
-                embed.add_field(name=f"{kind} {type_emote}", value=sqd_str)
+
+                embed.add_field(name=f"{kind} ({total_type}/{capacity}) {type_emote}", value=sqd_str)
 
             await ctx.send(embed=embed)
 
