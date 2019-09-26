@@ -332,7 +332,7 @@ class RushWars(BaseCog):
             if member:
                 async with self.config.user(member).stars() as member_stars:
                     def_stars = member_stars["defense"] + (3 - stars)
-                await self.config.user(member).set_raw("stars", "attack", value=def_stars)
+                await self.config.user(member).set_raw("stars", "defense", value=def_stars)
 
     @commands.command()
     async def card(self, ctx, card_name: str, level: int = None):
