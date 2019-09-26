@@ -490,7 +490,7 @@ class RushWars(BaseCog):
                             continue
                         sqd_str += f"{card_emote} `{card_name}` x{count}\n"
                         
-                        card_space = (self.card_search(card_name)[1]).Space
+                        card_space = int((self.card_search(card_name)[1]).Space)
                         total_type += count * card_space
                 
                 if sqd_str == "":
