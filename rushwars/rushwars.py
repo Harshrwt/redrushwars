@@ -319,10 +319,13 @@ class RushWars(BaseCog):
         
         if stars > 0:
             victory = True
-            await ctx.send(f"You win! Stars: {stars}")
+            await ctx.send(f"You win!")
         else:
             victory = False
             await ctx.send("You lose!")
+        
+        rewards = await self.get_rewards(ctx, stars)
+        await ctx.send(embed=rewards)
 
     @commands.command()
     async def card(self, ctx, card_name: str, level: int = None):
@@ -1118,6 +1121,51 @@ class RushWars(BaseCog):
             log.exception("Error with character sheet.")
             return
 
-    async def get_rewards(self, ctx, stars):
+    async def get_rewards(self, ctx, reward_stars):
         available_gold_in_mine = random.choice(range(30, 70))
-        reward_gold = available_gold_in_mine * stars
+        if reward_stars > 0:
+            reward_gold = available_gold_in_mine * reward_stars
+        else:
+            reward_gold = random.choice(range(0, available_gold_in_mine))
+
+        try:
+            async with self.config.user(ctx.author).stars() as stars:
+                att_stars = stars["attack"]
+                def_stars = stars["defense"]
+        except:
+            log.exception("Error with character sheet.")
+            return
+        total_stars = att_stars + def_stars
+        i = 0
+        for league in LEAGUES.keys():
+            i += 1
+            if total_stars in LEAGUES[league]:
+                single_star_xp = i
+                break
+        reward_xp = single_star_xp * reward_stars
+        
+        # update user variables 
+        try:
+            gold = await self.config.user(ctx.author).gold()
+            upd_gold = gold + reward_gold
+            await self.config.user(ctx.author).gold.set(upd_gold)
+            xp = await self.config.user(ctx.author).xp()
+            upd_xp = xp + reward_xp
+            await self.config.user(ctx.author).gold.set(upd_xp)
+            async with self.config.user(ctx.author).stars() as stars:
+                att_stars = stars["attack"]
+                att_stars += reward_stars
+        except:
+            log.exception("Error with character sheet.")
+            return
+
+        stars_str = ""
+        for i in range(reward_stars):
+            stars_str += f"{STAT_EMOTES['Stars']}"
+        
+        embed = discord.Embed(colour=0x999966, title="Rewards")
+        embed.add_field(name="Stars", value=f"{stars_str}")
+        embed.add_field(name="Gold", value=f"{STAT_EMOTES['Gold']} {reward_gold}")
+        embed.add_field(name="Experience", value=f"{STAT_EMOTES['Experience']} {reward_xp}")
+
+        return embed
