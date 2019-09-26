@@ -905,7 +905,7 @@ class RushWars(BaseCog):
             return
         
         total_stars = att_stars + def_stars
-
+        return await ctx.send(total_stars)
         # get user league 
         for item in LEAGUES.keys():
             if total_stars in LEAGUES[item]:
