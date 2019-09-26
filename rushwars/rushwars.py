@@ -923,7 +923,7 @@ class RushWars(BaseCog):
         embed.add_field(name="Defense Stars", value=f"{STAT_EMOTES['Defense Stars']} {def_stars}")
         embed.add_field(name="Gold", value=f"{STAT_EMOTES['Gold']} {gold}")
         embed.add_field(name="Gems", value=f"{STAT_EMOTES['Gems']} {gems}")
-        embed.add_field(name="Experience", value=f"{STAT_EMOTES['XP']} {xp}/{next_xp}")
+        embed.add_field(name="Experience", value=f"{STAT_EMOTES['Experience']} {xp}/{next_xp}")
 
         await ctx.send(embed=embed)
     
