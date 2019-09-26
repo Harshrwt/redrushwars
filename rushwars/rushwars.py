@@ -157,8 +157,6 @@ class RushWars(BaseCog):
 
         self.config.register_user(**default_user)
 
-        Config.clear_all(self)
-
     async def initialize(self):
         """This will load all the bundled data into respective variables."""
         try:
@@ -168,6 +166,8 @@ class RushWars(BaseCog):
 
         with xp_levels_fp.open("r") as f:
             self.XP_LEVELS = json.load(f)
+
+        Config.clear_all(self)
 
     @commands.group(autohelp=True)
     async def rushwars(self, ctx):
