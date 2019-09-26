@@ -880,6 +880,8 @@ class RushWars(BaseCog):
     @commands.command(name="profile")
     async def profile(self, ctx, member:discord.Member=None):
         """Lookup your or another member's profile stats."""
+        return await ctx.send(bundled_data_path(self) / "xp_levels.json")
+        
         try:
             hq = await self.config.user(ctx.author).hq()
             chopper = await self.config.user(ctx.author).chopper()
