@@ -881,18 +881,18 @@ class RushWars(BaseCog):
                 league = item
         league_url = f"{LEAGUE_ICONS_BASE_URL}{league}.png"
 
-        embed = discord.Embed(colour=0x999966, title="Profile", description="Are your stats enough to get mega rich?")
+        embed = discord.Embed(colour=0x999966, title="Profile")
         embed.set_thumbnail(url=league_url)
         embed.set_author(name=ctx.author.name, icon_url="https://cdn.discordapp.com/attachments/626063027543736320/626719420219392010/SilverStar.png")
-        embed.add_field(name="Experience", value=f"{STAT_EMOTES['Experience']}{lvl}")
-        embed.add_field(name="HQ Level", value=f"{STAT_EMOTES['HQ']}{hq}")
-        embed.add_field(name="Chopper Level", value=f"{STAT_EMOTES['Chopper']}{chopper}")
-        embed.add_field(name="Stars", value=f"{STAT_EMOTES['Stars']}{total_stars}")
-        embed.add_field(name="Attack Stars", value=f"{STAT_EMOTES['Attack Stars']}{att_stars}")
-        embed.add_field(name="Defense Stars", value=f"{STAT_EMOTES['Defense Stars']}{def_stars}")
-        embed.add_field(name="Gold", value=f"{STAT_EMOTES['Gold']}{gold}")
-        embed.add_field(name="Gems", value=f"{STAT_EMOTES['Gems']}{gems}")
-        embed.add_field(name="Keys", value=f"{STAT_EMOTES['Keys']}{keys}/5")
+        embed.add_field(name="Experience", value=f"{STAT_EMOTES['Experience']} {lvl}")
+        embed.add_field(name="HQ Level", value=f"{STAT_EMOTES['HQ']} {hq}")
+        embed.add_field(name="Chopper Level", value=f"{STAT_EMOTES['Chopper']} {chopper}")
+        embed.add_field(name="Stars", value=f"{STAT_EMOTES['Stars']} {total_stars}")
+        embed.add_field(name="Attack Stars", value=f"{STAT_EMOTES['Attack Stars']} {att_stars}")
+        embed.add_field(name="Defense Stars", value=f"{STAT_EMOTES['Defense Stars']} {def_stars}")
+        embed.add_field(name="Gold", value=f"{STAT_EMOTES['Gold']} {gold}")
+        embed.add_field(name="Gems", value=f"{STAT_EMOTES['Gems']} {gems}")
+        embed.add_field(name="Keys", value=f"{STAT_EMOTES['Keys']} {keys}/5")
 
         await ctx.send(embed=embed)
     
