@@ -906,7 +906,7 @@ class RushWars(BaseCog):
         league_url = f"{LEAGUE_ICONS_BASE_URL}{league}.png"
 
         # xp required for next level
-        next_xp = XP_LEVELS[str(xp)]["ExpToNextLevel"]
+        next_xp = XP_LEVELS[str(lvl)]["ExpToNextLevel"]
 
         embed = discord.Embed(colour=0x999966)
         # embed.set_thumbnail(url=league_url)
