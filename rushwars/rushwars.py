@@ -918,20 +918,25 @@ class RushWars(BaseCog):
     @commands.command(name="profile")
     async def profile(self, ctx, member:discord.Member=None):
         """Lookup your or another member's profile stats."""
+        if member:
+            user = member
+        else:
+            user = ctx.author
+        
         try:
-            hq = await self.config.user(ctx.author).hq()
-            chopper = await self.config.user(ctx.author).chopper()
-            keys = await self.config.user(ctx.author).keys()
-            gold = await self.config.user(ctx.author).gold()
-            gems = await self.config.user(ctx.author).gems()
-            lvl = await self.config.user(ctx.author).lvl()
-            xp = await self.config.user(ctx.author).xp()
+            hq = await self.config.user(user).hq()
+            chopper = await self.config.user(user).chopper()
+            keys = await self.config.user(user).keys()
+            gold = await self.config.user(user).gold()
+            gems = await self.config.user(user).gems()
+            lvl = await self.config.user(user).lvl()
+            xp = await self.config.user(user).xp()
         except:
             log.exception("Error with character sheet.")
             return
 
         try:
-            async with self.config.user(ctx.author).stars() as stars:
+            async with self.config.user(user).stars() as stars:
                 att_stars = stars["attack"]
                 def_stars = stars["defense"]
         except:
@@ -952,7 +957,7 @@ class RushWars(BaseCog):
 
         embed = discord.Embed(colour=0x999966)
         # embed.set_thumbnail(url=league_url)
-        embed.set_author(name=f"{ctx.author.name}'s Profile", icon_url=f"{LEVEL_BASE_URL}{lvl}.png")
+        embed.set_author(name=f"{user.name}'s Profile", icon_url=f"{LEVEL_BASE_URL}{lvl}.png")
         embed.add_field(name="HQ Level", value=f"{STAT_EMOTES['HQ']} {hq}")
         embed.add_field(name="Chopper Level", value=f"{STAT_EMOTES['Chopper']} {chopper}")
         embed.add_field(name="Keys", value=f"{STAT_EMOTES['Keys']} {keys}/5")
