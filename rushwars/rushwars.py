@@ -120,7 +120,7 @@ STAT_EMOTES = {
     "Experience": "<:RW_XP:625783207518011412>",
     "Stars": "<:RW_Stars:626716336797777921>",
     "HQ": "<:RW_HQ:625787531664818224>",
-    "Gold": "<:RW_Gold:625783196394717267>",
+    "Gold_Icon": "<:RW_Gold:625783196394717267>",
     "Gems": "<:RW_Gem:625783196558295065>",
     "Attack Stars": "<:RW_Attck:625783202836905984>",
     "Defense Stars": "<:RW_Defense:626338600467824660>",
@@ -924,7 +924,7 @@ class RushWars(BaseCog):
         embed.add_field(name="Stars", value=f"{STAT_EMOTES[league]} {total_stars}")
         embed.add_field(name="Attack Stars", value=f"{STAT_EMOTES['Attack Stars']} {att_stars}")
         embed.add_field(name="Defense Stars", value=f"{STAT_EMOTES['Defense Stars']} {def_stars}")
-        embed.add_field(name="Gold", value=f"{STAT_EMOTES['Gold']} {gold}")
+        embed.add_field(name="Gold", value=f"{STAT_EMOTES['Gold_Icon']} {gold}")
         embed.add_field(name="Gems", value=f"{STAT_EMOTES['Gems']} {gems}")
         embed.add_field(name="Experience", value=f"{STAT_EMOTES['Experience']} {xp}/{next_xp}")
 
@@ -1145,19 +1145,18 @@ class RushWars(BaseCog):
         reward_xp = single_star_xp * reward_stars
         
         # update user variables 
-        try:
-            gold = await self.config.user(ctx.author).gold()
-            upd_gold = gold + reward_gold
-            await self.config.user(ctx.author).gold.set(upd_gold)
-            xp = await self.config.user(ctx.author).xp()
-            upd_xp = xp + reward_xp
-            await self.config.user(ctx.author).gold.set(upd_xp)
-            async with self.config.user(ctx.author).stars() as stars:
-                att_stars = stars["attack"]
-                att_stars += reward_stars
-        except:
-            log.exception("Error with character sheet.")
-            return
+        gold = await self.config.user(ctx.author).gold()
+        upd_gold = gold + reward_gold
+        await self.config.user(ctx.author).gold.set(upd_gold)
+        xp = await self.config.user(ctx.author).xp()
+        upd_xp = xp + reward_xp
+        await self.config.user(ctx.author).gold.set(upd_xp)
+        async with self.config.user(ctx.author).stars() as stars:
+            att_stars = stars["attack"]
+            att_stars += reward_stars
+        # except:
+        #     log.exception("Error with character sheet.")
+        #     return
 
         stars_str = ""
         for i in range(reward_stars):
@@ -1165,7 +1164,7 @@ class RushWars(BaseCog):
         
         embed = discord.Embed(colour=0x999966, title="Rewards")
         embed.add_field(name="Stars", value=f"{stars_str}")
-        embed.add_field(name="Gold", value=f"{STAT_EMOTES['Gold']} {reward_gold}")
+        embed.add_field(name="Gold", value=f"{STAT_EMOTES['Gold_Icon']} {reward_gold}")
         embed.add_field(name="Experience", value=f"{STAT_EMOTES['Experience']} {reward_xp}")
 
         return embed
