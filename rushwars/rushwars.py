@@ -157,7 +157,7 @@ class RushWars(BaseCog):
 
         self.config.register_user(**default_user)
 
-        Config.clear_all()
+        Config.clear_all(self)
 
     async def initialize(self):
         """This will load all the bundled data into respective variables."""
