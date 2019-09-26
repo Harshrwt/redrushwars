@@ -1150,7 +1150,7 @@ class RushWars(BaseCog):
         await self.config.user(ctx.author).gold.set(upd_gold)
         xp = await self.config.user(ctx.author).xp()
         upd_xp = xp + reward_xp
-        await self.config.user(ctx.author).gold.set(upd_xp)
+        await self.config.user(ctx.author).xp.set(upd_xp)
         async with self.config.user(ctx.author).stars() as stars:
             att_stars = stars["attack"]
             att_stars += reward_stars
