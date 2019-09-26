@@ -1227,7 +1227,7 @@ class RushWars(BaseCog):
         reward_msg = f"Rewards: {gem_reward} {STAT_EMOTES['Gems']}"
 
         gems = await self.config.user(ctx.author).gems()
-        upd_gem = xp + gem_reward
-        await self.config.user(ctx.author).xp.set(upd_gem)
+        upd_gem = gems + gem_reward
+        await self.config.user(ctx.author).gems.set(upd_gem)
 
         return (level_up_msg, reward_msg)
