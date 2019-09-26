@@ -142,6 +142,8 @@ STAT_EMOTES = {
 
 LEVEL_BASE_URL = "https://www.rushstats.com/assets/level/"
 
+XP_LEVELS: dict = None
+
 class RushWars(BaseCog):
     """Simulate Rush Wars"""
 
@@ -152,6 +154,13 @@ class RushWars(BaseCog):
             self, 1_070_701_001, force_registration=True)
 
         self.config.register_user(**default_user)
+
+    async def initialize(self):
+        """This will load all the bundled data into respective variables."""
+        xp_levels_fp = self.path / "xp_levels.json"
+
+        with xp_levels_fp.open("r") as f:
+            XP_LEVELS = json.load(f)
 
     @commands.group(autohelp=True)
     async def rushwars(self, ctx):
@@ -875,6 +884,7 @@ class RushWars(BaseCog):
             gold = await self.config.user(ctx.author).gold()
             gems = await self.config.user(ctx.author).gems()
             lvl = await self.config.user(ctx.author).lvl()
+            xp = await self.config.user(ctx.author).xp()
         except:
             log.exception("Error with character sheet.")
             return
@@ -895,6 +905,9 @@ class RushWars(BaseCog):
                 league = item
         league_url = f"{LEAGUE_ICONS_BASE_URL}{league}.png"
 
+        # xp required for next level
+        next_xp = XP_LEVELS[str(xp)]["ExpToNextLevel"]
+
         embed = discord.Embed(colour=0x999966)
         # embed.set_thumbnail(url=league_url)
         embed.set_author(name=f"{ctx.author.name}'s Profile", icon_url=f"{LEVEL_BASE_URL}{lvl}.png")
@@ -906,6 +919,7 @@ class RushWars(BaseCog):
         embed.add_field(name="Defense Stars", value=f"{STAT_EMOTES['Defense Stars']} {def_stars}")
         embed.add_field(name="Gold", value=f"{STAT_EMOTES['Gold']} {gold}")
         embed.add_field(name="Gems", value=f"{STAT_EMOTES['Gems']} {gems}")
+        embed.add_field(name="Experience", value=f"{STAT_EMOTES['XP']} {xp}/{next_xp}")
 
         await ctx.send(embed=embed)
     
