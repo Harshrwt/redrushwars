@@ -443,7 +443,6 @@ class RushWars(BaseCog):
 
         save:  Save current squad - `[p]squad save (squad_name)`
         """
-
         if not ctx.invoked_subcommand:
             if member is None:
                 user = ctx.author
@@ -456,6 +455,7 @@ class RushWars(BaseCog):
                         active["airdrops"],
                         active["commanders"]
                     ]
+                chopperLvl = await self.config.user(ctx.author).chopper()
             except Exception as ex:
                 return await ctx.send(f"Error with character sheet!")
                 log.exception(f"Error with character sheet: {ex}!")
@@ -468,10 +468,10 @@ class RushWars(BaseCog):
             for items in att_data:
                 if i == 1:
                     kind = "Troops"
-                    capacity = chopper_capacity[0]
+                    capacity = chopper_capacity[chopperLvl][0]
                 elif i == 2:
                     kind = "Airdrops"
-                    capacity = chopper_capacity[1]
+                    capacity = chopper_capacity[chopperLvl][1]
                 elif i == 3:
                     kind = "Commanders"
                     capacity = 1
