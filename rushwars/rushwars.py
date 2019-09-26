@@ -708,7 +708,7 @@ class RushWars(BaseCog):
                 return await ctx.send(f"Error with character sheet!")
                 log.exception(f"Error with character sheet: {ex}!")
 
-            embed = discord.Embed(colour=0x999966, title="Defense",
+            embed = discord.Embed(colour=0x999966,
                                   description="Is your defense strong enough to protect your treasures?")
             embed.set_author(
                 name=ctx.author.name, icon_url="https://cdn.discordapp.com/attachments/626063027543736320/626338507958386697/Defense.png")
