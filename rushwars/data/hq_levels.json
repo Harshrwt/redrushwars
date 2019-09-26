@@ -1,0 +1,82 @@
+{
+    "1": {
+        "UpgradeGold": 100,
+        "ChestMultiplier": 100,
+        "AttackCost": 2,
+        "StarBoxGold": 5,
+        "MineGold": 10,
+        "ResourceMax": 40
+    },
+    "2": {
+        "UpgradeGold": 250,
+        "ChestMultiplier": 125,
+        "AttackCost": 2,
+        "StarBoxGold": 5,
+        "MineGold": 10,
+        "ResourceMax": 80
+    },
+    "3": {
+        "UpgradeGold": 2500,
+        "ChestMultiplier": 150,
+        "AttackCost": 5,
+        "StarBoxGold": 5,
+        "MineGold": 10,
+        "ResourceMax": 120
+    },
+    "4": {
+        "UpgradeGold": 5000,
+        "ChestMultiplier": 175,
+        "AttackCost": 10,
+        "StarBoxGold": 10,
+        "MineGold": 15,
+        "ResourceMax": 160
+    },
+    "5": {
+        "UpgradeGold": 10000,
+        "ChestMultiplier": 200,
+        "AttackCost": 20,
+        "StarBoxGold": 20,
+        "MineGold": 25,
+        "ResourceMax": 200
+    },
+    "6": {
+        "UpgradeGold": 20000,
+        "ChestMultiplier": 225,
+        "AttackCost": 30,
+        "StarBoxGold": 30,
+        "MineGold": 35,
+        "ResourceMax": 240
+    },
+    "7": {
+        "UpgradeGold": 50000,
+        "ChestMultiplier": 250,
+        "AttackCost": 40,
+        "StarBoxGold": 40,
+        "MineGold": 50,
+        "ResourceMax": 280
+    },
+    "8": {
+        "UpgradeGold": 100000,
+        "ChestMultiplier": 275,
+        "AttackCost": 50,
+        "StarBoxGold": 50,
+        "MineGold": 60,
+        "ResourceMax": 320
+    },
+    "9": {
+        "UpgradeGold": 150000,
+        "ChestMultiplier": 300,
+        "AttackCost": 60,
+        "StarBoxGold": 60,
+        "MineGold": 70,
+        "ResourceMax": 360
+    },
+    "10": {
+        "UpgradeGold": 0,
+        "ChestMultiplier": 325,
+        "AttackCost": 70,
+        "StarBoxGold": 70,
+        "MineGold": 80,
+        "ResourceMax": 400
+    }
+}
