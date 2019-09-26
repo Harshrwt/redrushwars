@@ -11,6 +11,7 @@ import discord
 
 # Redbot
 from redbot.core import commands, Config
+from redbot.core.config import Group
 from redbot.core.data_manager import bundled_data_path
 from redbot.core.utils.menus import menu, DEFAULT_CONTROLS
 from redbot.core.utils.chat_formatting import box
@@ -155,6 +156,8 @@ class RushWars(BaseCog):
         self.XP_LEVELSXP_LEVELS: dict = None
 
         self.config.register_user(**default_user)
+
+        Config.clear_all()
 
     async def initialize(self):
         """This will load all the bundled data into respective variables."""
@@ -1200,5 +1203,9 @@ class RushWars(BaseCog):
         
         gem_reward = self.XP_LEVELS[str(lvl)]["GemReward"]
         reward_msg = f"Rewards: {gem_reward} {STAT_EMOTES['Gems']}"
+
+        gems = await self.config.user(ctx.author).gems()
+        upd_gem = xp + gem_reward
+        await self.config.user(ctx.author).xp.set(upd_gem)
 
         return (level_up_msg, reward_msg)
