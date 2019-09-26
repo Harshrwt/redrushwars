@@ -1152,8 +1152,8 @@ class RushWars(BaseCog):
         upd_xp = xp + reward_xp
         await self.config.user(ctx.author).xp.set(upd_xp)
         async with self.config.user(ctx.author).stars() as stars:
-            att_stars = stars["attack"]
-            att_stars += reward_stars
+            att_stars = stars["attack"] + reward_stars
+        await self.config.user(ctx.author).set_raw("stars", "attack", att_stars)
         # except:
         #     log.exception("Error with character sheet.")
         #     return
