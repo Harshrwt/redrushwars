@@ -460,10 +460,10 @@ class RushWars(BaseCog):
                 return await ctx.send(f"Error with character sheet!")
                 log.exception(f"Error with character sheet: {ex}!")
 
-            embed = discord.Embed(colour=0x999966, title="Squad",
+            embed = discord.Embed(colour=0x999966,
                                   description="Is your squad strong enough to kick butt and get mega rich?")
             embed.set_author(
-                name=ctx.author.name, icon_url="https://cdn.discordapp.com/attachments/626063027543736320/626063120263020574/squad-icon.png")
+                name=f"{ctx.author.name}'s Squad", icon_url="https://cdn.discordapp.com/attachments/626063027543736320/626719420219392010/SilverStar.png")
             i = 1
             for items in att_data:
                 if i == 1:
@@ -711,7 +711,7 @@ class RushWars(BaseCog):
             embed = discord.Embed(colour=0x999966,
                                   description="Is your defense strong enough to protect your treasures?")
             embed.set_author(
-                name=ctx.author.name, icon_url="https://cdn.discordapp.com/attachments/626063027543736320/626338507958386697/Defense.png")
+                name=f"{ctx.author.name}'s Defense", icon_url="https://cdn.discordapp.com/attachments/626063027543736320/626338507958386697/Defense.png")
             
             capacity = chopper_capacity[chopperLvl][2]
             def_str = ""
