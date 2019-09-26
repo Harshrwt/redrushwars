@@ -142,7 +142,6 @@ STAT_EMOTES = {
 
 LEVEL_BASE_URL = "https://www.rushstats.com/assets/level/"
 
-XP_LEVELS: dict = None
 
 class RushWars(BaseCog):
     """Simulate Rush Wars"""
@@ -152,6 +151,8 @@ class RushWars(BaseCog):
 
         self.config = Config.get_conf(
             self, 1_070_701_001, force_registration=True)
+
+        self.XP_LEVELSXP_LEVELS: dict = None
 
         self.config.register_user(**default_user)
 
@@ -163,7 +164,7 @@ class RushWars(BaseCog):
             log.exception("Error with file path.")
 
         with xp_levels_fp.open("r") as f:
-            XP_LEVELS = json.load(f)
+            self.XP_LEVELS = json.load(f)
 
     @commands.group(autohelp=True)
     async def rushwars(self, ctx):
@@ -880,8 +881,6 @@ class RushWars(BaseCog):
     @commands.command(name="profile")
     async def profile(self, ctx, member:discord.Member=None):
         """Lookup your or another member's profile stats."""
-        return await ctx.send(bundled_data_path(self) / "xp_levels.json")
-        
         try:
             hq = await self.config.user(ctx.author).hq()
             chopper = await self.config.user(ctx.author).chopper()
@@ -909,12 +908,9 @@ class RushWars(BaseCog):
             if total_stars in LEAGUES[item]:
                 league = item
         league_url = f"{LEAGUE_ICONS_BASE_URL}{league}.png"
-
-        await ctx.send(type(XP_LEVELS))
-        return await ctx.send(XP_LEVELS)
         
         # xp required for next level
-        next_xp = XP_LEVELS[str(lvl)]["ExpToNextLevel"]
+        next_xp = self.XP_LEVELS[str(lvl)]["ExpToNextLevel"]
 
         embed = discord.Embed(colour=0x999966)
         # embed.set_thumbnail(url=league_url)
