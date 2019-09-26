@@ -703,6 +703,7 @@ class RushWars(BaseCog):
             try:
                 async with self.config.user(ctx.author).active() as active:
                     defense = active["defenses"]
+                chopperLvl = await self.config.user(ctx.author).chopper()
             except Exception as ex:
                 return await ctx.send(f"Error with character sheet!")
                 log.exception(f"Error with character sheet: {ex}!")
@@ -711,7 +712,10 @@ class RushWars(BaseCog):
                                   description="Is your defense strong enough to protect your treasures?")
             embed.set_author(
                 name=ctx.author.name, icon_url="https://cdn.discordapp.com/attachments/626063027543736320/626338507958386697/Defense.png")
+            
+            capacity = chopper_capacity[2]
             def_str = ""
+            total_defense = 0
             # card_info = [(item, items[item]) for item in items.keys()]
             for item in defense.keys():
                 if item:
@@ -720,12 +724,17 @@ class RushWars(BaseCog):
                     count = defense[item]
                     if count <= 0:
                         continue
+
                     def_str += f"{card_emote} `{card_name}` x{count}\n"
+                    card_space = int((self.card_search(card_name)[1]).Space)
+                    total_defense += count * card_space
+
 
             if def_str == "":
                 def_str = "No defenses in squad."
+
             emote = self.type_emotes("Defenses")
-            embed.add_field(name=f"Defenses {emote}", value=def_str)
+            embed.add_field(name=f"Defenses ({total_defense}/{capacity}) {emote}", value=def_str)
 
             await ctx.send(embed=embed)
 
