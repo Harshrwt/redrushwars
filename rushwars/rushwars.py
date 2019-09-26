@@ -905,6 +905,9 @@ class RushWars(BaseCog):
                 league = item
         league_url = f"{LEAGUE_ICONS_BASE_URL}{league}.png"
 
+        await ctx.send(type(XP_LEVELS))
+        return await ctx.send(XP_LEVELS)
+        
         # xp required for next level
         next_xp = XP_LEVELS[str(lvl)]["ExpToNextLevel"]
 
