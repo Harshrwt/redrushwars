@@ -713,7 +713,7 @@ class RushWars(BaseCog):
             embed.set_author(
                 name=ctx.author.name, icon_url="https://cdn.discordapp.com/attachments/626063027543736320/626338507958386697/Defense.png")
             
-            capacity = chopper_capacity[2]
+            capacity = chopper_capacity[chopperLvl][2]
             def_str = ""
             total_defense = 0
             # card_info = [(item, items[item]) for item in items.keys()]
