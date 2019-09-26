@@ -885,8 +885,8 @@ class RushWars(BaseCog):
 
         embed = discord.Embed(colour=0x999966)
         embed.set_thumbnail(url=league_url)
-        embed.set_author(name=f"{ctx.author.name}'s Profile'", icon_url=f"{LEVEL_BASE_URL}{lvl}.png")
-        embed.add_field(name="HQ Level", value=f"{STAT_EMOTES['HQ']} {hq}")
+        embed.set_author(name=f"{ctx.author.name}'s Profile", icon_url=f"{LEVEL_BASE_URL}{lvl}.png")
+        embed.add_field(name=f"HQ Level {STAT_EMOTES['HQ']}", value=f"{hq}")
         embed.add_field(name="Chopper Level", value=f"{STAT_EMOTES['Chopper']} {chopper}")
         embed.add_field(name="Keys", value=f"{STAT_EMOTES['Keys']} {keys}/5")
         embed.add_field(name="Stars", value=f"{STAT_EMOTES['Stars']} {total_stars}")
