@@ -327,6 +327,13 @@ class RushWars(BaseCog):
         rewards = await self.get_rewards(ctx, stars)
         await ctx.send(embed=rewards)
 
+        # update defense stars of opponent 
+        if stars != 3:
+            if member:
+                async with self.config.user(ctx.author).stars() as member_stars:
+                    def_stars = member_stars["defense"] + (3 - stars)
+                await self.config.user(ctx.author).set_raw("stars", "attack", value=def_stars)
+
     @commands.command()
     async def card(self, ctx, card_name: str, level: int = None):
         """Search for a card in the Rush Wars universe.
