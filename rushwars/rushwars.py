@@ -1158,12 +1158,8 @@ class RushWars(BaseCog):
         #     log.exception("Error with character sheet.")
         #     return
 
-        stars_str = ""
-        for i in range(reward_stars):
-            stars_str += f"{STAT_EMOTES['Stars']}"
-        
         embed = discord.Embed(colour=0x999966, title="Rewards")
-        embed.add_field(name="Stars", value=f"{stars_str}")
+        embed.add_field(name="Stars", value=f"{STAT_EMOTES['Stars']} {reward_stars}")
         embed.add_field(name="Gold", value=f"{STAT_EMOTES['Gold_Icon']} {reward_gold}")
         embed.add_field(name="Experience", value=f"{STAT_EMOTES['Experience']} {reward_xp}")
 
