@@ -334,6 +334,13 @@ class RushWars(BaseCog):
                     def_stars = member_stars["defense"] + (3 - stars)
                 await self.config.user(member).set_raw("stars", "defense", value=def_stars)
 
+        level_up = True
+        while level_up:
+            level_up = await self.xp_level_handler(ctx)
+            if level_up:
+                await ctx.send(level_up[0])
+                await ctx.send(level_up[1])
+
     @commands.command()
     async def card(self, ctx, card_name: str, level: int = None):
         """Search for a card in the Rush Wars universe.
@@ -1173,3 +1180,25 @@ class RushWars(BaseCog):
         embed.add_field(name="Experience", value=f"{STAT_EMOTES['Experience']} {reward_xp}")
 
         return embed
+
+    async def xp_level_handler(self, ctx):
+        """Handles xp level ups."""
+        xp = await self.config.user(ctx.author).xp()
+        lvl = await self.config.user(ctx.author).lvl()
+
+        next_xp = self.XP_LEVELS[str(lvl)]["ExpToNextLevel"]
+
+        if xp >= next_xp:
+            carry = xp - next_xp
+        else:
+            return False
+        
+        await self.config.user(ctx.author).xp.set(carry)
+        await self.config.user(ctx.author).lvl.set(lvl+1)
+        
+        level_up_msg = f"Congrats! Level up! You have reached level {lvl+1}."
+        
+        gem_reward = self.XP_LEVELS[str(lvl)]["GemReward"]
+        reward_msg = f"Rewards: {gem_reward} {STAT_EMOTES['Gems']}"
+
+        return (level_up_msg, reward_msg)
