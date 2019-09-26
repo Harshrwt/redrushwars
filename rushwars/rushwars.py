@@ -205,8 +205,10 @@ class RushWars(BaseCog):
                     defenses = active["defenses"]
                     opponent = member.name
             except:
-                await ctx.send("User has not set a defense!")
+                log.exception("Error with character sheet.")
                 return
+            if not defenses:
+                return await ctx.send("User has not set up a defense.")
         else:
             defenses = random.choice(default_defenses)
             opponent = "Computer"
