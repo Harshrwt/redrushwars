@@ -1,0 +1,252 @@
+{
+    "1": {
+        "ExpToNextLevel": 10,
+        "MaxHQLevel": 1,
+        "GemReward": 10
+    },
+    "2": {
+        "ExpToNextLevel": 50,
+        "MaxHQLevel": 2,
+        "GemReward": 10
+    },
+    "3": {
+        "ExpToNextLevel": 100,
+        "MaxHQLevel": 2,
+        "GemReward": 10
+    },
+    "4": {
+        "ExpToNextLevel": 200,
+        "MaxHQLevel": 3,
+        "GemReward": 10
+    },
+    "5": {
+        "ExpToNextLevel": 400,
+        "MaxHQLevel": 3,
+        "GemReward": 10
+    },
+    "6": {
+        "ExpToNextLevel": 800,
+        "MaxHQLevel": 4,
+        "GemReward": 10
+    },
+    "7": {
+        "ExpToNextLevel": 1000,
+        "MaxHQLevel": 4,
+        "GemReward": 10
+    },
+    "8": {
+        "ExpToNextLevel": 2000,
+        "MaxHQLevel": 5,
+        "GemReward": 10
+    },
+    "9": {
+        "ExpToNextLevel": 4000,
+        "MaxHQLevel": 5,
+        "GemReward": 10
+    },
+    "10": {
+        "ExpToNextLevel": 5000,
+        "MaxHQLevel": 6,
+        "GemReward": 20
+    },
+    "11": {
+        "ExpToNextLevel": 6000,
+        "MaxHQLevel": 6,
+        "GemReward": 20
+    },
+    "12": {
+        "ExpToNextLevel": 8000,
+        "MaxHQLevel": 7,
+        "GemReward": 20
+    },
+    "13": {
+        "ExpToNextLevel": 10000,
+        "MaxHQLevel": 7,
+        "GemReward": 20
+    },
+    "14": {
+        "ExpToNextLevel": 12000,
+        "MaxHQLevel": 8,
+        "GemReward": 20
+    },
+    "15": {
+        "ExpToNextLevel": 14000,
+        "MaxHQLevel": 8,
+        "GemReward": 20
+    },
+    "16": {
+        "ExpToNextLevel": 16000,
+        "MaxHQLevel": 9,
+        "GemReward": 20
+    },
+    "17": {
+        "ExpToNextLevel": 18000,
+        "MaxHQLevel": 9,
+        "GemReward": 20
+    },
+    "18": {
+        "ExpToNextLevel": 20000,
+        "MaxHQLevel": 10,
+        "GemReward": 20
+    },
+    "19": {
+        "ExpToNextLevel": 22000,
+        "MaxHQLevel": 10,
+        "GemReward": 20
+    },
+    "20": {
+        "ExpToNextLevel": 24000,
+        "MaxHQLevel": 10,
+        "GemReward": 20
+    },
+    "21": {
+        "ExpToNextLevel": 26000,
+        "MaxHQLevel": 10,
+        "GemReward": 20
+    },
+    "22": {
+        "ExpToNextLevel": 28000,
+        "MaxHQLevel": 10,
+        "GemReward": 20
+    },
+    "23": {
+        "ExpToNextLevel": 30000,
+        "MaxHQLevel": 10,
+        "GemReward": 20
+    },
+    "24": {
+        "ExpToNextLevel": 32000,
+        "MaxHQLevel": 10,
+        "GemReward": 20
+    },
+    "25": {
+        "ExpToNextLevel": 34000,
+        "MaxHQLevel": 10,
+        "GemReward": 20
+    },
+    "26": {
+        "ExpToNextLevel": 36000,
+        "MaxHQLevel": 10,
+        "GemReward": 20
+    },
+    "27": {
+        "ExpToNextLevel": 38000,
+        "MaxHQLevel": 10,
+        "GemReward": 20
+    },
+    "28": {
+        "ExpToNextLevel": 40000,
+        "MaxHQLevel": 10,
+        "GemReward": 20
+    },
+    "29": {
+        "ExpToNextLevel": 42000,
+        "MaxHQLevel": 10,
+        "GemReward": 20
+    },
+    "30": {
+        "ExpToNextLevel": 44000,
+        "MaxHQLevel": 10,
+        "GemReward": 20
+    },
+    "31": {
+        "ExpToNextLevel": 46000,
+        "MaxHQLevel": 10,
+        "GemReward": 20
+    },
+    "32": {
+        "ExpToNextLevel": 48000,
+        "MaxHQLevel": 10,
+        "GemReward": 20
+    },
+    "33": {
+        "ExpToNextLevel": 50000,
+        "MaxHQLevel": 10,
+        "GemReward": 20
+    },
+    "34": {
+        "ExpToNextLevel": 52000,
+        "MaxHQLevel": 10,
+        "GemReward": 20
+    },
+    "35": {
+        "ExpToNextLevel": 54000,
+        "MaxHQLevel": 10,
+        "GemReward": 20
+    },
+    "36": {
+        "ExpToNextLevel": 56000,
+        "MaxHQLevel": 10,
+        "GemReward": 20
+    },
+    "37": {
+        "ExpToNextLevel": 58000,
+        "MaxHQLevel": 10,
+        "GemReward": 20
+    },
+    "38": {
+        "ExpToNextLevel": 60000,
+        "MaxHQLevel": 10,
+        "GemReward": 20
+    },
+    "39": {
+        "ExpToNextLevel": 62000,
+        "MaxHQLevel": 10,
+        "GemReward": 20
+    },
+    "40": {
+        "ExpToNextLevel": 64000,
+        "MaxHQLevel": 10,
+        "GemReward": 20
+    },
+    "41": {
+        "ExpToNextLevel": 66000,
+        "MaxHQLevel": 10,
+        "GemReward": 20
+    },
+    "42": {
+        "ExpToNextLevel": 68000,
+        "MaxHQLevel": 10,
+        "GemReward": 20
+    },
+    "43": {
+        "ExpToNextLevel": 70000,
+        "MaxHQLevel": 10,
+        "GemReward": 20
+    },
+    "44": {
+        "ExpToNextLevel": 72000,
+        "MaxHQLevel": 10,
+        "GemReward": 20
+    },
+    "45": {
+        "ExpToNextLevel": 74000,
+        "MaxHQLevel": 10,
+        "GemReward": 20
+    },
+    "46": {
+        "ExpToNextLevel": 76000,
+        "MaxHQLevel": 10,
+        "GemReward": 20
+    },
+    "47": {
+        "ExpToNextLevel": 78000,
+        "MaxHQLevel": 10,
+        "GemReward": 20
+    },
+    "48": {
+        "ExpToNextLevel": 80000,
+        "MaxHQLevel": 10,
+        "GemReward": 20
+    },
+    "49": {
+        "ExpToNextLevel": 82000,
+        "MaxHQLevel": 10,
+        "GemReward": 20
+    },
+    "50": {
+        "ExpToNextLevel": 0,
+        "MaxHQLevel": 10,
+        "GemReward": 20
+    }
+}
