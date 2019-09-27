@@ -1402,7 +1402,7 @@ class RushWars(BaseCog):
                 for card_name in i.keys():
                     card_info = self.card_search(card_name)[1]
                     rarity = card_info.Rarity
-                    user_cards[rarity].append(card_info)
+                    user_cards[rarity].append(card_name)
             commanders = cards["commanders"]
             if commanders:
                 for commander in commanders:
@@ -1620,9 +1620,9 @@ class RushWars(BaseCog):
             async with self.config.user(ctx.author).cards() as cards:
                 for card_name in draws.keys():
                     count = draws[card_name]
-                    # card_info = self.card_search(card_name)
-                    # card_type = str(card_info[0]) + "s"
-                    return await ctx.send(card_name)
+                    card_info = self.card_search(card_name)
+                    card_type = str(card_info[0]) + "s"
+                    # return await ctx.send(card_name)
                     # update number of cards
                     cards[card_type][card_name][1] += count
         except Exception as ex:
