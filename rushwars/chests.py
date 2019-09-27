@@ -14,7 +14,7 @@ class Chests:
     def __init__(self, chests):
         if chests in [12, 83]:
             self.chest_type = self.battle_chest_types[2]
-        elif chests % 5 == 0:
+        elif chests % 5 == 0 and chests > 0:
             self.chest_type = self.battle_chest_types[1]
         else:
             self.chest_type = self.battle_chest_types[0]
