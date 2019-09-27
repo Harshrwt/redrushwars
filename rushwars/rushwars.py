@@ -32,8 +32,8 @@ listener = getattr(commands.Cog, "listener", None)
 __version__ = "0.1.0"
 __author__ = "Snowsee"
 
-# (level, number of cards)
-default_card_stats = (1, 1)
+# [level, number of cards]
+default_card_stats = [1, 1]
 
 default_user = {
     "xp": 0,
@@ -101,20 +101,20 @@ max_card_level = 20
 TOTAL_CARDS = 43
 
 LEAGUE_ICONS_BASE_URL = "https://www.rushstats.com/assets/league/"
-# (lower limit, upper limit)
+# (lower limit, upper limit, chest multiplier)
 LEAGUES = {
-    "Rookie": (0, 200),
-    "Bronze": (200, 600),
-    "Silver": (600, 1200),
-    "Gold": (1200, 1800),
-    "Specialist": (1800, 2400),
-    "Ninja": (2400, 3000),
-    "Destroyer": (3000, 4000),
-    "Champion": (4000, 5200),
-    "Legend": (5200, 6500),
-    "Supreme": (6500, 8000),
-    "Superstar": (8000, 10000),
-    "Elite": (10000, 12000)
+    "Rookie": (0, 200, 120),
+    "Bronze": (200, 600, 140),
+    "Silver": (600, 1200, 160),
+    "Gold": (1200, 1800, 180),
+    "Specialist": (1800, 2400, 200),
+    "Ninja": (2400, 3000, 220),
+    "Destroyer": (3000, 4000, 240),
+    "Champion": (4000, 5200, 260),
+    "Legend": (5200, 6500, 280),
+    "Supreme": (6500, 8000, 300),
+    "Superstar": (8000, 10000, 320),
+    "Elite": (10000, 12000, 340)
 }
 
 STAT_EMOTES = {
@@ -362,6 +362,9 @@ class RushWars(BaseCog):
     
         rewards = await self.get_rewards(ctx, stars)
         await ctx.send(embed=rewards)
+
+        chest = await self._chest(ctx)
+        await ctx.send(embed=chest)
 
         # update defense stars of opponent 
         if stars != 3:
@@ -980,7 +983,7 @@ class RushWars(BaseCog):
         # return await ctx.send(total_stars)
         # get user league 
         for item in LEAGUES.keys():
-            low, high = LEAGUES[item]
+            low, high = LEAGUES[item][0], LEAGUES[item][1]
             if total_stars in range(low, high):
                 league = item
         league_url = f"{LEAGUE_ICONS_BASE_URL}{league}.png"
@@ -1231,7 +1234,7 @@ class RushWars(BaseCog):
                 for card_type in ['troops', 'airdrops', 'defenses', 'commanders']:
                     for card in cards_unlocked[card_type]:
                         if card not in list(cards[card_type]):
-                            cards[card_type][card] = (1, 0)
+                            cards[card_type][card] = [1, 0]
         except Exception as ex:
             log.exception(ex)
             return
@@ -1290,7 +1293,7 @@ class RushWars(BaseCog):
         i = 0
         for league in LEAGUES.keys():
             i += 1
-            low, high = LEAGUES[league]
+            low, high = LEAGUES[league][0], LEAGUES[league][1]
             if total_stars in range(low, high):
                 single_star_xp = i
                 break
@@ -1364,21 +1367,302 @@ class RushWars(BaseCog):
         chest_data = self.CHESTS_INFO[chest_type]
 
         hq = await self.config.user(ctx.author).hq()
-        multiplier = self.HQ_LEVELS[str(hq)]["ChestMultiplier"] / 100
-
+        
+        if chest_type == "Free":
+            multiplier = self.HQ_LEVELS[str(hq)]["ChestMultiplier"] / 100
+            desc = f"HQ level {hq} Free Chest"
+        else:
+            try:
+                async with self.config.user(ctx.author).stars() as stars:
+                    att_stars = stars["attack"]
+                    def_stars = stars["defense"]
+            except:
+                log.exception("Error with character sheet.")
+                return
+            total_stars = att_stars + def_stars
+            i = 0
+            for league in LEAGUES.keys():
+                low, high, multi = LEAGUES[league]
+                if total_stars in range(low, high):
+                    multiplier = multi
+                    desc = f"{league.title()} league's {chest_type.title()} Chest"
+                    break
+        
         user_cards = {
             "Common": [],
             "Rare": [],
             "Epic": [],
+            "Commanders": []
         }
         async with self.config.user(ctx.author).cards() as cards:
-            for i in ["troops", "airdrops", "defenses"]:
+            for i in [cards["troops"], cards["airdrops"], cards["defenses"]]:
                 for card_name in i.keys():
-                    card_info = await self.card_search(card_name)
+                    card_info = await self.card_search(card_name)[1]
                     rarity = card_info.Rarity
                     user_cards[rarity].append(card_info)
+            commanders = cards["commanders"]
+            if commanders:
+                for commander in commanders:
+                    user_cards["Commanders"].append(commander)
         
         stacks = chest_data["Stacks"]
+        total_cards = round(chest_data["TotalCards"] * multiplier)
+        rare_chance = chest_data["RareChance"]
+        epic_chance = chest_data["EpicChance"]
+        commander_chance = chest_data["CommanderChance"]
+
+        commander = epic = rare = False
+        random_draw = random.random()
+
+        if random_draw < 1/commander_chance:
+            commander = True
         
-        for i in range(stacks):
-            pass
+        if random_draw < 1/epic_chance:
+            epic = True
+
+        if random_draw < 1/rare_chance:
+            rare = True
+
+        draws = {}
+
+        # code below is a complete mess. 
+        if commander:
+            total_commander = 1
+            total_epics = round((total_cards - 1) * 0.03)
+            total_rares = round((total_cards - 1) * 0.25)
+            total_commons = round((total_cards - 1) * 0.72)
+            total_all = total_commander + total_epics + total_rares + total_commons
+            if total_all > total_cards:
+                diff = total_all - total_cards
+                total_commons -= diff
+            elif total_all < total_cards:
+                diff = total_cards - total_all
+                total_commons += diff
+
+            if stacks == 3:
+                distribution = (1, 1, 0, 1)
+            elif stacks == 4:
+                distribution = (1, 1, 0, 2)
+            elif stacks == 5:
+                distribution = (1, 0, 1, 2)
+            elif stacks == 8:
+                distribution = (1, 1, 2, 4)
+            
+            commander_draw = user_cards["Commanders"]
+            if not commander_draw:
+                commander_draw = user_cards["Epic"]
+                if not commander_draw:
+                    commander_draw = user_cards["Rare"]
+                    if not commander_draw:
+                        commander_draw = user_cards["Common"]
+            draws[random.choice(commander_draw)] = 1
+
+            if distribution[1] > 0:
+                count = self.split_in_integers(total_epics, distribution[1])
+                for i in range(distribution[1]):
+                    epic_draw = user_cards["Epic"]
+                    if not epic_draw:
+                        epic_draw = user_cards["Rare"]
+                        if not epic_draw:
+                            epic_draw = user_cards["Common"]
+                    
+                    drawn = random.choice(epic_draw)
+                    if drawn in draws.keys():
+                        draws[drawn] += count[i]
+                    else:
+                        draws[drawn] = count[i]
+            
+            if distribution[2] > 0:
+                count = self.split_in_integers(total_rares, distribution[2])
+                for i in range(distribution[2]):
+                    rare_draw = user_cards["Rare"]
+                    if not epic_draw:
+                        rare_draw = user_cards["Common"]
+                    
+                    drawn = random.choice(rare_draw)
+                    if drawn in draws.keys():
+                        draws[drawn] += count[i]
+                    else:
+                        draws[drawn] = count[i]
+
+                if distribution[3] > 0:
+                    count = self.split_in_integers(total_commons, distribution[3])
+                    for i in range(distribution[3]):
+                        common_draw = user_cards["Common"]
+                        
+                        drawn = random.choice(common_draw)
+                        if drawn in draws.keys():
+                            draws[drawn] += count[i]
+                        else:
+                            draws[drawn] = count[i]
+                
+        elif epic:
+            total_epics = round(total_cards * 0.03)
+            total_rares = round(total_cards * 0.25)
+            total_commons = round(total_cards * 0.72)
+            total_all = total_epics + total_rares + total_commons
+            if total_all > total_cards:
+                diff = total_all - total_cards
+                total_commons -= diff
+            elif total_all < total_cards:
+                diff = total_cards - total_all
+                total_commons += diff
+
+            if stacks == 3:
+                distribution = (1, 0, 2)
+            elif stacks == 4:
+                distribution = (1, 1, 2)
+            elif stacks == 5:
+                distribution = (1, 2, 2)
+            elif stacks == 8:
+                distribution = (2, 2, 4)
+        
+            if distribution[0] > 0:
+                count = self.split_in_integers(total_epics, distribution[0])
+                for i in range(distribution[0]):
+                    epic_draw = user_cards["Epic"]
+                    if not epic_draw:
+                        epic_draw = user_cards["Rare"]
+                        if not epic_draw:
+                            epic_draw = user_cards["Common"]
+                    
+                    drawn = random.choice(epic_draw)
+                    if drawn in draws.keys():
+                        draws[drawn] += count[i]
+                    else:
+                        draws[drawn] = count[i]
+            
+            if distribution[1] > 0:
+                count = self.split_in_integers(total_rares, distribution[1])
+                for i in range(distribution[1]):
+                    rare_draw = user_cards["Rare"]
+                    if not epic_draw:
+                        rare_draw = user_cards["Common"]
+                
+                drawn = random.choice(rare_draw)
+                if drawn in draws.keys():
+                    draws[drawn] += count[i]
+                else:
+                    draws[drawn] = count[i]
+
+            if distribution[2] > 0:
+                count = self.split_in_integers(total_commons, distribution[2])
+                for i in range(distribution[2]):
+                    common_draw = user_cards["Common"]
+                    
+                    drawn = random.choice(common_draw)
+                    if drawn in draws.keys():
+                        draws[drawn] += count[i]
+                    else:
+                        draws[drawn] = count[i]
+        
+        elif rare:
+            total_rares = round(total_cards * 0.28)
+            total_commons = round(total_cards * 0.72)
+            total_all = total_rares + total_commons
+            if total_all > total_cards:
+                diff = total_all - total_cards
+                total_commons -= diff
+            elif total_all < total_cards:
+                diff = total_cards - total_all
+                total_commons += diff
+
+            if stacks == 3:
+                distribution = (1, 2)
+            elif stacks == 4:
+                distribution = (1, 3)
+            elif stacks == 5:
+                distribution = (2, 3)
+            elif stacks == 8:
+                distribution = (3, 5)
+            
+            if distribution[0] > 0:
+                count = self.split_in_integers(total_rares, distribution[0])
+                for i in range(distribution[0]):
+                    rare_draw = user_cards["Rare"]
+                    if not epic_draw:
+                        rare_draw = user_cards["Common"]
+                    
+                    drawn = random.choice(rare_draw)
+                    if drawn in draws.keys():
+                        draws[drawn] += count[i]
+                    else:
+                        draws[drawn] = count[i]
+
+            if distribution[1] > 0:
+                count = self.split_in_integers(total_commons, distribution[1])
+                for i in range(distribution[1]):
+                    common_draw = user_cards["Common"]
+                    
+                    drawn = random.choice(common_draw)
+                    if drawn in draws.keys():
+                        draws[drawn] += count[i]
+                    else:
+                        draws[drawn] = count[i]
+
+        else:
+            total_commons = total_cards
+
+            count = self.split_in_integers(total_commons, stacks)
+            for i in range(total_cards):
+                common_draw = user_cards["Common"]
+                    
+                drawn = random.choice(common_draw)
+                if drawn in draws.keys():
+                    draws[drawn] += count[i]
+                else:
+                    draws[drawn] = count[i]
+
+        try:
+            async with self.config.user(ctx.author).cards() as cards:
+                for card_name, count in draws:
+                    card_type = await self.card_search(card_name)[0] + "s"
+                    # update number of cards
+                    cards[card_type][card_name][1] += count
+        except Exception as ex:
+            log.exception(ex)
+            return
+        
+        # handle gold 
+        min_gold = round(chest_data["MinGold"] * multiplier)
+        max_gold = round(chest_data["MaxGold"] * multiplier)
+
+        reward_gold = random.randint(min_gold, max_gold)
+
+        gold = await self.config.user(ctx.author).gold()
+        upd_gold = gold + reward_gold
+        await self.config.user(ctx.author).gold.set(upd_gold)
+
+        # return rewards embed
+        embed = discord.Embed(colour=0x999966, title=desc)
+        embed.add_field(name=f"Gold", value=f"{STAT_EMOTES['Gold_Icon']} {gold}")
+        for rarity in user_cards.keys():
+            # embed.add_field()
+            items = user_cards[rarity]
+            for card in draws.keys():
+                count = draws[card]
+                if card in items:
+                    # card_rarity = rarity
+                    card_emote = self.card_emotes(card)
+                    embed.add_field(name=f"{card} {card_emote} x {count}", value=f"Rarity: {rarity}")
+
+        return embed
+
+    def split_in_integers(self, number, num_of_pieces):
+        """Split a number into number of integers."""
+        if num_of_pieces == 1:
+            total_sum = 1
+        else:
+            total_sum = sum(range(1, num_of_pieces))
+
+        parts = []
+        for i in range(num_of_pieces):
+            x = int((i+1) * number / total_sum)
+            parts.append(x)
+        
+        if sum(parts) != number:
+            diff = number - sum(parts)
+            parts[-1] += diff
+        
+        parts.sort()
+        return parts
