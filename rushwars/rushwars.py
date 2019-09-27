@@ -1539,7 +1539,7 @@ class RushWars(BaseCog):
                 count = self.split_in_integers(total_rares, distribution[1])
                 for i in range(distribution[1]):
                     rare_draw = user_cards["Rare"]
-                    if not epic_draw:
+                    if not rare_draw:
                         rare_draw = user_cards["Common"]
                 
                 drawn = random.choice(rare_draw)
@@ -1583,7 +1583,7 @@ class RushWars(BaseCog):
                 count = self.split_in_integers(total_rares, distribution[0])
                 for i in range(distribution[0]):
                     rare_draw = user_cards["Rare"]
-                    if not epic_draw:
+                    if not rare_draw:
                         rare_draw = user_cards["Common"]
                     
                     drawn = random.choice(rare_draw)
