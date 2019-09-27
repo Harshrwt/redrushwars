@@ -1388,7 +1388,7 @@ class RushWars(BaseCog):
                 low, high, multi = LEAGUES[league]
                 if total_stars in range(low, high):
                     multiplier = multi / 100
-                    desc = f"{league.title()} league's {chest_type.title()} Chest"
+                    desc = f"{league.title()} {chest_type.title()} Chest"
                     break
         
         user_cards = {
@@ -1607,7 +1607,7 @@ class RushWars(BaseCog):
             total_commons = total_cards
 
             count = self.split_in_integers(total_commons, stacks)
-            for i in range(stacks):
+            for i in range(stacks+1):
                 common_draw = user_cards["Common"]
                     
                 drawn = random.choice(common_draw)
