@@ -1250,7 +1250,7 @@ class RushWars(BaseCog):
         cost = self.HQ_LEVELS[str(hq)]["AttackCost"]
         
         if cost < 25:
-            available_gold_in_mine = random.choice(range(5, cost))
+            available_gold_in_mine = random.choice(range(5, cost+10))
         else:    
             available_gold_in_mine = random.choice(range(25, cost+10))
 
