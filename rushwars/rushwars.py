@@ -339,9 +339,9 @@ class RushWars(BaseCog):
             stars = 0
         
         try:
-            async with self.config.user(ctx.author).stars() as stars:
-                att_stars = stars["attack"]
-                def_stars = stars["defense"]
+            async with self.config.user(ctx.author).stars() as tot_stars:
+                att_stars = tot_stars["attack"]
+                def_stars = tot_stars["defense"]
         except:
             log.exception("Error with character sheet.")
             return
