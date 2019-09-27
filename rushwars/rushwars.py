@@ -1607,7 +1607,7 @@ class RushWars(BaseCog):
             total_commons = total_cards
 
             count = self.split_in_integers(total_commons, stacks)
-            for i in range(stacks+1):
+            for i in range(stacks):
                 common_draw = user_cards["Common"]
                     
                 drawn = random.choice(common_draw)
