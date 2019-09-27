@@ -84,16 +84,16 @@ base_card_levels = {
 max_card_level = 20
 
 # chopperLvl: (troops, airdrops, defenses)
-chopper_capacity = {
-    1: (3, 1, 4),
-    2: (5, 1, 5),
-    3: (6, 1, 7),
-    4: (6, 1, 9),
-    5: (7, 2, 10),
-    6: (8, 2, 11),
-    7: (9, 2, 12),
-    8: (10, 2, 13)
-}
+# chopper_capacity = {
+#     1: (3, 1, 4),
+#     2: (5, 1, 5),
+#     3: (6, 1, 7),
+#     4: (6, 1, 9),
+#     5: (7, 2, 10),
+#     6: (8, 2, 11),
+#     7: (9, 2, 12),
+#     8: (10, 2, 13)
+# }
 
 TOTAL_CARDS = 43
 
@@ -152,6 +152,7 @@ class RushWars(BaseCog):
 
         self.XP_LEVELS: dict = None
         self.HQ_LEVELS: dict = None
+        self.CHOPPER_LEVELS: dict = None
 
         self.config.register_user(**default_user)
 
@@ -160,6 +161,7 @@ class RushWars(BaseCog):
         try:
             xp_levels_fp = bundled_data_path(self) / "xp_levels.json"
             hq_levels_fp = bundled_data_path(self) / "hq_levels.json"
+            chopper_levels_fp = bundled_data_path(self) / "chopper_levels.json"
         except:
             log.exception("Error with file path.")
 
@@ -167,6 +169,8 @@ class RushWars(BaseCog):
             self.XP_LEVELS = json.load(f)
         with hq_levels_fp.open("r") as f:
             self.HQ_LEVELS = json.load(f)
+        with chopper_levels_fp.open("r") as f:
+            self.CHOPPER_LEVELS = json.load(f)
 
     @commands.group(autohelp=True)
     async def rushwars(self, ctx):
@@ -471,10 +475,10 @@ class RushWars(BaseCog):
             for items in att_data:
                 if i == 1:
                     kind = "Troops"
-                    capacity = chopper_capacity[chopperLvl][0]
+                    capacity = self.CHOPPER_LEVELS[str(chopperLvl)]["TroopHousing"]
                 elif i == 2:
                     kind = "Airdrops"
-                    capacity = chopper_capacity[chopperLvl][1]
+                    capacity = self.CHOPPER_LEVELS[str(chopperLvl)]["AirdropHousing"]
                 elif i == 3:
                     kind = "Commanders"
                     capacity = 1
@@ -532,7 +536,7 @@ class RushWars(BaseCog):
             except:
                 log.exception("Error with character sheet.")
                 return
-            capacity = chopper_capacity[chopperLvl][0]
+            capacity = self.CHOPPER_LEVELS[str(chopperLvl)]["TroopHousing"]
 
         elif card_type == "airdrops":
             try:
@@ -541,7 +545,7 @@ class RushWars(BaseCog):
             except:
                 log.exception("Error with character sheet.")
                 return
-            capacity = chopper_capacity[chopperLvl][1]
+            capacity = self.CHOPPER_LEVELS[str(chopperLvl)]["AirdropHousing"]
 
         elif card_type == "commanders":
             try:
@@ -716,7 +720,7 @@ class RushWars(BaseCog):
             embed.set_author(
                 name=f"{ctx.author.name}'s Defense", icon_url="https://cdn.discordapp.com/attachments/626063027543736320/626338507958386697/Defense.png")
             
-            capacity = chopper_capacity[chopperLvl][2]
+            capacity = self.CHOPPER_LEVELS[str(chopperLvl)]["DefenceHousing"]
             def_str = ""
             total_defense = 0
             # card_info = [(item, items[item]) for item in items.keys()]
@@ -770,7 +774,7 @@ class RushWars(BaseCog):
         except:
             log.exception("Error with character sheet.")
             return
-        capacity = chopper_capacity[chopperLvl][2]
+        capacity = self.CHOPPER_LEVELS[str(chopperLvl)]["DefenceHousing"]
 
         total_selected = self.total_selected(card, data)
         if total_selected >= capacity:
