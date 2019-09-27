@@ -22,7 +22,7 @@
 
 # Overview
 
-Rush Wars Cog is [Red bot](https://github.com/Cog-Creators/Red-DiscordBot) cog to play a simplified version of the game [Rush Wars](https://rushwarsgame.com) (developed by Supercell) on Discord. 
+Rush Wars Cog is [Red bot](https://github.com/Cog-Creators/Red-DiscordBot) cog to play a simplified version of the game [Rush Wars](https://rushwarsgame.com) (developed by Supercell) on Discord.  
 
 > Ready to kick butt and get mega rich? From the creators of Clash of Clans and Clash Royale comes a heroic combat strategy game full of surprises like a laser firin’ robot dinosaur and exploding arcade machines!
 
