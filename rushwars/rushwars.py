@@ -1246,12 +1246,13 @@ class RushWars(BaseCog):
             return
 
     async def get_rewards(self, ctx, reward_stars):
-        chance = random.choice(range(1, 10))
-
-        if chance > 8:
-            available_gold_in_mine = random.choice(range(45, 70))
-        else:
-            available_gold_in_mine = random.choice(range(25, 45))
+        hq = await self.config.user(ctx.author).hq()
+        cost = self.HQ_LEVELS[str(hq)]["AttackCost"]
+        
+        if cost < 25:
+            available_gold_in_mine = random.choice(range(5, cost))
+        else:    
+            available_gold_in_mine = random.choice(range(25, cost+10))
 
         if reward_stars > 0:
             reward_gold = available_gold_in_mine * reward_stars
