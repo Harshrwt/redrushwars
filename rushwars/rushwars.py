@@ -1620,7 +1620,8 @@ class RushWars(BaseCog):
             async with self.config.user(ctx.author).cards() as cards:
                 for card_name in draws.keys():
                     count = draws[card_name]
-                    card_type = self.card_search(card_name)[0] + "s"
+                    card_info = self.card_search(card_name)
+                    card_type = str(card_info[0]) + "s"
                     # update number of cards
                     cards[card_type][card_name][1] += count
         except Exception as ex:
