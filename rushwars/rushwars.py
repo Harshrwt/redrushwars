@@ -1362,7 +1362,10 @@ class RushWars(BaseCog):
 
     async def _chest(self, ctx):
         """To handle chest openings."""
-        c = Chests()
+
+        unlocked_chests = await self.config.user(ctx.author).chests()
+
+        c = Chests(unlocked_chests)
         chest_type = c.chest_type
         chest_data = self.CHESTS_INFO[chest_type]
 
