@@ -1387,7 +1387,7 @@ class RushWars(BaseCog):
             for league in LEAGUES.keys():
                 low, high, multi = LEAGUES[league]
                 if total_stars in range(low, high):
-                    multiplier = multi
+                    multiplier = multi / 100
                     desc = f"{league.title()} league's {chest_type.title()} Chest"
                     break
         
