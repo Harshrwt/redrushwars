@@ -6,6 +6,8 @@ import logging
 from collections import namedtuple
 from typing import Optional
 
+from .chests import Chests
+
 # Discord
 import discord
 
@@ -156,6 +158,7 @@ class RushWars(BaseCog):
         self.XP_LEVELS: dict = None
         self.HQ_LEVELS: dict = None
         self.CHOPPER_LEVELS: dict = None
+        self.CHESTS_INFO: dict = None
 
         self.config.register_user(**default_user)
 
@@ -165,6 +168,7 @@ class RushWars(BaseCog):
             xp_levels_fp = bundled_data_path(self) / "xp_levels.json"
             hq_levels_fp = bundled_data_path(self) / "hq_levels.json"
             chopper_levels_fp = bundled_data_path(self) / "chopper_levels.json"
+            chests_fp = bundled_data_path(self) / "chests.json"
         except:
             log.exception("Error with file path.")
 
@@ -174,6 +178,8 @@ class RushWars(BaseCog):
             self.HQ_LEVELS = json.load(f)
         with chopper_levels_fp.open("r") as f:
             self.CHOPPER_LEVELS = json.load(f)
+        with chests_fp.open("r") as f:
+            self.CHESTS_INFO = json.load(f)
 
     @commands.group(autohelp=True)
     async def rushwars(self, ctx):
@@ -332,14 +338,28 @@ class RushWars(BaseCog):
         else:
             stars = 0
         
+        try:
+            async with self.config.user(ctx.author).stars() as stars:
+                att_stars = stars["attack"]
+                def_stars = stars["defense"]
+        except:
+            log.exception("Error with character sheet.")
+            return
+        
+        total_stars = att_stars + def_stars
+
+        if total_stars < 9:
+            stars = 3 
+        elif total_stars < 10:
+            stars = 1
+
         if stars > 0:
             victory = True
             await ctx.send(f"You win!")
         else:
             victory = False
             await ctx.send("You lose!")
-        
-        
+    
         rewards = await self.get_rewards(ctx, stars)
         await ctx.send(embed=rewards)
 
@@ -1336,3 +1356,29 @@ class RushWars(BaseCog):
         upd_gold = gold - cost
         await self.config.user(ctx.author).gold.set(upd_gold)
         return True
+
+    async def _chest(self, ctx):
+        """To handle chest openings."""
+        c = Chests()
+        chest_type = c.chest_type
+        chest_data = self.CHESTS_INFO[chest_type]
+
+        hq = await self.config.user(ctx.author).hq()
+        multiplier = self.HQ_LEVELS[str(hq)]["ChestMultiplier"] / 100
+
+        user_cards = {
+            "Common": [],
+            "Rare": [],
+            "Epic": [],
+        }
+        async with self.config.user(ctx.author).cards() as cards:
+            for i in ["troops", "airdrops", "defenses"]:
+                for card_name in i.keys():
+                    card_info = await self.card_search(card_name)
+                    rarity = card_info.Rarity
+                    user_cards[rarity].append(card_info)
+        
+        stacks = chest_data["Stacks"]
+        
+        for i in range(stacks):
+            pass
