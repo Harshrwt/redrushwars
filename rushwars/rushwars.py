@@ -153,7 +153,8 @@ class RushWars(BaseCog):
         self.config = Config.get_conf(
             self, 1_070_701_001, force_registration=True)
 
-        self.XP_LEVELSXP_LEVELS: dict = None
+        self.XP_LEVELS: dict = None
+        self.HQ_LEVELS: dict = None
 
         self.config.register_user(**default_user)
 
@@ -161,11 +162,14 @@ class RushWars(BaseCog):
         """This will load all the bundled data into respective variables."""
         try:
             xp_levels_fp = bundled_data_path(self) / "xp_levels.json"
+            hq_levels_fp = bundled_data_path(self) / "hq_levels.json"
         except:
             log.exception("Error with file path.")
 
         with xp_levels_fp.open("r") as f:
             self.XP_LEVELS = json.load(f)
+        with hq_levels_fp.open("r") as f:
+            self.HQ_LEVELS = json.load(f)
 
     @commands.group(autohelp=True)
     async def rushwars(self, ctx):
@@ -970,6 +974,47 @@ class RushWars(BaseCog):
 
         await ctx.send(embed=embed)
     
+    @commands.group(name="upgrade", autohelp=False)
+    async def _upgrade(self, ctx):
+        if not ctx.invoked_subcommand:
+            return await ctx.send("Please specify one of the following to upgrade: hq, chopper or a card.")
+
+    @_upgrade.command(name="hq")
+    async def upgrade_hq(self, ctx):
+        # get new hq level
+        hq = await self.config.user(ctx.author).hq() + 1
+
+        # check if HQ level up is possible user's xp level
+        lvl = await self.config.user(ctx.author).lvl()
+        highest_possible_hq = self.XP_LEVELS[str(lvl)]["MaxHQLevel"]
+        if hq > highest_possible_hq:
+            return await ctx.send("You need to level up to upgrade HQ!")
+        
+        upgrade_cost = self.HQ_LEVELS[str(hq-1)]["UpgradeGold"]
+        
+        msg = await ctx.send(f"Upgrading HQ will cost {upgrade_cost} {STAT_EMOTES['Gold_Icon']}. Continue?")
+        start_adding_reactions(msg, ReactionPredicate.YES_OR_NO_EMOJIS)
+
+        pred = ReactionPredicate.yes_or_no(msg, ctx.author)
+        await ctx.bot.wait_for("reaction_add", check=pred)
+        if pred.result is True:
+            try:
+                gold = await self.config.user(ctx.author).gold()
+                if gold >= upgrade_cost:
+                    await self.config.user(ctx.author).hq.set(hq)
+                    await self.new_hq_cards(ctx, hq)
+                    
+                    upd_gold = gold - upgrade_cost
+                    await self.config.user(ctx.author).gold.set(upd_gold)
+                    return await ctx.send(f"HQ upgraded to level {hq}.")
+                else:
+                    return await ctx.send("You do not have enough gold to upgrade.")
+            except:
+                log.exception("Error with updating character sheet.")
+                return
+        else:
+            return await ctx.send("Upgrade cancelled by the user.")
+        
     def card_search(self, name):
         files = ['troops.csv', 'airdrops.csv',
                  'defenses.csv', 'commanders.csv']
@@ -1088,14 +1133,8 @@ class RushWars(BaseCog):
             total += (number * card_space)
         return total
 
-    async def level_up_hq(self, ctx, lvl: int = None):
+    async def new_hq_cards(self, ctx, hq):
         """Function to handle HQ level ups."""
-        # get current hq level
-        if lvl is None:
-            hq = await self.config.user(ctx.author).hq() + 1
-        else:
-            hq = int(lvl)
-
         # check which cards are unlocked at the new HQ level
         cards_unlocked = {
             "troops": [],
@@ -1120,7 +1159,7 @@ class RushWars(BaseCog):
                 return
             except Exception as ex:
                 return
-        # return cards_unlocked
+
         # update cards to include newly unlocked cards
         try:
             async with self.config.user(ctx.author).cards() as cards:
