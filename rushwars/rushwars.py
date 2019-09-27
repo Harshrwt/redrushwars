@@ -920,7 +920,7 @@ class RushWars(BaseCog):
             log.exception(ex)
             return
 
-    @commands.command(name="profile")
+    @commands.command(name="profile", aliases=["stats"])
     async def profile(self, ctx, member:discord.Member=None):
         """Lookup your or another member's profile stats."""
         if member:
@@ -982,14 +982,15 @@ class RushWars(BaseCog):
 
     @_upgrade.command(name="hq")
     async def upgrade_hq(self, ctx):
+        """Upgrade HQ level."""
         # get new hq level
         hq = await self.config.user(ctx.author).hq() + 1
 
-        # check if HQ level up is possible user's xp level
+        # check if HQ level up is possible with user's xp level
         lvl = await self.config.user(ctx.author).lvl()
         highest_possible_hq = self.XP_LEVELS[str(lvl)]["MaxHQLevel"]
         if hq > highest_possible_hq:
-            return await ctx.send("You need to level up to upgrade HQ!")
+            return await ctx.send("You need more experience to upgrade HQ!")
         
         upgrade_cost = self.HQ_LEVELS[str(hq-1)]["UpgradeGold"]
         
@@ -1008,6 +1009,41 @@ class RushWars(BaseCog):
                     upd_gold = gold - upgrade_cost
                     await self.config.user(ctx.author).gold.set(upd_gold)
                     return await ctx.send(f"HQ upgraded to level {hq}.")
+                else:
+                    return await ctx.send("You do not have enough gold to upgrade.")
+            except:
+                log.exception("Error with updating character sheet.")
+                return
+        else:
+            return await ctx.send("Upgrade cancelled by the user.")
+
+    @_upgrade.command(name="chopper")
+    async def upgrade_chopper(self, ctx):
+        """Upgrade chopper level."""
+        # get new chopper level
+        chopper = await self.config.user(ctx.author).chopper() + 1
+
+        # check if chopper level up is possible 
+        hq = await self.config.user(ctx.author).hq()
+        if chopper > hq:
+            return await ctx.send("You need to upgrade HQ first!")
+        
+        upgrade_cost = self.CHOPPER_LEVELS[str(chopper-1)]["UpgradeGold"]
+        
+        msg = await ctx.send(f"Upgrading Chopper will cost {upgrade_cost} {STAT_EMOTES['Gold_Icon']}. Continue?")
+        start_adding_reactions(msg, ReactionPredicate.YES_OR_NO_EMOJIS)
+
+        pred = ReactionPredicate.yes_or_no(msg, ctx.author)
+        await ctx.bot.wait_for("reaction_add", check=pred)
+        if pred.result is True:
+            try:
+                gold = await self.config.user(ctx.author).gold()
+                if gold >= upgrade_cost:
+                    await self.config.user(ctx.author).chopper.set(chopper)
+                    
+                    upd_gold = gold - upgrade_cost
+                    await self.config.user(ctx.author).gold.set(upd_gold)
+                    return await ctx.send(f"Chopper upgraded to level {chopper}.")
                 else:
                     return await ctx.send("You do not have enough gold to upgrade.")
             except:
