@@ -86,7 +86,7 @@ Unfortunately, due to Discord limitations, you can't add your bot to these serve
 
 The following features will be added in future:
 
-- [ ] HQ and Chopper level ups
+- [X] HQ and Chopper level ups
 - [ ] Commanders
 - [ ] Chests  
 - [ ] Teams and domination
