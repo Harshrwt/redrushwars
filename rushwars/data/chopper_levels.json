@@ -1,0 +1,50 @@
+{
+    "1": {
+        "UpgradeGold": 100,
+        "TroopHousing": 3,
+        "AirdropHousing": 1,
+        "DefenceHousing": 4
+    },
+    "2": {
+        "UpgradeGold": 250,
+        "TroopHousing": 5,
+        "AirdropHousing": 1,
+        "DefenceHousing": 5
+    },
+    "3": {
+        "UpgradeGold": 2500,
+        "TroopHousing": 6,
+        "AirdropHousing": 1,
+        "DefenceHousing": 7
+    },
+    "4": {
+        "UpgradeGold": 5000,
+        "TroopHousing": 6,
+        "AirdropHousing": 1,
+        "DefenceHousing": 9
+    },
+    "5": {
+        "UpgradeGold": 10000,
+        "TroopHousing": 7,
+        "AirdropHousing": 2,
+        "DefenceHousing": 10
+    },
+    "6": {
+        "UpgradeGold": 20000,
+        "TroopHousing": 8,
+        "AirdropHousing": 2,
+        "DefenceHousing": 11
+    },
+    "7": {
+        "UpgradeGold": 50000,
+        "TroopHousing": 9,
+        "AirdropHousing": 2,
+        "DefenceHousing": 12
+    },
+    "8": {
+        "UpgradeGold": 0,
+        "TroopHousing": 10,
+        "AirdropHousing": 2,
+        "DefenceHousing": 13
+    }
+}
