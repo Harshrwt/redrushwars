@@ -63,6 +63,7 @@ default_user = {
     "keys": 5,
     "gold": 200,
     "gems": 150,
+    "chests": 0,
 }
 
 default_defenses = [
