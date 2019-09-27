@@ -233,7 +233,8 @@ class RushWars(BaseCog):
         if sel_trp == 0 or sel_trp == 0:
             return await ctx.send("Please add items to squad! Help: `[p]help squad`")
 
-        if await self.cost_gold(ctx):
+        foo = await self.cost_gold(ctx)
+        if not foo:
             return await ctx.send("You do not have enough gold to cover attack costs.")
         
         for troop in troops.keys():
@@ -1323,7 +1324,8 @@ class RushWars(BaseCog):
         gold = await self.config.user(ctx.author).gold()
         
         if cost >= gold:
-            return LowGoldError
+            return False
         
         upd_gold = gold - cost
         await self.config.user(ctx.author).gold.set(upd_gold)
+        return True
