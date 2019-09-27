@@ -47,10 +47,7 @@ default_user = {
         "airdrops": {
             "Arcade": default_card_stats,
         },
-        "defenses": {
-            "Cannon": default_card_stats,
-            "Mines": default_card_stats,
-        },
+        "defenses": {},
         "commanders": {},
     },
     "active": {
