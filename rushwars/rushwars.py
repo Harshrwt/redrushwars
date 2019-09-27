@@ -141,6 +141,8 @@ STAT_EMOTES = {
 
 LEVEL_BASE_URL = "https://www.rushstats.com/assets/level/"
 
+LowGoldError = "You do not have enough gold"
+
 
 class RushWars(BaseCog):
     """Simulate Rush Wars"""
@@ -227,10 +229,13 @@ class RushWars(BaseCog):
 
         sel_trp = sum(troops.values())
         sel_ardp = sum(airdrops.values())
-
+        
         if sel_trp == 0 or sel_trp == 0:
             return await ctx.send("Please add items to squad! Help: `[p]help squad`")
 
+        if await self.cost_gold(ctx):
+            return await ctx.send("You do not have enough gold to cover attack costs.")
+        
         for troop in troops.keys():
             stats = self.card_search(troop)[1]
             level = await self.rush_card_level(ctx, troop.title(), "troops")
@@ -332,6 +337,7 @@ class RushWars(BaseCog):
         else:
             victory = False
             await ctx.send("You lose!")
+        
         
         rewards = await self.get_rewards(ctx, stars)
         await ctx.send(embed=rewards)
@@ -1308,3 +1314,16 @@ class RushWars(BaseCog):
         await self.config.user(ctx.author).gems.set(upd_gem)
 
         return (level_up_msg, reward_msg)
+
+    async def cost_gold(self, ctx):
+        """Handle rush gold cost."""
+        hq = await self.config.user(ctx.author).hq()
+        cost = self.HQ_LEVELS[str(hq)]["AttackCost"]
+
+        gold = await self.config.user(ctx.author).gold()
+        
+        if cost >= gold:
+            return LowGoldError
+        
+        upd_gold = gold - cost
+        await self.config.user(ctx.author).gold.set(upd_gold)
