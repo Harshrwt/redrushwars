@@ -1641,7 +1641,7 @@ class RushWars(BaseCog):
 
         # return rewards embed
         embed = discord.Embed(colour=0x999966, title=desc)
-        embed.add_field(name=f"Gold", value=f"{STAT_EMOTES['Gold_Icon']} {gold}")
+        embed.add_field(name=f"Gold {STAT_EMOTES['Gold_Icon']}", value=f"{reward_gold}")
         for rarity in user_cards.keys():
             # embed.add_field()
             items = user_cards[rarity]
