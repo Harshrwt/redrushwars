@@ -1753,15 +1753,18 @@ class RushWars(BaseCog):
         selected = None
 
         opponents = await self.config.all_users()
-        for opponent in opponents:
+        for opponent_id in opponents:
             # return await ctx.send(opponent)
-            if opponent == ctx.author.id:
+            if opponent_id == ctx.author.id:
                 continue
-            opponent_name_with_disc = f"{opponent.name}{opponent.discriminator}"
-            opponent_stars = await self.get_stars(opponent_name_with_disc)
+            
+            opponent = ctx.guild.get_member(opponent_id)
+            # try:
+            #     opponent =  bot.get_users
+            opponent_stars = await self.get_stars(opponent)
             return await ctx.send(f"Opp {opponent_stars}")
             if user_stars in range(opponent_stars-100, opponent_stars+1000): # set to 1000 for testing only
-                if opponents[opponent]["active"]["defenses"]:
+                if opponents[opponent_id]["active"]["defenses"]:
                     selected = opponent
                     break
             else:
