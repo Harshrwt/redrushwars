@@ -1759,10 +1759,8 @@ class RushWars(BaseCog):
                 continue
             
             opponent = ctx.guild.get_member(opponent_id)
-            # try:
-            #     opponent =  bot.get_users
             opponent_stars = await self.get_stars(opponent)
-            return await ctx.send(f"Opp {opponent_stars}")
+
             if user_stars in range(opponent_stars-100, opponent_stars+1000): # set to 1000 for testing only
                 if opponents[opponent_id]["active"]["defenses"]:
                     selected = opponent
