@@ -352,7 +352,7 @@ class RushWars(BaseCog):
         rewards = await self.get_rewards(ctx, stars)
         await ctx.send(embed=rewards)
         
-        open_chest = await self.check_keys(ctx, stars)
+        open_chest = await self.handle_keys(ctx, stars)
         if open_chest:
             chest = await self._chest(ctx)
             await ctx.send(embed=chest)
@@ -1655,6 +1655,9 @@ class RushWars(BaseCog):
         upd_gold = gold + reward_gold
         await self.config.user(ctx.author).gold.set(upd_gold)
 
+        # increase number of chests
+        await self.config.user(ctx.author).chests.set(unlocked_chests+1)
+
         # return rewards embed
         embed = discord.Embed(colour=0x98D9EB, title=desc)
         embed.add_field(name=f"Gold {STAT_EMOTES['Gold_Icon']}", value=f"{reward_gold}")
@@ -1685,8 +1688,8 @@ class RushWars(BaseCog):
         parts.sort()
         return parts
 
-    async def check_keys(self, ctx, stars):
-        """Determine whether to open chest or not."""
+    async def handle_keys(self, ctx, stars):
+        """Handle keys and check whether to open chest or not."""
         temp_stars = await self.config.user(ctx.author).temp_stars()
         keys = await self.config.user(ctx.author).keys()
 
@@ -1695,6 +1698,8 @@ class RushWars(BaseCog):
             if temp_stars >= 5:
                 # update config variable 
                 await self.config.user(ctx.author).temp_stars.set(temp_stars - 5)
+                # update keys
+                await self.config.user(ctx.author).keys.set(keys-1)
                 return True
             else:
                 await self.config.user(ctx.author).temp_stars.set(temp_stars)
