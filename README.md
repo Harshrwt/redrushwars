@@ -89,7 +89,7 @@ The following features will be added in future:
 - [X] HQ and Chopper level ups
 - [ ] Commanders
 - [X] Chests - Needs improvements  
-- [ ] Key system  
+- [X] Key system  
 - [ ] Card level ups
 - [ ] Teams and domination
 - [ ] Better matchmaking
