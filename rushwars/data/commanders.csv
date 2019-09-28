@@ -1,6 +1,6 @@
-Name,Att,Hp,Targets,Space,Rarity,UnlockLvl,AttSpeed,Description
-Lady Grenade,
-Bearman,
-Mother,
-Coach,
-"B.I.G.",
+Name,Att,Hp,Targets,Rarity,UnlockLvl,AttSpeed,Description
+Lady Grenade,120,600,0,Commander,5,1.8,"Straight outta Centre Court, Lady Grenade's preferred greeting is a savage chest bump she likes to call the Grand Slam.\n\nABILITY: Serves up a volley of grenades."
+Bearman,70,650,0,Commander,6,0.8,"Being raised by bears gave Bearman a unique perspective on life, but he never learned to talk so no one knows what it is.\n\nABILITY: Charges forward, smashing through and into things."
+Mother,80,1000,2,Commander,7,1,"From the safety of her weird egg tank, Mother runs her tech startup. It takes a bold CEO to add a cannon to their office.\n\nABILITY: Hires a couple of loyal Henchmen."
+Coach,90,500,2,Commander,8,1.1,"Always referring to himself in the 3rd person, Coach believes in shouting first and asking questions later – said Coach.\n\nABILITY: Boosts your units' attack speed and move speed."
+"B.I.G.",110,900,2,Commander,9,0.9,"Notorious for a' firin' his laser, B.I.G. also loves to read archaeology novels while imprisoned inside the robot dinosaur.\n\nABILITY: Jumps forward and lands with a S.T.O.M.P."
