@@ -1238,7 +1238,7 @@ class RushWars(BaseCog):
             await ctx.send(f"You got 1 {STAT_EMOTES['Keys']}!")
 
     @_collect.command(name="free")
-    @commands.cooldown(rate=1, per=10800, type=commands.BucketType.user)
+    @commands.cooldown(rate=1, per=10, type=commands.BucketType.user)
     async def collect_free_chest(self, ctx):
         """Collect a free chest once every 3 hours: `[p]collect free`"""
         chest = await self._chest(ctx, "Free")
@@ -1574,7 +1574,7 @@ class RushWars(BaseCog):
             "Common": [],
             "Rare": [],
             "Epic": [],
-            "Commanders": []
+            "Commander": []
         }
         async with self.config.user(ctx.author).cards() as cards:
             for i in [cards["troops"], cards["airdrops"], cards["defenses"]]:
@@ -1585,7 +1585,7 @@ class RushWars(BaseCog):
             commanders = cards["commanders"]
             if commanders:
                 for commander in commanders:
-                    user_cards["Commanders"].append(commander)
+                    user_cards["Commander"].append(commander)
         
         stacks = chest_data["Stacks"]
         total_cards = round(chest_data["TotalCards"] * multiplier)
@@ -1608,8 +1608,11 @@ class RushWars(BaseCog):
         draws = {}
 
         # guaranteed commander in 1st box of HQ 5
-        if hq == 5:
-            commander = True
+        if commanders:
+            for item in commanders:
+                num_of_cards = commanders[item][1]
+                if num_of_cards < 1 and hq == 5:
+                    commander = True
 
         # code below is a complete mess. 
         # move this to chests.py 
