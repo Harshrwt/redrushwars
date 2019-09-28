@@ -66,6 +66,7 @@ default_user = {
     "gold": 200,
     "gems": 150,
     "chests": 0,
+    "temp_stars": 0
 }
 
 default_defenses = [
@@ -350,9 +351,11 @@ class RushWars(BaseCog):
     
         rewards = await self.get_rewards(ctx, stars)
         await ctx.send(embed=rewards)
-
-        chest = await self._chest(ctx)
-        await ctx.send(embed=chest)
+        
+        open_chest = await self.check_keys(ctx, stars)
+        if open_chest:
+            chest = await self._chest(ctx)
+            await ctx.send(embed=chest)
 
         # update defense stars of opponent 
         if stars != 3:
@@ -1681,3 +1684,24 @@ class RushWars(BaseCog):
         
         parts.sort()
         return parts
+
+    async def check_keys(self, ctx, stars):
+        """Determine whether to open chest or not."""
+        temp_stars = await self.config.user(ctx.author).temp_stars()
+        keys = await self.config.user(ctx.author).keys()
+
+        if keys > 0:
+            temp_stars += stars
+            if temp_stars >= 5:
+                # update config variable 
+                await self.config.user(ctx.author).temp_stars.set(temp_stars - 5)
+                return True
+            else:
+                await self.config.user(ctx.author).temp_stars.set(temp_stars)
+                return False
+        if keys < 0:
+            temp_stars += stars
+            if temp_stars > 5:
+                temp_stars = 5
+            await self.config.user(ctx.author).temp_stars.set(temp_stars)
+            return False
