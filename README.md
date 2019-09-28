@@ -22,7 +22,7 @@
 
 # Overview
 
-Rush Wars Cog is [Red bot](https://github.com/Cog-Creators/Red-DiscordBot) cog to play a simplified version of the game [Rush Wars](https://rushwarsgame.com) (developed by Supercell) on Discord.  
+Rush Wars Cog is a [Red bot](https://github.com/Cog-Creators/Red-DiscordBot) cog to play a simplified version of the game [Rush Wars](https://rushwarsgame.com) (developed by Supercell) on Discord.  
 
 > Ready to kick butt and get mega rich? From the creators of Clash of Clans and Clash Royale comes a heroic combat strategy game full of surprises like a laser firin’ robot dinosaur and exploding arcade machines!
 
@@ -50,8 +50,6 @@ The cog replicates the real game in a number of ways while adapting to the text-
 ---
 
 ## Installation
-
-**Note**: The cog isn't stable right now. A lot of features are yet to be shipped in. I strongly recommend against adding the cog to your bot at the moment.  
 
 First make sure you have Red Bot V3 installed.
 
@@ -88,7 +86,7 @@ The following features will be added in future:
 
 - [X] HQ and Chopper level ups
 - [X] Commanders
-- [X] Chests - Needs improvements  
+- [X] Boxes - Needs improvements  
 - [X] Key system  
 - [X] Card level ups
 - [ ] Teams and domination
