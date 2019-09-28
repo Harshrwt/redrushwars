@@ -1216,7 +1216,7 @@ class RushWars(BaseCog):
     @_collect.command(name="freechest")
     @commands.cooldown(rate=1, per=10800, type=commands.BucketType.user)
     async def collect_free_chest(self, ctx):
-        chest = await self._chest(ctx)
+        chest = await self._chest(ctx, "Free")
         await ctx.send(embed=chest)
     
     def card_search(self, name):
