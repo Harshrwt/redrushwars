@@ -1749,7 +1749,7 @@ class RushWars(BaseCog):
 
     async def matchmaking(self, ctx):
         user_stars = await self.get_stars(ctx.author)
-        return await ctx.send(f"`{ctx.author}`")
+        # return await ctx.send(f"`{ctx.author}`")
         selected = None
 
         opponents = await self.config.all_users()
