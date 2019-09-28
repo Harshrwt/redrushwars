@@ -317,7 +317,7 @@ class RushWars(BaseCog):
         attack_str += self.rush_strings(airdrop)
         defense_str = self.rush_strings(defense)
 
-        embed = discord.Embed(colour=0x999966, title="Battle Info",
+        embed = discord.Embed(colour=0x98D9EB, title="Battle Info",
                               description="Will you get mega rich after this battle?")
         embed.set_author(name=f"{player} vs {opponent}",
                          icon_url="https://cdn.discordapp.com/attachments/622323508755693581/626058519929684027/Leaderboard.png")
@@ -498,7 +498,7 @@ class RushWars(BaseCog):
                 return await ctx.send(f"Error with character sheet!")
                 log.exception(f"Error with character sheet: {ex}!")
 
-            embed = discord.Embed(colour=0x999966,
+            embed = discord.Embed(colour=0x98D9EB,
                                   description="Is your squad strong enough to kick butt and get mega rich?")
             embed.set_author(
                 name=f"{ctx.author.name}'s Squad", icon_url="https://cdn.discordapp.com/attachments/626063027543736320/626719420219392010/SilverStar.png")
@@ -746,7 +746,7 @@ class RushWars(BaseCog):
                 return await ctx.send(f"Error with character sheet!")
                 log.exception(f"Error with character sheet: {ex}!")
 
-            embed = discord.Embed(colour=0x999966,
+            embed = discord.Embed(colour=0x98D9EB,
                                   description="Is your defense strong enough to protect your treasures?")
             embed.set_author(
                 name=f"{ctx.author.name}'s Defense", icon_url="https://cdn.discordapp.com/attachments/626063027543736320/626338507958386697/Defense.png")
@@ -918,7 +918,7 @@ class RushWars(BaseCog):
     @commands.command(name="cards")
     async def cards(self, ctx):
         """Shows all the cards you can unlock."""
-        embed = discord.Embed(colour=0x999966, title="Cards")
+        embed = discord.Embed(colour=0x98D9EB, title="Cards")
         try:
             async with self.config.user(ctx.author).cards() as cards:
                 embeds = []
@@ -991,7 +991,7 @@ class RushWars(BaseCog):
         # xp required for next level
         next_xp = self.XP_LEVELS[str(lvl)]["ExpToNextLevel"]
 
-        embed = discord.Embed(colour=0x999966)
+        embed = discord.Embed(colour=0x98D9EB)
         # embed.set_thumbnail(url=league_url)
         embed.set_author(name=f"{user.name}'s Profile", icon_url=f"{LEVEL_BASE_URL}{lvl}.png")
         embed.add_field(name="HQ Level", value=f"{STAT_EMOTES['HQ']} {hq}")
@@ -1313,7 +1313,7 @@ class RushWars(BaseCog):
         #     log.exception("Error with character sheet.")
         #     return
 
-        embed = discord.Embed(colour=0x999966, title="Rewards")
+        embed = discord.Embed(colour=0x98D9EB, title="Rewards")
         embed.add_field(name="Stars", value=f"{STAT_EMOTES['Stars']} {reward_stars}")
         embed.add_field(name="Gold", value=f"{STAT_EMOTES['Gold_Icon']} {reward_gold}")
         embed.add_field(name="Experience", value=f"{STAT_EMOTES['Experience']} {reward_xp}")
@@ -1640,7 +1640,7 @@ class RushWars(BaseCog):
         await self.config.user(ctx.author).gold.set(upd_gold)
 
         # return rewards embed
-        embed = discord.Embed(colour=0x999966, title=desc)
+        embed = discord.Embed(colour=0x98D9EB, title=desc)
         embed.add_field(name=f"Gold {STAT_EMOTES['Gold_Icon']}", value=f"{reward_gold}")
         for rarity in user_cards.keys():
             # embed.add_field()
