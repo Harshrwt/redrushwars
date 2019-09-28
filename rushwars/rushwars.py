@@ -611,7 +611,10 @@ class RushWars(BaseCog):
             return await ctx.send(f"{card.title()} does not exist.")
 
         card_type = str(card_info[0]) + "s"
-        card_space = int(card_info[1].Space)
+        if card_type == "commanders":
+            card_space = 1
+        else:
+            card_space = int(card_info[1].Space)
 
         chopperLvl = await self.config.user(ctx.author).chopper()
 
@@ -965,11 +968,11 @@ class RushWars(BaseCog):
         else:
             return await ctx.send("Reset cancelled by the user.")
 
-    @commands.command(name="sethq")
-    async def set_hq(self, ctx, lvl: int = None):
-        await self.new_hq_cards(ctx, lvl)
-        await self.config.user(ctx.author).hq.set(lvl)
-        await ctx.send("Done")
+    # @commands.command(name="sethq")
+    # async def set_hq(self, ctx, lvl: int = None):
+    #     await self.new_hq_cards(ctx, lvl)
+    #     await self.config.user(ctx.author).hq.set(lvl)
+    #     await ctx.send("Done")
 
     @commands.command(name="cards")
     async def cards(self, ctx):
