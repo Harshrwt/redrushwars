@@ -454,10 +454,10 @@ class RushWars(BaseCog):
         card = data[1]
 
         color = self.color_lookup(card.Rarity)
-        title_name = card.Name.replace(" ", "_")
-        thumb_name = card.Name.replace(" ", "-")
-        url = f"https://rushwars.fandom.com/wiki/{title_name}"
-        thumbnail_url = f"https://www.rushstats.com/assets/{card_type}/{thumb_name}.png"
+        url_name = card.Name.replace(" ", "-")
+        url = f"https://rushwars.fandom.com/wiki/{url_name}"
+        url = f"https://www.rushstats.com/cards/{card_type}/B.I.G."
+        thumbnail_url = f"https://www.rushstats.com/assets/{card_type}/{url_name}.png"
         description = f"{card.Description}"
 
         if "â" in description:
