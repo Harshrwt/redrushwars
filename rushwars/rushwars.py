@@ -464,12 +464,14 @@ class RushWars(BaseCog):
         if level is None:
             level = base_card_levels[(card.Rarity).lower()]
 
+        await ctx.send(description)
+
         embed = discord.Embed(colour=color, title=card.Name,
                               description=description, url=url)
         embed.set_thumbnail(url=thumbnail_url)
         embed.add_field(
             name="Level <:RW_Level:625788888480350216>", value=level)
-
+        
         if card_type == 'troop' or card_type == 'defense' or card_type == 'commander':
             lvl_stats = [int(card.Hp), int(card.Att)]
             upd_stats = self.card_level(
