@@ -44,7 +44,7 @@
         "MinGold": 30,
         "MaxGold": 40
     },
-    "Defence": {
+    "Defense": {
         "TotalCards": 12,
         "Stacks": 4,
         "RareChance": 6,
