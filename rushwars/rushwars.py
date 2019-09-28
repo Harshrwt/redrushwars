@@ -5,6 +5,7 @@ import random
 import logging
 from collections import namedtuple
 from typing import Optional
+from math import ceil
 
 from .chests import Chests
 
@@ -1618,8 +1619,8 @@ class RushWars(BaseCog):
         # move this to chests.py 
         if commander:
             total_commander = 1
-            total_epics = round((total_cards - 1) * 0.03)
-            total_rares = round((total_cards - 1) * 0.25)
+            total_epics = ceil((total_cards - 1) * 0.03)
+            total_rares = ceil((total_cards - 1) * 0.25)
             total_commons = round((total_cards - 1) * 0.72)
             total_all = total_commander + total_epics + total_rares + total_commons
             if total_all > total_cards:
@@ -1687,8 +1688,8 @@ class RushWars(BaseCog):
                             draws[drawn] = count[i]
                 
         elif epic:
-            total_epics = round(total_cards * 0.03)
-            total_rares = round(total_cards * 0.25)
+            total_epics = ceil(total_cards * 0.03)
+            total_rares = ceil(total_cards * 0.25)
             total_commons = round(total_cards * 0.72)
             total_all = total_epics + total_rares + total_commons
             if total_all > total_cards:
@@ -1747,7 +1748,7 @@ class RushWars(BaseCog):
                         draws[drawn] = count[i]
         
         elif rare:
-            total_rares = round(total_cards * 0.28)
+            total_rares = ceil(total_cards * 0.28)
             total_commons = round(total_cards * 0.72)
             total_all = total_rares + total_commons
             if total_all > total_cards:
