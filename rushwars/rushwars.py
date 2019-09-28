@@ -1800,7 +1800,7 @@ class RushWars(BaseCog):
         await self.config.user(ctx.author).chests.set(unlocked_chests+1)
 
         # return rewards embed
-        embed = discord.Embed(colour=0x98D9EB, title=desc)
+        embed = discord.Embed(colour=0x98D9EB)
         embed.set_author(name=desc, icon_url=f"https://www.rushstats.com/assets/chest/{chest_type}.png")
 
         if reward_gem:
