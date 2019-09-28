@@ -1,6 +1,6 @@
 <h1 align="center">
   <br>
-  <a href="#"><img src="https://i.imgur.com/6O2HmHt.png" alt="Rush Wars Cog"></a>
+  <a href="http://snowsee.github.io/rushwars-cog"><img src="https://i.imgur.com/6O2HmHt.png" alt="Rush Wars Cog"></a>
   <br>
   Rush Wars Cog
   <br>
@@ -77,6 +77,8 @@ Make sure that you use the `[p]cog update` command to periodically update your c
 - [Rush Bot Emotes](https://discord.gg/8euG6v8)
 
 Unfortunately, due to Discord limitations, you can't add your bot to these servers directly. In order to have your bot added to the abovementioned servers, you must send me a direct message with your bot's OAuth invite link. While I know this isn't ideal, this is currently the only working way. I'll work on adding an option to disable emotes in the future.  
+
+My Discord username: Snowsy#0592
 
 ---
 

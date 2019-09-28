@@ -212,9 +212,9 @@ class RushWars(BaseCog):
         except:
             log.exception("Error with character sheet.")
             return
-        
+
         total_stars = att_stars + def_stars
-        
+
         if member:
             try:
                 async with self.config.user(member).active() as active:
@@ -229,7 +229,7 @@ class RushWars(BaseCog):
             opponent_stars = await self.get_stars(member)
             if total_stars - opponent_stars >= 100:
                 return await ctx.send(f"Can't attack {opponent} because of large difference in stars.")
-            
+
             if total_stars < 10:
                 await ctx.send("First 4 battles must be against computer. Changing to computer...")
                 defenses = random.choice(default_defenses)
@@ -252,25 +252,25 @@ class RushWars(BaseCog):
         attps = 0
         def_hp = 0
         def_attps = 0
-        user_avg_levels = [0, 0]    #[iterations, value]
+        user_avg_levels = [0, 0]  # [iterations, value]
 
         sel_trp = sum(troops.values())
         sel_ardp = sum(airdrops.values())
-        
+
         if sel_trp == 0 or sel_trp == 0:
             return await ctx.send("Please add items to squad! Help: `[p]help squad`")
 
         foo = await self.cost_gold(ctx)
         if not foo:
             return await ctx.send("You do not have enough gold to cover attack costs.")
-        
+
         for troop in troops.keys():
             stats = self.card_search(troop)[1]
             level = await self.rush_card_level(ctx, troop.title(), "troops")
             lvl_stats = [int(stats.Hp), int(stats.Att)]
             upd_stats = self.card_level(
                 level, lvl_stats, stats.Rarity, "troops")
-            
+
             count = troops[troop]
 
             hp += upd_stats[0] * count
@@ -284,13 +284,13 @@ class RushWars(BaseCog):
         for airdrop in airdrops.keys():
             stats = self.card_search(airdrop)[1]
             level = await self.rush_card_level(ctx, airdrop.title(), "airdrops")
-            
+
             lvl_stats = [int(stats.Duration)]
             upd_stats = self.card_level(
                 level, lvl_stats, stats.Rarity, "airdrops")
-            
+
             count = airdrops[airdrop]
-            
+
             duration = upd_stats[0] * count
 
             ability = stats.Ability
@@ -313,7 +313,7 @@ class RushWars(BaseCog):
             lvl_stats = [int(stats.Hp), int(stats.Att)]
             upd_stats = self.card_level(
                 level, lvl_stats, stats.Rarity, "commanders")
-        
+
             count = commanders[commander]
 
             hp += upd_stats[0] * count
@@ -323,24 +323,25 @@ class RushWars(BaseCog):
 
             user_avg_levels[0] += 1
             user_avg_levels[1] += level
-        
+
         user_avg_level = round(user_avg_levels[1]/user_avg_levels[0])
-        
+
         for defense in defenses.keys():
             stats = self.card_search(defense)[1]
             if member:
                 level = await self.rush_card_level(ctx, defense.title(), "defenses")
             else:
-                level = random.choice(range(user_avg_level-1, user_avg_level+2))
+                level = random.choice(
+                    range(user_avg_level-1, user_avg_level+2))
                 if level < 1:
                     level = 1
 
             lvl_stats = [int(stats.Hp), int(stats.Att)]
             upd_stats = self.card_level(
                 level, lvl_stats, stats.Rarity, "defenses")
-            
+
             count = defenses[defense]
-            
+
             def_hp += upd_stats[0] * count
             def_att = upd_stats[1] * count
             def_attps += (def_att/float(stats.AttSpeed))
@@ -348,7 +349,8 @@ class RushWars(BaseCog):
         troop = [(troop, troops[troop]) for troop in troops.keys()]
         airdrop = [(airdrop, airdrops[airdrop]) for airdrop in airdrops.keys()]
         defense = [(defense, defenses[defense]) for defense in defenses.keys()]
-        commander = [(commander, commanders[commander]) for commander in commanders.keys()]
+        commander = [(commander, commanders[commander])
+                     for commander in commanders.keys()]
 
         attack_str = "`TROOPS`\n"
         attack_str += self.rush_strings(troop)
@@ -370,7 +372,7 @@ class RushWars(BaseCog):
             name="Defense <:RW_Defenses:626339085501333504>", value=defense_str)
         await ctx.send(embed=embed)
 
-        # battle logic 
+        # battle logic
         res = hp/def_attps - def_hp/attps
         if res > 8:
             stars = 3
@@ -382,7 +384,7 @@ class RushWars(BaseCog):
             stars = 0
 
         if total_stars < 9:
-            stars = 3 
+            stars = 3
         elif total_stars < 10:
             stars = 1
 
@@ -392,16 +394,16 @@ class RushWars(BaseCog):
         else:
             victory = False
             await ctx.send("You lose!")
-    
+
         rewards = await self.get_rewards(ctx, stars)
         await ctx.send(embed=rewards)
-        
+
         open_box = await self.handle_keys(ctx, stars)
         if open_box:
             box = await self._box(ctx)
             await ctx.send(embed=box)
 
-        # update defense stars of opponent 
+        # update defense stars of opponent
         if stars != 3:
             if member:
                 async with self.config.user(member).stars() as member_stars:
@@ -427,13 +429,16 @@ class RushWars(BaseCog):
         keys = await self.config.user(ctx.author).keys()
 
         embed = discord.Embed(colour=0x98D9EB, title="Rush Info")
-        embed.add_field(name="Attack Cost", value=f"{STAT_EMOTES['Gold_Icon']} {attack_cost}")
-        embed.add_field(name="Stars Till Next Box", value=f"{STAT_EMOTES['Stars']} {5 - temp_stars}")
-        embed.add_field(name="Defense Box", value=f"{STAT_EMOTES['Stars']} {5 - temp_stars}")
+        embed.add_field(name="Attack Cost",
+                        value=f"{STAT_EMOTES['Gold_Icon']} {attack_cost}")
+        embed.add_field(name="Stars Till Next Box",
+                        value=f"{STAT_EMOTES['Stars']} {5 - temp_stars}")
+        embed.add_field(name="Defense Box",
+                        value=f"{STAT_EMOTES['Stars']} {5 - temp_stars}")
         embed.add_field(name="Keys", value=f"{STAT_EMOTES['Keys']} {keys}")
-        
+
         await ctx.send(embed=embed)
-    
+
     @commands.command()
     @commands.cooldown(rate=1, per=5, type=commands.BucketType.guild)
     async def card(self, ctx, card_name: str, level: int = None):
@@ -461,7 +466,7 @@ class RushWars(BaseCog):
 
         if "â" in description:
             description = description.replace("â", "-")
-        
+
         description = description.replace("\\n\\n", '\n\n')
 
         if level is None:
@@ -472,7 +477,7 @@ class RushWars(BaseCog):
         embed.set_thumbnail(url=thumbnail_url)
         embed.add_field(
             name="Level", value=f"<:RW_Level:625788888480350216> {level}")
-        
+
         if card_type == 'troop' or card_type == 'defense' or card_type == 'commander':
             lvl_stats = [int(card.Hp), int(card.Att)]
             upd_stats = self.card_level(
@@ -563,10 +568,12 @@ class RushWars(BaseCog):
             for items in att_data:
                 if i == 1:
                     kind = "Troops"
-                    capacity = self.CHOPPER_LEVELS[str(chopperLvl)]["TroopHousing"]
+                    capacity = self.CHOPPER_LEVELS[str(
+                        chopperLvl)]["TroopHousing"]
                 elif i == 2:
                     kind = "Airdrops"
-                    capacity = self.CHOPPER_LEVELS[str(chopperLvl)]["AirdropHousing"]
+                    capacity = self.CHOPPER_LEVELS[str(
+                        chopperLvl)]["AirdropHousing"]
                 elif i == 3:
                     kind = "Commanders"
                     capacity = 1
@@ -584,15 +591,17 @@ class RushWars(BaseCog):
                         if count <= 0:
                             continue
                         sqd_str += f"{card_emote} `{card_name}` x{count}\n"
-                        
-                        card_space = int((self.card_search(card_name)[1]).Space)
+
+                        card_space = int(
+                            (self.card_search(card_name)[1]).Space)
                         total_type += count * card_space
-                
+
                 if sqd_str == "":
                     sqd_str = f"No {kind.lower()} in squad."
                 type_emote = self.type_emotes(kind)
 
-                embed.add_field(name=f"{kind} ({total_type}/{capacity}) {type_emote}", value=sqd_str)
+                embed.add_field(
+                    name=f"{kind} ({total_type}/{capacity}) {type_emote}", value=sqd_str)
 
             await ctx.send(embed=embed)
 
@@ -814,7 +823,7 @@ class RushWars(BaseCog):
                                   description="Is your defense strong enough to protect your treasures?")
             embed.set_author(
                 name=f"{ctx.author.name}'s Defense", icon_url="https://cdn.discordapp.com/attachments/626063027543736320/626338507958386697/Defense.png")
-            
+
             capacity = self.CHOPPER_LEVELS[str(chopperLvl)]["DefenceHousing"]
             def_str = ""
             total_defense = 0
@@ -831,12 +840,12 @@ class RushWars(BaseCog):
                     card_space = int((self.card_search(card_name)[1]).Space)
                     total_defense += count * card_space
 
-
             if def_str == "":
                 def_str = "No defenses in squad."
 
             emote = self.type_emotes("Defenses")
-            embed.add_field(name=f"Defenses ({total_defense}/{capacity}) {emote}", value=def_str)
+            embed.add_field(
+                name=f"Defenses ({total_defense}/{capacity}) {emote}", value=def_str)
 
             await ctx.send(embed=embed)
 
@@ -1022,13 +1031,13 @@ class RushWars(BaseCog):
 
     @commands.command(name="profile", aliases=["stats"])
     @commands.cooldown(rate=1, per=10, type=commands.BucketType.user)
-    async def profile(self, ctx, member:discord.Member=None):
+    async def profile(self, ctx, member: discord.Member = None):
         """Lookup your or another member's profile stats."""
         if member:
             user = member
         else:
             user = ctx.author
-        
+
         try:
             hq = await self.config.user(user).hq()
             chopper = await self.config.user(user).chopper()
@@ -1048,34 +1057,41 @@ class RushWars(BaseCog):
         except:
             log.exception("Error with character sheet.")
             return
-        
+
         total_stars = att_stars + def_stars
         # return await ctx.send(total_stars)
-        # get user league 
+        # get user league
         for item in LEAGUES.keys():
             low, high = LEAGUES[item][0], LEAGUES[item][1]
             if total_stars in range(low, high):
                 league = item
         league_url = f"{LEAGUE_ICONS_BASE_URL}{league}.png"
-        
+
         # xp required for next level
         next_xp = self.XP_LEVELS[str(lvl)]["ExpToNextLevel"]
 
         embed = discord.Embed(colour=0x98D9EB)
         # embed.set_thumbnail(url=league_url)
-        embed.set_author(name=f"{user.name}'s Profile", icon_url=f"{LEVEL_BASE_URL}{lvl}.png")
+        embed.set_author(name=f"{user.name}'s Profile",
+                         icon_url=f"{LEVEL_BASE_URL}{lvl}.png")
         embed.add_field(name="HQ Level", value=f"{STAT_EMOTES['HQ']} {hq}")
-        embed.add_field(name="Chopper Level", value=f"{STAT_EMOTES['Chopper']} {chopper}")
+        embed.add_field(name="Chopper Level",
+                        value=f"{STAT_EMOTES['Chopper']} {chopper}")
         embed.add_field(name="Keys", value=f"{STAT_EMOTES['Keys']} {keys}/5")
-        embed.add_field(name="Stars", value=f"{STAT_EMOTES[league]} {total_stars}")
-        embed.add_field(name="Attack Stars", value=f"{STAT_EMOTES['Attack Stars']} {att_stars}")
-        embed.add_field(name="Defense Stars", value=f"{STAT_EMOTES['Defense Stars']} {def_stars}")
-        embed.add_field(name="Gold", value=f"{STAT_EMOTES['Gold_Icon']} {gold}")
+        embed.add_field(
+            name="Stars", value=f"{STAT_EMOTES[league]} {total_stars}")
+        embed.add_field(name="Attack Stars",
+                        value=f"{STAT_EMOTES['Attack Stars']} {att_stars}")
+        embed.add_field(name="Defense Stars",
+                        value=f"{STAT_EMOTES['Defense Stars']} {def_stars}")
+        embed.add_field(
+            name="Gold", value=f"{STAT_EMOTES['Gold_Icon']} {gold}")
         embed.add_field(name="Gems", value=f"{STAT_EMOTES['Gems']} {gems}")
-        embed.add_field(name="Experience", value=f"{STAT_EMOTES['Experience']} {xp}/{next_xp}")
+        embed.add_field(name="Experience",
+                        value=f"{STAT_EMOTES['Experience']} {xp}/{next_xp}")
 
         await ctx.send(embed=embed)
-    
+
     @commands.group(name="upgrade", autohelp=False)
     @commands.cooldown(rate=1, per=5, type=commands.BucketType.user)
     async def _upgrade(self, ctx):
@@ -1095,9 +1111,9 @@ class RushWars(BaseCog):
         highest_possible_hq = self.XP_LEVELS[str(lvl)]["MaxHQLevel"]
         if hq > highest_possible_hq:
             return await ctx.send("You need more experience to upgrade HQ!")
-        
+
         upgrade_cost = self.HQ_LEVELS[str(hq-1)]["UpgradeGold"]
-        
+
         msg = await ctx.send(f"Upgrading HQ will cost {upgrade_cost} {STAT_EMOTES['Gold_Icon']}. Continue?")
         start_adding_reactions(msg, ReactionPredicate.YES_OR_NO_EMOJIS)
 
@@ -1109,7 +1125,7 @@ class RushWars(BaseCog):
                 if gold >= upgrade_cost:
                     await self.config.user(ctx.author).hq.set(hq)
                     await self.new_hq_cards(ctx, hq)
-                    
+
                     upd_gold = gold - upgrade_cost
                     await self.config.user(ctx.author).gold.set(upd_gold)
                     return await ctx.send(f"HQ upgraded to level {hq}.")
@@ -1128,13 +1144,13 @@ class RushWars(BaseCog):
         # get new chopper level
         chopper = await self.config.user(ctx.author).chopper() + 1
 
-        # check if chopper level up is possible 
+        # check if chopper level up is possible
         hq = await self.config.user(ctx.author).hq()
         if chopper > hq:
             return await ctx.send("You need to upgrade HQ first!")
-        
+
         upgrade_cost = self.CHOPPER_LEVELS[str(chopper-1)]["UpgradeGold"]
-        
+
         msg = await ctx.send(f"Upgrading Chopper will cost {upgrade_cost} {STAT_EMOTES['Gold_Icon']}. Continue?")
         start_adding_reactions(msg, ReactionPredicate.YES_OR_NO_EMOJIS)
 
@@ -1145,7 +1161,7 @@ class RushWars(BaseCog):
                 gold = await self.config.user(ctx.author).gold()
                 if gold >= upgrade_cost:
                     await self.config.user(ctx.author).chopper.set(chopper)
-                    
+
                     upd_gold = gold - upgrade_cost
                     await self.config.user(ctx.author).gold.set(upd_gold)
                     return await ctx.send(f"Chopper upgraded to level {chopper}.")
@@ -1156,7 +1172,7 @@ class RushWars(BaseCog):
                 return
         else:
             return await ctx.send("Upgrade cancelled by the user.")
-        
+
     @_upgrade.command(name="card")
     @commands.cooldown(rate=1, per=5, type=commands.BucketType.user)
     async def upgrade_card(self, ctx, card_name):
@@ -1165,7 +1181,7 @@ class RushWars(BaseCog):
             `[p]upgrade card troopers`
         """
         card_name = card_name.title()
-        
+
         # check if card exists
         card_info = self.card_search(card_name)
 
@@ -1174,20 +1190,20 @@ class RushWars(BaseCog):
 
         card_type = str(card_info[0]) + "s"
         card_info = card_info[1]
-        
+
         # get user card level and number of cards
         async with self.config.user(ctx.author).cards() as cards:
             for item in cards[card_type]:
                 if card_name == item:
                     user_level = cards[card_type][item][0]
                     user_num_of_cards = cards[card_type][item][1]
-        
+
         rarity = card_info.Rarity
         cards_reqd = self.RARITY_INFO[rarity]["UpgradeCards"][user_level]
 
         if cards_reqd > user_num_of_cards:
             return await ctx.send(f"You do not have enough cards to upgrade. ({user_num_of_cards}/{cards_reqd})")
-        
+
         leftover = user_num_of_cards - cards_reqd
 
         upgrade_cost = self.RARITY_INFO[rarity]["UpgradeCost"][user_level]
@@ -1200,11 +1216,11 @@ class RushWars(BaseCog):
         await ctx.bot.wait_for("reaction_add", check=pred)
         if not pred.result:
             return await ctx.send("Upgrade cancelled by the user.")
-        
+
         try:
             gold = await self.config.user(ctx.author).gold()
             if gold >= upgrade_cost:
-                # update config variables 
+                # update config variables
                 async with self.config.user(ctx.author).cards() as cards:
                     for item in cards[card_type]:
                         if card_name == item:
@@ -1245,7 +1261,7 @@ class RushWars(BaseCog):
         resource_gold = self.HQ_LEVELS[str(hq)]["ResourceMax"]
         await self.config.user(ctx.author).gold.set(gold+resource_gold)
         await ctx.send(f"You got {resource_gold} {STAT_EMOTES['Gold_Icon']}!")
-    
+
     @_collect.command(name="key")
     @commands.cooldown(rate=1, per=3600, type=commands.BucketType.user)
     async def collect_key(self, ctx):
@@ -1263,7 +1279,7 @@ class RushWars(BaseCog):
         """Collect a free box once every 3 hours: `[p]collect free`"""
         box = await self._box(ctx, "Free")
         await ctx.send(embed=box)
-    
+
     @_collect.command(name="defense")
     @commands.cooldown(rate=1, per=10, type=commands.BucketType.user)
     async def collect_defense_box(self, ctx):
@@ -1272,10 +1288,10 @@ class RushWars(BaseCog):
 
         if temp_def_stars < 100:
             return await ctx.send(f"You do not have enough defense stars. ({temp_def_stars}/100)")
-        
+
         box = await self._box(ctx, "Defense")
         await ctx.send(embed=box)
-    
+
     def card_search(self, name):
         files = ['troops.csv', 'airdrops.csv',
                  'defenses.csv', 'commanders.csv']
@@ -1335,7 +1351,7 @@ class RushWars(BaseCog):
             else:
                 new_stats.append(stat)
         return new_stats
-    
+
     @staticmethod
     def color_lookup(rarity):
         colors = {"Common": 0xAE8F6F, "Rare": 0x74BD9C,
@@ -1499,10 +1515,10 @@ class RushWars(BaseCog):
     async def get_rewards(self, ctx, reward_stars):
         hq = await self.config.user(ctx.author).hq()
         cost = self.HQ_LEVELS[str(hq)]["AttackCost"]
-        
+
         if cost < 25:
             available_gold_in_mine = random.choice(range(5, cost+10))
-        else:    
+        else:
             available_gold_in_mine = random.choice(range(25, cost+10))
 
         if reward_stars > 0:
@@ -1526,8 +1542,8 @@ class RushWars(BaseCog):
                 single_star_xp = i
                 break
         reward_xp = single_star_xp * reward_stars
-        
-        # update user variables 
+
+        # update user variables
         gold = await self.config.user(ctx.author).gold()
         upd_gold = gold + reward_gold
         await self.config.user(ctx.author).gold.set(upd_gold)
@@ -1542,9 +1558,12 @@ class RushWars(BaseCog):
         #     return
 
         embed = discord.Embed(colour=0x98D9EB, title="Rewards")
-        embed.add_field(name="Stars", value=f"{STAT_EMOTES['Stars']} {reward_stars}")
-        embed.add_field(name="Gold", value=f"{STAT_EMOTES['Gold_Icon']} {reward_gold}")
-        embed.add_field(name="Experience", value=f"{STAT_EMOTES['Experience']} {reward_xp}")
+        embed.add_field(
+            name="Stars", value=f"{STAT_EMOTES['Stars']} {reward_stars}")
+        embed.add_field(
+            name="Gold", value=f"{STAT_EMOTES['Gold_Icon']} {reward_gold}")
+        embed.add_field(name="Experience",
+                        value=f"{STAT_EMOTES['Experience']} {reward_xp}")
 
         return embed
 
@@ -1559,12 +1578,12 @@ class RushWars(BaseCog):
             carry = xp - next_xp
         else:
             return False
-        
+
         await self.config.user(ctx.author).xp.set(carry)
         await self.config.user(ctx.author).lvl.set(lvl+1)
-        
+
         level_up_msg = f"Level up! You have reached level {lvl+1}."
-        
+
         gem_reward = self.XP_LEVELS[str(lvl)]["GemReward"]
         reward_msg = f"Rewards: {gem_reward} {STAT_EMOTES['Gems']}"
 
@@ -1580,10 +1599,10 @@ class RushWars(BaseCog):
         cost = self.HQ_LEVELS[str(hq)]["AttackCost"]
 
         gold = await self.config.user(ctx.author).gold()
-        
+
         if cost >= gold:
             return False
-        
+
         upd_gold = gold - cost
         await self.config.user(ctx.author).gold.set(upd_gold)
         return True
@@ -1602,7 +1621,7 @@ class RushWars(BaseCog):
         hq = await self.config.user(ctx.author).hq()
 
         reward_gem = None
-        
+
         if box_type == "Free":
             multiplier = self.HQ_LEVELS[str(hq)]["BoxMultiplier"] / 100
             desc = f"HQ {hq} Free Box"
@@ -1625,7 +1644,7 @@ class RushWars(BaseCog):
                     multiplier = multi / 100
                     desc = f"{league.title()} {box_type.title()} Box"
                     break
-        
+
         user_cards = {
             "Common": [],
             "Rare": [],
@@ -1642,7 +1661,7 @@ class RushWars(BaseCog):
             if commanders:
                 for commander in commanders:
                     user_cards["Commander"].append(commander)
-        
+
         stacks = box_data["Stacks"]
         total_cards = round(box_data["TotalCards"] * multiplier)
         rare_chance = box_data["RareChance"]
@@ -1654,7 +1673,7 @@ class RushWars(BaseCog):
 
         if random_draw < 1/commander_chance:
             commander = True
-        
+
         if random_draw < 1/epic_chance:
             epic = True
 
@@ -1670,8 +1689,8 @@ class RushWars(BaseCog):
                 if num_of_cards < 1 and hq == 5:
                     commander = True
 
-        # code below is a complete mess. 
-        # move this to boxes.py 
+        # code below is a complete mess.
+        # move this to boxes.py
         if commander:
             total_commander = 1
             total_epics = ceil((total_cards - 1) * 0.03)
@@ -1693,7 +1712,7 @@ class RushWars(BaseCog):
                 distribution = (1, 0, 1, 2)
             elif stacks == 8:
                 distribution = (1, 1, 2, 4)
-            
+
             commander_draw = user_cards["Commander"]
             if not commander_draw:
                 commander_draw = user_cards["Epic"]
@@ -1711,20 +1730,20 @@ class RushWars(BaseCog):
                         epic_draw = user_cards["Rare"]
                         if not epic_draw:
                             epic_draw = user_cards["Common"]
-                    
+
                     drawn = random.choice(epic_draw)
                     if drawn in draws.keys():
                         draws[drawn] += count[i]
                     else:
                         draws[drawn] = count[i]
-            
+
             if distribution[2] > 0:
                 count = self.split_in_integers(total_rares, distribution[2])
                 for i in range(distribution[2]):
                     rare_draw = user_cards["Rare"]
                     if not epic_draw:
                         rare_draw = user_cards["Common"]
-                    
+
                     drawn = random.choice(rare_draw)
                     if drawn in draws.keys():
                         draws[drawn] += count[i]
@@ -1732,16 +1751,17 @@ class RushWars(BaseCog):
                         draws[drawn] = count[i]
 
                 if distribution[3] > 0:
-                    count = self.split_in_integers(total_commons, distribution[3])
+                    count = self.split_in_integers(
+                        total_commons, distribution[3])
                     for i in range(distribution[3]):
                         common_draw = user_cards["Common"]
-                        
+
                         drawn = random.choice(common_draw)
                         if drawn in draws.keys():
                             draws[drawn] += count[i]
                         else:
                             draws[drawn] = count[i]
-                
+
         elif epic:
             total_epics = ceil(total_cards * 0.03)
             total_rares = ceil(total_cards * 0.25)
@@ -1762,7 +1782,7 @@ class RushWars(BaseCog):
                 distribution = (1, 2, 2)
             elif stacks == 8:
                 distribution = (2, 2, 4)
-        
+
             if distribution[0] > 0:
                 count = self.split_in_integers(total_epics, distribution[0])
                 for i in range(distribution[0]):
@@ -1771,20 +1791,20 @@ class RushWars(BaseCog):
                         epic_draw = user_cards["Rare"]
                         if not epic_draw:
                             epic_draw = user_cards["Common"]
-                    
+
                     drawn = random.choice(epic_draw)
                     if drawn in draws.keys():
                         draws[drawn] += count[i]
                     else:
                         draws[drawn] = count[i]
-            
+
             if distribution[1] > 0:
                 count = self.split_in_integers(total_rares, distribution[1])
                 for i in range(distribution[1]):
                     rare_draw = user_cards["Rare"]
                     if not rare_draw:
                         rare_draw = user_cards["Common"]
-                
+
                 drawn = random.choice(rare_draw)
                 if drawn in draws.keys():
                     draws[drawn] += count[i]
@@ -1795,13 +1815,13 @@ class RushWars(BaseCog):
                 count = self.split_in_integers(total_commons, distribution[2])
                 for i in range(distribution[2]):
                     common_draw = user_cards["Common"]
-                    
+
                     drawn = random.choice(common_draw)
                     if drawn in draws.keys():
                         draws[drawn] += count[i]
                     else:
                         draws[drawn] = count[i]
-        
+
         elif rare:
             total_rares = ceil(total_cards * 0.28)
             total_commons = round(total_cards * 0.72)
@@ -1821,14 +1841,14 @@ class RushWars(BaseCog):
                 distribution = (2, 3)
             elif stacks == 8:
                 distribution = (3, 5)
-            
+
             if distribution[0] > 0:
                 count = self.split_in_integers(total_rares, distribution[0])
                 for i in range(distribution[0]):
                     rare_draw = user_cards["Rare"]
                     if not rare_draw:
                         rare_draw = user_cards["Common"]
-                    
+
                     drawn = random.choice(rare_draw)
                     if drawn in draws.keys():
                         draws[drawn] += count[i]
@@ -1839,7 +1859,7 @@ class RushWars(BaseCog):
                 count = self.split_in_integers(total_commons, distribution[1])
                 for i in range(distribution[1]):
                     common_draw = user_cards["Common"]
-                    
+
                     drawn = random.choice(common_draw)
                     if drawn in draws.keys():
                         draws[drawn] += count[i]
@@ -1852,7 +1872,7 @@ class RushWars(BaseCog):
             count = self.split_in_integers(total_commons, stacks)
             for i in range(stacks):
                 common_draw = user_cards["Common"]
-                    
+
                 drawn = random.choice(common_draw)
                 if drawn in draws.keys():
                     draws[drawn] += count[i]
@@ -1871,8 +1891,8 @@ class RushWars(BaseCog):
         except Exception as ex:
             log.exception(ex)
             return
-        
-        # handle gold 
+
+        # handle gold
         min_gold = round(box_data["MinGold"] * multiplier)
         max_gold = round(box_data["MaxGold"] * multiplier)
 
@@ -1887,15 +1907,18 @@ class RushWars(BaseCog):
 
         # return rewards embed
         embed = discord.Embed(colour=0x98D9EB)
-        embed.set_author(name=desc, icon_url=f"https://www.rushstats.com/assets/box/{box_type}.png")
+        embed.set_author(
+            name=desc, icon_url=f"https://www.rushstats.com/assets/box/{box_type}.png")
 
         if reward_gem:
             gems = await self.config.user(ctx.author).gems()
             upd_gems = gold + reward_gold
             await self.config.user(ctx.author).gold.set(upd_gems)
-            embed.add_field(name=f"Gems {STAT_EMOTES['Gems']}", value=f"{reward_gem}")
+            embed.add_field(
+                name=f"Gems {STAT_EMOTES['Gems']}", value=f"{reward_gem}")
 
-        embed.add_field(name=f"Gold {STAT_EMOTES['Gold_Icon']}", value=f"{reward_gold}")
+        embed.add_field(
+            name=f"Gold {STAT_EMOTES['Gold_Icon']}", value=f"{reward_gold}")
 
         for rarity in user_cards.keys():
             # embed.add_field()
@@ -1905,7 +1928,8 @@ class RushWars(BaseCog):
                 if card in items:
                     # card_rarity = rarity
                     card_emote = self.card_emotes(card)
-                    embed.add_field(name=f"{card} {card_emote} x {count}", value=f"Rarity: {rarity}")
+                    embed.add_field(
+                        name=f"{card} {card_emote} x {count}", value=f"Rarity: {rarity}")
 
         return embed
 
@@ -1920,7 +1944,7 @@ class RushWars(BaseCog):
         for i in range(num_of_pieces):
             x = int((i+1) * number / total_sum)
             parts.append(x)
-        
+
         parts.sort()
         return parts
 
@@ -1932,7 +1956,7 @@ class RushWars(BaseCog):
         if keys > 0:
             temp_stars += stars
             if temp_stars >= 5:
-                # update config variable 
+                # update config variable
                 await self.config.user(ctx.author).temp_stars.set(temp_stars - 5)
                 # update keys
                 await self.config.user(ctx.author).keys.set(keys-1)
@@ -1959,7 +1983,7 @@ class RushWars(BaseCog):
             # return await ctx.send(opponent)
             if opponent_id == ctx.author.id:
                 continue
-            
+
             opponent = ctx.guild.get_member(opponent_id)
             opponent_stars = await self.get_stars(opponent)
 
@@ -1969,7 +1993,7 @@ class RushWars(BaseCog):
                     break
             else:
                 continue
-        
+
         return selected
 
     async def get_stars(self, user):
@@ -1981,5 +2005,5 @@ class RushWars(BaseCog):
         except:
             log.exception("Error with character sheet.")
             return
-        
+
         return att_stars + def_stars
