@@ -970,11 +970,11 @@ class RushWars(BaseCog):
         else:
             return await ctx.send("Reset cancelled by the user.")
 
-    # @commands.command(name="sethq")
-    # async def set_hq(self, ctx, lvl: int = None):
-    #     await self.new_hq_cards(ctx, lvl)
-    #     await self.config.user(ctx.author).hq.set(lvl)
-    #     await ctx.send("Done")
+    @commands.command(name="sethq")
+    async def set_hq(self, ctx, lvl: int = None):
+        await self.new_hq_cards(ctx, lvl)
+        await self.config.user(ctx.author).hq.set(lvl)
+        await ctx.send("Done")
 
     @commands.command(name="cards")
     async def cards(self, ctx):
