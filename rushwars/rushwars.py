@@ -460,12 +460,11 @@ class RushWars(BaseCog):
 
         if "â" in description:
             description = description.replace("â", "-")
+        
+        description = description.replace("\\n\\n", '\n\n')
 
         if level is None:
             level = base_card_levels[(card.Rarity).lower()]
-
-        await ctx.send(description)
-        print(description)
 
         embed = discord.Embed(colour=color, title=card.Name,
                               description=description, url=url)
