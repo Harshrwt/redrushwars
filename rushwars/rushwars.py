@@ -1213,6 +1213,12 @@ class RushWars(BaseCog):
             await self.config.user(ctx.author).keys.set(keys+1)
             await ctx.send(f"You got 1 {STAT_EMOTES['Keys']}!")
 
+    @_collect.command(name="free chest")
+    @commands.cooldown(rate=1, per=10800, type=commands.BucketType.user)
+    async def collect_free_chest(self, ctx):
+        chest = await self._chest(ctx)
+        await ctx.send(embed=chest)
+    
     def card_search(self, name):
         files = ['troops.csv', 'airdrops.csv',
                  'defenses.csv', 'commanders.csv']
@@ -1490,20 +1496,27 @@ class RushWars(BaseCog):
         await self.config.user(ctx.author).gold.set(upd_gold)
         return True
 
-    async def _chest(self, ctx):
+    async def _chest(self, ctx, chest_type=None):
         """To handle chest openings."""
 
         unlocked_chests = await self.config.user(ctx.author).chests()
 
-        c = Chests(unlocked_chests)
-        chest_type = c.chest_type
+        if not chest_type:
+            c = Chests(unlocked_chests)
+            chest_type = c.chest_type
+
         chest_data = self.CHESTS_INFO[chest_type]
 
         hq = await self.config.user(ctx.author).hq()
+
+        reward_gem = None
         
         if chest_type == "Free":
             multiplier = self.HQ_LEVELS[str(hq)]["ChestMultiplier"] / 100
             desc = f"HQ level {hq} Free Chest"
+            get_gem = random.randint(1, 10)
+            if get_gem >= 7:
+                reward_gem = random.randint(2, 8)
         else:
             try:
                 async with self.config.user(ctx.author).stars() as stars:
@@ -1775,7 +1788,12 @@ class RushWars(BaseCog):
 
         # return rewards embed
         embed = discord.Embed(colour=0x98D9EB, title=desc)
+
+        if reward_gem:
+            embed.add_field(name=f"Gems {STAT_EMOTES['Gems']}", value=f"{reward_gem}")
+            
         embed.add_field(name=f"Gold {STAT_EMOTES['Gold_Icon']}", value=f"{reward_gold}")
+
         for rarity in user_cards.keys():
             # embed.add_field()
             items = user_cards[rarity]
