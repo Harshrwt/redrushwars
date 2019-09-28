@@ -453,8 +453,7 @@ class RushWars(BaseCog):
 
         color = self.color_lookup(card.Rarity)
         url_name = card.Name.replace(" ", "-")
-        url = f"https://rushwars.fandom.com/wiki/{url_name}"
-        url = f"https://www.rushstats.com/cards/{card_type}/B.I.G."
+        url = f"https://www.rushstats.com/cards/{card_type}/{url_name}"
         thumbnail_url = f"https://www.rushstats.com/assets/{card_type}/{url_name}.png"
         description = f"{card.Description}"
 
