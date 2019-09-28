@@ -1229,7 +1229,7 @@ class RushWars(BaseCog):
         if temp_def_stars < 100:
             return await ctx.send(f"You do not have enough defense stars. ({temp_def_stars}/100)")
         
-        chest = await self._chest(ctx, "Defence")
+        chest = await self._chest(ctx, "Defense")
         await ctx.send(embed=chest)
     
     def card_search(self, name):
@@ -1801,6 +1801,7 @@ class RushWars(BaseCog):
 
         # return rewards embed
         embed = discord.Embed(colour=0x98D9EB, title=desc)
+        embed.set_author(name=desc, icon_url=f"https://www.rushstats.com/assets/chest/{chest_type}.png")
 
         if reward_gem:
             gems = await self.config.user(ctx.author).gems()
