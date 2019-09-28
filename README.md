@@ -53,7 +53,7 @@ The cog replicates the real game in a number of ways while adapting to the text-
 
 ## Installation
 
-First make sure you have Red Bot V3 installed.
+First make sure you have Red Bot V3 installed. Instructions to install Red Bot can be found [here](https://github.com/Cog-Creators/Red-DiscordBot#installation).
 
 Next add my repo using the following command:
 
