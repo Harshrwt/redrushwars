@@ -202,7 +202,7 @@ class RushWars(BaseCog):
             async with self.config.user(ctx.author).active() as active:
                 troops = active["troops"]
                 airdrops = active["airdrops"]
-                # commanders = active["commanders"]
+                commanders = active["commanders"]
                 player = ctx.author.name
         except Exception as ex:
             return await ctx.send(f"Error with character sheet!")
@@ -310,6 +310,23 @@ class RushWars(BaseCog):
             user_avg_levels[0] += 1
             user_avg_levels[1] += level
 
+        for commander in commanders.keys():
+            stats = self.card_search(commander)[1]
+            level = await self.rush_card_level(ctx, commander.title(), "commanders")
+            lvl_stats = [int(stats.Hp), int(stats.Att)]
+            upd_stats = self.card_level(
+                level, lvl_stats, stats.Rarity, "commanders")
+        
+            count = commanders[commander]
+
+            hp += upd_stats[0] * count
+            # return await ctx.send(hp)
+            att = upd_stats[1] * count
+            attps += (att/float(stats.AttSpeed))
+
+            user_avg_levels[0] += 1
+            user_avg_levels[1] += level
+        
         user_avg_level = round(user_avg_levels[1]/user_avg_levels[0])
         
         for defense in defenses.keys():
@@ -334,11 +351,16 @@ class RushWars(BaseCog):
         troop = [(troop, troops[troop]) for troop in troops.keys()]
         airdrop = [(airdrop, airdrops[airdrop]) for airdrop in airdrops.keys()]
         defense = [(defense, defenses[defense]) for defense in defenses.keys()]
+        commander = [(commander, commanders[commander]) for commander in commanders.keys()]
 
         attack_str = "`TROOPS`\n"
         attack_str += self.rush_strings(troop)
-        attack_str += "`AIRDROPS`\n"
-        attack_str += self.rush_strings(airdrop)
+        if self.rush_strings(airdrop) != "":
+            attack_str += "`AIRDROPS`\n"
+            attack_str += self.rush_strings(airdrop)
+        if self.rush_strings(commander) != "":
+            attack_str += "`COMMANDERS`\n"
+            attack_str += self.rush_strings(commander)
         defense_str = self.rush_strings(defense)
 
         embed = discord.Embed(colour=0x98D9EB, title="Battle Info",
@@ -418,7 +440,7 @@ class RushWars(BaseCog):
             Examples:
                 `[p]card shields`
                 `[p]card "rocket truck"`
-                `[p]card "sneaky ninja" 9`
+                `[p]card "b.i.g." 13`
         """
         if level is not None and level > max_card_level:
             return await ctx.send("Maximum possible level is 20!")
@@ -449,7 +471,7 @@ class RushWars(BaseCog):
         embed.add_field(
             name="Level <:RW_Level:625788888480350216>", value=level)
 
-        if card_type == 'troop' or card_type == 'defense':
+        if card_type == 'troop' or card_type == 'defense' or card_type == 'commander':
             lvl_stats = [int(card.Hp), int(card.Att)]
             upd_stats = self.card_level(
                 level, lvl_stats, card.Rarity, card_type+"s")
@@ -474,7 +496,7 @@ class RushWars(BaseCog):
                     name="Squad Size <:RW_Count:625786275802382347>", value=card.Count)
                 embed.add_field(
                     name="Space <:RW_Space:625783199670206486>", value=card.Space)
-            else:
+            elif card_type == 'defense':
                 embed.add_field(
                     name="Space <:RW_Defense:626338600467824660>", value=card.Space)
             embed.add_field(
@@ -1583,6 +1605,10 @@ class RushWars(BaseCog):
             rare = True
 
         draws = {}
+
+        # guaranteed commander in 1st box of HQ 5
+        if hq == 5:
+            commander = True
 
         # code below is a complete mess. 
         # move this to chests.py 
