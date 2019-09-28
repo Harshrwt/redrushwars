@@ -90,7 +90,7 @@ The following features will be added in future:
 - [ ] Commanders
 - [X] Chests - Needs improvements  
 - [X] Key system  
-- [ ] Card level ups
+- [X] Card level ups
 - [ ] Teams and domination
 - [ ] Better matchmaking
 - [ ] Improved battle system
