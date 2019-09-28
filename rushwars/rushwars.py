@@ -1763,7 +1763,7 @@ class RushWars(BaseCog):
             opponent = ctx.guild.get_member(opponent_id)
             opponent_stars = await self.get_stars(opponent)
 
-            if user_stars in range(opponent_stars-100, opponent_stars+1000): # set to 1000 for testing only
+            if user_stars in range(opponent_stars-100, opponent_stars+100):
                 if opponents[opponent_id]["active"]["defenses"]:
                     selected = opponent
                     break
