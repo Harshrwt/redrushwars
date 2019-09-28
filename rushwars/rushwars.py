@@ -86,18 +86,6 @@ base_card_levels = {
 
 max_card_level = 20
 
-# chopperLvl: (troops, airdrops, defenses)
-# chopper_capacity = {
-#     1: (3, 1, 4),
-#     2: (5, 1, 5),
-#     3: (6, 1, 7),
-#     4: (6, 1, 9),
-#     5: (7, 2, 10),
-#     6: (8, 2, 11),
-#     7: (9, 2, 12),
-#     8: (10, 2, 13)
-# }
-
 TOTAL_CARDS = 43
 
 LEAGUE_ICONS_BASE_URL = "https://www.rushstats.com/assets/league/"
@@ -1083,6 +1071,30 @@ class RushWars(BaseCog):
         else:
             return await ctx.send("Upgrade cancelled by the user.")
         
+    @commands.group(name="collect", autohelp=False)
+    async def _collect(self, ctx):
+        if not ctx.invoked_subcommand:
+            return await ctx.send("Please specify one of the following to collect: gold, free chest or key.")
+
+    @_collect.command(name="key")
+    @commands.cooldown(rate=1, per=3600, type=commands.BucketType.user)
+    async def collect_key(self, ctx):
+        keys = await self.config.user(ctx.author).keys()
+        if keys == 5:
+            return await ctx.send("You already have 5 keys!")
+        else:
+            await self.config.user(ctx.author).keys.set(keys+1)
+            await ctx.send(f"You got 1 {STAT_EMOTES['Keys']}!")
+
+    @_collect.command(name="gold")
+    @commands.cooldown(rate=1, per=3600, type=commands.BucketType.user)
+    async def collect_gold(self, ctx):
+        gold = await self.config.user(ctx.author).gold()
+        hq = await self.config.user(ctx.author).hq()
+        resource_gold = self.HQ_LEVELS[str(hq)]["ResourceMax"]
+        await self.config.user(ctx.author).gold.set(gold+resource_gold)
+        await ctx.send(f"You got {resource_gold} {STAT_EMOTES['Gold_Icon']}!")
+    
     def card_search(self, name):
         files = ['troops.csv', 'airdrops.csv',
                  'defenses.csv', 'commanders.csv']
@@ -1429,6 +1441,7 @@ class RushWars(BaseCog):
         draws = {}
 
         # code below is a complete mess. 
+        # move this to chests.py 
         if commander:
             total_commander = 1
             total_epics = round((total_cards - 1) * 0.03)
@@ -1665,10 +1678,6 @@ class RushWars(BaseCog):
         for i in range(num_of_pieces):
             x = int((i+1) * number / total_sum)
             parts.append(x)
-        
-        if sum(parts) != number:
-            diff = number - sum(parts)
-            parts[-1] += diff
         
         parts.sort()
         return parts
