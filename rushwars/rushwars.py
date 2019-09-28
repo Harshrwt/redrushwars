@@ -315,8 +315,10 @@ class RushWars(BaseCog):
             stats = self.card_search(commander)[1]
             level = await self.rush_card_level(ctx, commander.title(), "commanders")
             lvl_stats = [int(stats.Hp), int(stats.Att)]
+            await ctx.send(lvl_stats)
             upd_stats = self.card_level(
                 level, lvl_stats, stats.Rarity, "commanders")
+            return await ctx.send(lvl_stats)
         
             count = commanders[commander]
 
