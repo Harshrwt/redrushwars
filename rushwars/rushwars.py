@@ -1638,7 +1638,7 @@ class RushWars(BaseCog):
             elif stacks == 8:
                 distribution = (1, 1, 2, 4)
             
-            commander_draw = user_cards["Commanders"]
+            commander_draw = user_cards["Commander"]
             if not commander_draw:
                 commander_draw = user_cards["Epic"]
                 if not commander_draw:
