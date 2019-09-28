@@ -1213,7 +1213,7 @@ class RushWars(BaseCog):
             await self.config.user(ctx.author).keys.set(keys+1)
             await ctx.send(f"You got 1 {STAT_EMOTES['Keys']}!")
 
-    @_collect.command(name="free chest")
+    @_collect.command(name="freechest")
     @commands.cooldown(rate=1, per=10800, type=commands.BucketType.user)
     async def collect_free_chest(self, ctx):
         chest = await self._chest(ctx)
@@ -1791,7 +1791,7 @@ class RushWars(BaseCog):
 
         if reward_gem:
             embed.add_field(name=f"Gems {STAT_EMOTES['Gems']}", value=f"{reward_gem}")
-            
+
         embed.add_field(name=f"Gold {STAT_EMOTES['Gold_Icon']}", value=f"{reward_gold}")
 
         for rarity in user_cards.keys():
