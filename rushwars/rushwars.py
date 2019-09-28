@@ -30,7 +30,7 @@ BaseCog = getattr(commands, "Cog", object)
 log = logging.getLogger("red.rushwars")
 listener = getattr(commands.Cog, "listener", None)
 
-__version__ = "0.1.0"
+__version__ = "1.0.0"
 __author__ = "Snowsee"
 
 # [level, number of cards]
@@ -176,13 +176,9 @@ class RushWars(BaseCog):
         with rarities_fp.open("r") as f:
             self.RARITY_INFO = json.load(f)
 
-    @commands.group(autohelp=True)
-    async def rushwars(self, ctx):
-        """This is the list of Rush Wars commands you can use."""
-        pass
-
-    @rushwars.command()
-    async def version(self, ctx):
+    @commands.command(name="rushversion", autohelp=True)
+    @commands.cooldown(rate=5, per=120, type=commands.BucketType.guild)
+    async def rushversion(self, ctx):
         """Display running version of Rush Wars cog
 
             Returns:
@@ -420,6 +416,7 @@ class RushWars(BaseCog):
                 await ctx.send(level_up[1])
 
     @commands.command(name="rushinfo")
+    @commands.cooldown(rate=1, per=30, type=commands.BucketType.user)
     async def rush_info(self, ctx):
         """Get information related to rush (battle)."""
         hq = await self.config.user(ctx.author).hq()
@@ -436,6 +433,7 @@ class RushWars(BaseCog):
         await ctx.send(embed=embed)
     
     @commands.command()
+    @commands.cooldown(rate=1, per=5, type=commands.BucketType.guild)
     async def card(self, ctx, card_name: str, level: int = None):
         """Search for a card in the Rush Wars universe.
             Examples:
@@ -531,6 +529,7 @@ class RushWars(BaseCog):
         await ctx.send(embed=embed)
 
     @commands.group(name="squad", autohelp=False)
+    @commands.cooldown(rate=1, per=15, type=commands.BucketType.user)
     async def _squad(self, ctx, member: Optional[discord.Member] = None):
         """Lookup your or any other server member's squad. Subcommands give more squad functions.
 
@@ -595,6 +594,7 @@ class RushWars(BaseCog):
             await ctx.send(embed=embed)
 
     @_squad.command(name="add")
+    @commands.cooldown(rate=1, per=5, type=commands.BucketType.user)
     async def squad_add(self, ctx, card, number=1):
         """Add cards to your squad: `[p]squad add card [number]`
             Examples:
@@ -688,6 +688,7 @@ class RushWars(BaseCog):
         await ctx.send(f"{number} {card.title()} card(s) added to squad.")
 
     @_squad.command(name="remove")
+    @commands.cooldown(rate=1, per=5, type=commands.BucketType.user)
     async def squad_remove(self, ctx, card, number=1):
         """Remove cards from squad: `[p]squad remove card [number]`
         Examples:
@@ -746,6 +747,7 @@ class RushWars(BaseCog):
         await ctx.send(f"{number} {card.title()} card(s) removed from squad.")
 
     @_squad.command(name="reset")
+    @commands.cooldown(rate=1, per=10, type=commands.BucketType.user)
     async def squad_reset(self, ctx, card_type=None):
         """Remove all cards of the optionally specified type. If no type is specified, all cards will be removed.
         Examples:
@@ -792,6 +794,7 @@ class RushWars(BaseCog):
                     return await ctx.send("Reset cancelled by the user.")
 
     @commands.group(name="defense", autohelp=False)
+    @commands.cooldown(rate=1, per=15, type=commands.BucketType.user)
     async def _defense(self, ctx):
         """Lookup your defense. Subcommands give more defense functions."""
 
@@ -835,6 +838,7 @@ class RushWars(BaseCog):
             await ctx.send(embed=embed)
 
     @_defense.command(name="add")
+    @commands.cooldown(rate=1, per=5, type=commands.BucketType.user)
     async def defense_add(self, ctx, card, number=1):
         """Add cards to your defense: `[p]defense add card [number]`
             Examples:
@@ -905,6 +909,7 @@ class RushWars(BaseCog):
         await ctx.send(f"{number} {card.title()} card(s) added to defense.")
 
     @_defense.command(name="remove")
+    @commands.cooldown(rate=1, per=5, type=commands.BucketType.user)
     async def defense_remove(self, ctx, card, number=1):
         """Remove cards from defense: `[p]defense remove card [number]`
         Examples:
@@ -950,6 +955,7 @@ class RushWars(BaseCog):
         await ctx.send(f"{number} {card.title()} card(s) removed from defense.")
 
     @_defense.command(name="reset")
+    @commands.cooldown(rate=1, per=10, type=commands.BucketType.user)
     async def defense_reset(self, ctx):
         """Remove all cards from defense: `[p]defense reset`"""
         msg = await ctx.send(f"Are you sure you want to reset your defense?")
@@ -975,6 +981,7 @@ class RushWars(BaseCog):
     #     await ctx.send("Done")
 
     @commands.command(name="cards")
+    @commands.cooldown(rate=1, per=10, type=commands.BucketType.user)
     async def cards(self, ctx):
         """Shows all the cards you can unlock."""
         embed = discord.Embed(colour=0x98D9EB, title="Cards")
@@ -1011,6 +1018,7 @@ class RushWars(BaseCog):
             return
 
     @commands.command(name="profile", aliases=["stats"])
+    @commands.cooldown(rate=1, per=10, type=commands.BucketType.user)
     async def profile(self, ctx, member:discord.Member=None):
         """Lookup your or another member's profile stats."""
         if member:
@@ -1066,12 +1074,14 @@ class RushWars(BaseCog):
         await ctx.send(embed=embed)
     
     @commands.group(name="upgrade", autohelp=False)
+    @commands.cooldown(rate=1, per=5, type=commands.BucketType.user)
     async def _upgrade(self, ctx):
         """Upgrade HQ, chopper or a card."""
         if not ctx.invoked_subcommand:
             return await ctx.send("Please specify one of the following to upgrade: hq, chopper or a card.")
 
     @_upgrade.command(name="hq")
+    @commands.cooldown(rate=1, per=5, type=commands.BucketType.user)
     async def upgrade_hq(self, ctx):
         """Upgrade HQ level: `[p]upgrade hq`"""
         # get new hq level
@@ -1109,6 +1119,7 @@ class RushWars(BaseCog):
             return await ctx.send("Upgrade cancelled by the user.")
 
     @_upgrade.command(name="chopper")
+    @commands.cooldown(rate=1, per=5, type=commands.BucketType.user)
     async def upgrade_chopper(self, ctx):
         """Upgrade chopper level: `[p]upgrade chopper`"""
         # get new chopper level
@@ -1144,6 +1155,7 @@ class RushWars(BaseCog):
             return await ctx.send("Upgrade cancelled by the user.")
         
     @_upgrade.command(name="card")
+    @commands.cooldown(rate=1, per=5, type=commands.BucketType.user)
     async def upgrade_card(self, ctx, card_name):
         """Upgrade a card: `[p]upgrade card [card_name]`
         Example:
@@ -1215,6 +1227,7 @@ class RushWars(BaseCog):
             return
 
     @commands.group(name="collect", autohelp=False)
+    @commands.cooldown(rate=1, per=5, type=commands.BucketType.user)
     async def _collect(self, ctx):
         """Collect gold, key, free chest or defense chests."""
         if not ctx.invoked_subcommand:
@@ -1249,6 +1262,7 @@ class RushWars(BaseCog):
         await ctx.send(embed=chest)
     
     @_collect.command(name="defense")
+    @commands.cooldown(rate=1, per=10, type=commands.BucketType.user)
     async def collect_defense_chest(self, ctx):
         """Collect defense chest if it is available: `[p]collect defense`"""
         temp_def_stars = await self.config.user(ctx.author).temp_def_stars()
