@@ -17,6 +17,8 @@
   •
   <a href="#whats-coming-next">What's Coming Next</a>
   •
+  <a href="#credits">Credits</a>
+  •
   <a href="#disclaimer">Disclaimer</a>
 </p>
 
@@ -94,6 +96,14 @@ The following features will be added in future:
 - [ ] Teams and domination
 - [ ] Better matchmaking
 - [ ] Improved battle system
+
+---
+
+## Credits
+
+- [Supercell](https://supercell.com/en/)
+- [Red Bot](https://github.com/Cog-Creators/Red-DiscordBot)
+- [Rush Stats](https://www.rushstats.com) - Huge thanks to Henry for allowing me to use some assets from his site  
 
 ---
 
