@@ -7,7 +7,7 @@ from collections import namedtuple
 from typing import Optional
 from math import ceil
 
-from .chests import Chests
+from .boxes import Boxes
 
 # Discord
 import discord
@@ -66,7 +66,7 @@ default_user = {
     "keys": 5,
     "gold": 200,
     "gems": 150,
-    "chests": 0,
+    "boxes": 0,
     "temp_stars": 0,
     "temp_def_stars": 0
 }
@@ -92,7 +92,7 @@ max_card_level = 20
 TOTAL_CARDS = 43
 
 LEAGUE_ICONS_BASE_URL = "https://www.rushstats.com/assets/league/"
-# (lower limit, upper limit, chest multiplier)
+# (lower limit, upper limit, box multiplier)
 LEAGUES = {
     "Rookie": (0, 200, 120),
     "Bronze": (200, 600, 140),
@@ -149,7 +149,7 @@ class RushWars(BaseCog):
         self.XP_LEVELS: dict = None
         self.HQ_LEVELS: dict = None
         self.CHOPPER_LEVELS: dict = None
-        self.CHESTS_INFO: dict = None
+        self.BOXES_INFO: dict = None
         self.RARITY_INFO: dict = None
 
         self.config.register_user(**default_user)
@@ -160,7 +160,7 @@ class RushWars(BaseCog):
             xp_levels_fp = bundled_data_path(self) / "xp_levels.json"
             hq_levels_fp = bundled_data_path(self) / "hq_levels.json"
             chopper_levels_fp = bundled_data_path(self) / "chopper_levels.json"
-            chests_fp = bundled_data_path(self) / "chests.json"
+            boxes_fp = bundled_data_path(self) / "boxes.json"
             rarities_fp = bundled_data_path(self) / "rarities.json"
         except:
             log.exception("Error with file path.")
@@ -171,8 +171,8 @@ class RushWars(BaseCog):
             self.HQ_LEVELS = json.load(f)
         with chopper_levels_fp.open("r") as f:
             self.CHOPPER_LEVELS = json.load(f)
-        with chests_fp.open("r") as f:
-            self.CHESTS_INFO = json.load(f)
+        with boxes_fp.open("r") as f:
+            self.BOXES_INFO = json.load(f)
         with rarities_fp.open("r") as f:
             self.RARITY_INFO = json.load(f)
 
@@ -396,10 +396,10 @@ class RushWars(BaseCog):
         rewards = await self.get_rewards(ctx, stars)
         await ctx.send(embed=rewards)
         
-        open_chest = await self.handle_keys(ctx, stars)
-        if open_chest:
-            chest = await self._chest(ctx)
-            await ctx.send(embed=chest)
+        open_box = await self.handle_keys(ctx, stars)
+        if open_box:
+            box = await self._box(ctx)
+            await ctx.send(embed=box)
 
         # update defense stars of opponent 
         if stars != 3:
@@ -423,11 +423,13 @@ class RushWars(BaseCog):
 
         attack_cost = self.HQ_LEVELS[str(hq)]["AttackCost"]
         temp_stars = await self.config.user(ctx.author).temp_stars()
+        temp_def_stars = await self.config.user(ctx.author).temp_def_stars()
         keys = await self.config.user(ctx.author).keys()
 
         embed = discord.Embed(colour=0x98D9EB, title="Rush Info")
         embed.add_field(name="Attack Cost", value=f"{STAT_EMOTES['Gold_Icon']} {attack_cost}")
         embed.add_field(name="Stars Till Next Box", value=f"{STAT_EMOTES['Stars']} {5 - temp_stars}")
+        embed.add_field(name="Defense Box", value=f"{STAT_EMOTES['Stars']} {5 - temp_stars}")
         embed.add_field(name="Keys", value=f"{STAT_EMOTES['Keys']} {keys}")
         
         await ctx.send(embed=embed)
@@ -465,11 +467,11 @@ class RushWars(BaseCog):
         if level is None:
             level = base_card_levels[(card.Rarity).lower()]
 
-        embed = discord.Embed(colour=color, title=card.Name,
-                              description=description, url=url)
+        embed = discord.Embed(colour=color, description=description)
+        embed.set_author(name=card.Name, url=url)
         embed.set_thumbnail(url=thumbnail_url)
         embed.add_field(
-            name="Level <:RW_Level:625788888480350216>", value=level)
+            name="Level", value=f"<:RW_Level:625788888480350216> {level}")
         
         if card_type == 'troop' or card_type == 'defense' or card_type == 'commander':
             lvl_stats = [int(card.Hp), int(card.Att)]
@@ -486,23 +488,23 @@ class RushWars(BaseCog):
             dps = int(upd_stats[1]/float(card.AttSpeed))
 
             embed.add_field(
-                name="Health <:RW_Health:625786278058917898>", value=upd_stats[0])
+                name="Health", value=f"<:RW_Health:625786278058917898> {upd_stats[0]}")
             embed.add_field(
-                name="Damage <:RW_Damage:625786276938907659>", value=upd_stats[1])
+                name="Damage", value=f"<:RW_Damage:625786276938907659> {upd_stats[1]}")
             embed.add_field(
-                name="Damage per second <:RW_DPS:625786277903466498>", value=dps)
+                name="Damage per second", value=f"<:RW_DPS:625786277903466498> {dps}")
             if card_type == 'troop':
                 embed.add_field(
-                    name="Squad Size <:RW_Count:625786275802382347>", value=card.Count)
+                    name="Squad Size", value=f"<:RW_Count:625786275802382347> {card.Count}")
                 embed.add_field(
-                    name="Space <:RW_Space:625783199670206486>", value=card.Space)
+                    name="Space", value=f"<:RW_Space:625783199670206486> {card.Space}")
             elif card_type == 'defense':
                 embed.add_field(
-                    name="Space <:RW_Defense:626338600467824660>", value=card.Space)
+                    name="Space", value=f"<:RW_Defense:626338600467824660> {card.Space}")
             embed.add_field(
-                name="Targets <:RW_Targets:625786278096535574>", value=target)
+                name="Targets", value=f"<:RW_Targets:625786278096535574> {target}")
             embed.add_field(
-                name="Attack Speed <:RW_AttSpeed:625787097709543427>", value=f"{card.AttSpeed}s")
+                name="Attack Speed", value=f"<:RW_AttSpeed:625787097709543427> {card.AttSpeed}s")
 
         elif card_type == 'airdrop':
             lvl_stats = [float(card.Duration)]
@@ -519,14 +521,14 @@ class RushWars(BaseCog):
             embed.add_field(
                 name=f"{card.Ability} {value_emote}", value=card.Value)
             embed.add_field(
-                name="Duration <:Duration:626042235753857034>", value=str(upd_stats[0])+"s")
+                name="Duration", value=f"<:Duration:626042235753857034> {str(upd_stats[0])+'s'}")
             embed.add_field(
-                name="Space <:RW_Airdrop:626000292810588164>", value=card.Space)
+                name="Space", value=f"<:RW_Airdrop:626000292810588164> {card.Space}")
 
         embed.add_field(
-            name="Rarity <:RW_Rarity:625783200983154701>", value=card.Rarity)
+            name="Rarity", value=f"<:RW_Rarity:625783200983154701> {card.Rarity}")
         embed.add_field(
-            name="HQ Level <:RW_HQ:625787531664818224>", value=card.UnlockLvl)
+            name="Required HQ Level", value=f"<:RW_HQ:625787531664818224> {card.UnlockLvl}")
         await ctx.send(embed=embed)
 
     @commands.group(name="squad", autohelp=False)
@@ -984,7 +986,7 @@ class RushWars(BaseCog):
     @commands.command(name="cards")
     @commands.cooldown(rate=1, per=10, type=commands.BucketType.user)
     async def cards(self, ctx):
-        """Shows all the cards you can unlock."""
+        """Shows all the cards you can find in boxes."""
         embed = discord.Embed(colour=0x98D9EB, title="Cards")
         try:
             async with self.config.user(ctx.author).cards() as cards:
@@ -1230,9 +1232,9 @@ class RushWars(BaseCog):
     @commands.group(name="collect", autohelp=False)
     @commands.cooldown(rate=1, per=5, type=commands.BucketType.user)
     async def _collect(self, ctx):
-        """Collect gold, key, free chest or defense chests."""
+        """Collect gold, key, free box or defense boxes."""
         if not ctx.invoked_subcommand:
-            return await ctx.send("Please specify one of the following to collect: gold, key, free chest or defense chest.")
+            return await ctx.send("Please specify one of the following to collect: gold, key, free box or defense box.")
 
     @_collect.command(name="gold")
     @commands.cooldown(rate=1, per=3600, type=commands.BucketType.user)
@@ -1257,22 +1259,22 @@ class RushWars(BaseCog):
 
     @_collect.command(name="free")
     @commands.cooldown(rate=1, per=10800, type=commands.BucketType.user)
-    async def collect_free_chest(self, ctx):
-        """Collect a free chest once every 3 hours: `[p]collect free`"""
-        chest = await self._chest(ctx, "Free")
-        await ctx.send(embed=chest)
+    async def collect_free_box(self, ctx):
+        """Collect a free box once every 3 hours: `[p]collect free`"""
+        box = await self._box(ctx, "Free")
+        await ctx.send(embed=box)
     
     @_collect.command(name="defense")
     @commands.cooldown(rate=1, per=10, type=commands.BucketType.user)
-    async def collect_defense_chest(self, ctx):
-        """Collect defense chest if it is available: `[p]collect defense`"""
+    async def collect_defense_box(self, ctx):
+        """Collect defense box if it is available: `[p]collect defense`"""
         temp_def_stars = await self.config.user(ctx.author).temp_def_stars()
 
         if temp_def_stars < 100:
             return await ctx.send(f"You do not have enough defense stars. ({temp_def_stars}/100)")
         
-        chest = await self._chest(ctx, "Defense")
-        await ctx.send(embed=chest)
+        box = await self._box(ctx, "Defense")
+        await ctx.send(embed=box)
     
     def card_search(self, name):
         files = ['troops.csv', 'airdrops.csv',
@@ -1346,7 +1348,20 @@ class RushWars(BaseCog):
             "Troopers": "<:Troopers:625807035362967605>",
             "Pitcher": "<:Pitcher:625807035954626590>",
             "Shields": "<:Shields:625807036663332865>",
+            "Jetpacks": "<:Jetpacks:625807036117942272>",
+            "Plumber Van": "<:PlumberVan:625807036462006285>",
+            "Henchmen": "<:Henchmen:625807033425199115>",
+            "Kungfu": "<:Kungfu:625807035505836032>",
+            "Bazooka": "<:Bazooka:625807021316505600>",
+            "Hotshot": "<:Hotshot:625807032301125646>",
             "Sneaky Ninja": "<:SneakyNinja:625807033354158100>",
+            "Boxer": "<:Boxer:625807036759933025>",
+            "Tank": "<:Tank:627548870443925523>",
+            "Gorilla": "<:Gorilla:625807036290170901>",
+            "Laser": "<:Laser:625807037481353217>",
+            "Rocket Truck": "<:RocketTruck:625807036810133515>",
+            "Helipod": "<:Helipod:627548868694900774>",
+            "Blaze": "<:Blaze:625807036474458112>",
             "Arcade": "<:Arcade:626008229763219477>",
             "Heal": "<:Heal:626008230233112576>",
             "Boost": "<:Boost:626008230186975233>",
@@ -1354,7 +1369,25 @@ class RushWars(BaseCog):
             "Paratroopers": "<:Paratroopers:626008231478558732>",
             "Invisibility": "<:Invisibility:626008231713439794>",
             "Satellite": "<:Satellite:626010083406643200>",
-            "Cannon": "<:Cannon:626527978368794663>"
+            "Cannon": "<:Cannon:626527978368794663>",
+            "Mines": "<:Mines:626527978393829417>",
+            "Plumber Hole": "<:PlumberHole:626527979811504133>",
+            "Mortar": "<:Mortar:626527978800676875>",
+            "Bomb": "<:Bomb:626527974937722890>",
+            "Gatling": "<:Gatling:626527979677286449>",
+            "Walls": "<:Wall:627556663146315776>",
+            "Cluster Cake": "<:ClusterCake:626527978477715469>",
+            "Tesla": "<:Tesla:627556705231831040>",
+            "Box Ninja": "<:BoxNinja:626527977433464842>",
+            "Freeze Mine": "<:FreezeMine:626527979723554816>",
+            "Dummy": "<:Dummy:626527979085758514>",
+            "Rocket Trap": "<:RocketTrap:626527978935025664>",
+            "Plasmagun": "<:Plasmagun:626527977215229974>",
+            "Lady Grenade": "<:LadyGrenade:627556853139767297>",
+            "Bearman": "<:Bearman:627556852846297088>",
+            "Mother": "<:Mother:627556854528212992>",
+            "Coach": "<:Coach:627556853152481300>",
+            "B.I.G.": "<:BIG:627556852913406011>"
         }
         try:
             return emotes[card_name]
@@ -1555,24 +1588,24 @@ class RushWars(BaseCog):
         await self.config.user(ctx.author).gold.set(upd_gold)
         return True
 
-    async def _chest(self, ctx, chest_type=None):
-        """To handle chest openings."""
+    async def _box(self, ctx, box_type=None):
+        """To handle box openings."""
 
-        unlocked_chests = await self.config.user(ctx.author).chests()
+        unlocked_boxes = await self.config.user(ctx.author).boxes()
 
-        if not chest_type:
-            c = Chests(unlocked_chests)
-            chest_type = c.chest_type
+        if not box_type:
+            c = Boxes(unlocked_boxes)
+            box_type = c.box_type
 
-        chest_data = self.CHESTS_INFO[chest_type]
+        box_data = self.BOXES_INFO[box_type]
 
         hq = await self.config.user(ctx.author).hq()
 
         reward_gem = None
         
-        if chest_type == "Free":
-            multiplier = self.HQ_LEVELS[str(hq)]["ChestMultiplier"] / 100
-            desc = f"HQ {hq} Free Chest"
+        if box_type == "Free":
+            multiplier = self.HQ_LEVELS[str(hq)]["BoxMultiplier"] / 100
+            desc = f"HQ {hq} Free Box"
             get_gem = random.randint(1, 10)
             if get_gem >= 7:
                 reward_gem = random.randint(2, 8)
@@ -1590,7 +1623,7 @@ class RushWars(BaseCog):
                 low, high, multi = LEAGUES[league]
                 if total_stars in range(low, high):
                     multiplier = multi / 100
-                    desc = f"{league.title()} {chest_type.title()} Chest"
+                    desc = f"{league.title()} {box_type.title()} Box"
                     break
         
         user_cards = {
@@ -1610,11 +1643,11 @@ class RushWars(BaseCog):
                 for commander in commanders:
                     user_cards["Commander"].append(commander)
         
-        stacks = chest_data["Stacks"]
-        total_cards = round(chest_data["TotalCards"] * multiplier)
-        rare_chance = chest_data["RareChance"]
-        epic_chance = chest_data["EpicChance"]
-        commander_chance = chest_data["CommanderChance"]
+        stacks = box_data["Stacks"]
+        total_cards = round(box_data["TotalCards"] * multiplier)
+        rare_chance = box_data["RareChance"]
+        epic_chance = box_data["EpicChance"]
+        commander_chance = box_data["CommanderChance"]
 
         commander = epic = rare = False
         random_draw = random.random()
@@ -1638,7 +1671,7 @@ class RushWars(BaseCog):
                     commander = True
 
         # code below is a complete mess. 
-        # move this to chests.py 
+        # move this to boxes.py 
         if commander:
             total_commander = 1
             total_epics = ceil((total_cards - 1) * 0.03)
@@ -1840,8 +1873,8 @@ class RushWars(BaseCog):
             return
         
         # handle gold 
-        min_gold = round(chest_data["MinGold"] * multiplier)
-        max_gold = round(chest_data["MaxGold"] * multiplier)
+        min_gold = round(box_data["MinGold"] * multiplier)
+        max_gold = round(box_data["MaxGold"] * multiplier)
 
         reward_gold = random.randint(min_gold, max_gold)
 
@@ -1849,12 +1882,12 @@ class RushWars(BaseCog):
         upd_gold = gold + reward_gold
         await self.config.user(ctx.author).gold.set(upd_gold)
 
-        # increase number of chests
-        await self.config.user(ctx.author).chests.set(unlocked_chests+1)
+        # increase number of boxes
+        await self.config.user(ctx.author).boxes.set(unlocked_boxes+1)
 
         # return rewards embed
         embed = discord.Embed(colour=0x98D9EB)
-        embed.set_author(name=desc, icon_url=f"https://www.rushstats.com/assets/chest/{chest_type}.png")
+        embed.set_author(name=desc, icon_url=f"https://www.rushstats.com/assets/box/{box_type}.png")
 
         if reward_gem:
             gems = await self.config.user(ctx.author).gems()
@@ -1892,7 +1925,7 @@ class RushWars(BaseCog):
         return parts
 
     async def handle_keys(self, ctx, stars):
-        """Handle keys and check whether to open chest or not."""
+        """Handle keys and check whether to open box or not."""
         temp_stars = await self.config.user(ctx.author).temp_stars()
         keys = await self.config.user(ctx.author).keys()
 
