@@ -465,6 +465,7 @@ class RushWars(BaseCog):
             level = base_card_levels[(card.Rarity).lower()]
 
         await ctx.send(description)
+        print(description)
 
         embed = discord.Embed(colour=color, title=card.Name,
                               description=description, url=url)
