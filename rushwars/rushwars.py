@@ -191,7 +191,7 @@ class RushWars(BaseCog):
         await ctx.send(f"You are running Rush Wars version {__version__}")
 
     @commands.command()
-    @commands.cooldown(rate=1, per=60, type=commands.BucketType.user)
+    @commands.cooldown(rate=1, per=5, type=commands.BucketType.user)
     async def rush(self, ctx, *, member: discord.Member = None):
         """Attack a base!"""
 
@@ -318,7 +318,7 @@ class RushWars(BaseCog):
             await ctx.send(lvl_stats)
             upd_stats = self.card_level(
                 level, lvl_stats, stats.Rarity, "commanders")
-            return await ctx.send(lvl_stats)
+            return await ctx.send(upd_stats)
         
             count = commanders[commander]
 
