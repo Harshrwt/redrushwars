@@ -1757,7 +1757,8 @@ class RushWars(BaseCog):
             # return await ctx.send(opponent)
             if opponent == ctx.author.id:
                 continue
-            opponent_stars = await self.get_stars(opponent)
+            opponent_name_with_disc = f"{opponent.name}{opponent.discriminator}"
+            opponent_stars = await self.get_stars(opponent_name_with_disc)
             return await ctx.send(f"Opp {opponent_stars}")
             if user_stars in range(opponent_stars-100, opponent_stars+1000): # set to 1000 for testing only
                 if opponents[opponent]["active"]["defenses"]:
