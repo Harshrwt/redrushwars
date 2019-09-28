@@ -148,6 +148,7 @@ class RushWars(BaseCog):
         self.HQ_LEVELS: dict = None
         self.CHOPPER_LEVELS: dict = None
         self.CHESTS_INFO: dict = None
+        self.RARITY_INFO: dict = None
 
         self.config.register_user(**default_user)
 
@@ -158,6 +159,7 @@ class RushWars(BaseCog):
             hq_levels_fp = bundled_data_path(self) / "hq_levels.json"
             chopper_levels_fp = bundled_data_path(self) / "chopper_levels.json"
             chests_fp = bundled_data_path(self) / "chests.json"
+            rarities_fp = bundled_data_path(self) / "rarities.json"
         except:
             log.exception("Error with file path.")
 
@@ -169,6 +171,8 @@ class RushWars(BaseCog):
             self.CHOPPER_LEVELS = json.load(f)
         with chests_fp.open("r") as f:
             self.CHESTS_INFO = json.load(f)
+        with rarities_fp.open("r") as f:
+            self.RARITY_INFO = json.load(f)
 
     @commands.group(autohelp=True)
     async def rushwars(self, ctx):
@@ -1111,6 +1115,77 @@ class RushWars(BaseCog):
         else:
             return await ctx.send("Upgrade cancelled by the user.")
         
+    @_upgrade.command(name="card")
+    async def upgrade_card(self, ctx, card_name):
+        """Upgrade a card: `[p]upgrade card [card_name]`
+        Example:
+            `[p]upgrade card troopers`
+        """
+        card_name = card_name.title()
+        
+        # check if card exists
+        card_info = self.card_search(card_name)
+
+        if not card_info:
+            return await ctx.send(f"{card.title()} does not exist.")
+
+        card_type = str(card_info[0]) + "s"
+        card_info = card_info[1]
+        
+        # get user card level and number of cards
+        async with self.config.user(ctx.author).cards() as cards:
+            for item in cards[card_type]:
+                if card_name == item:
+                    user_level = cards[card_type][item][0]
+                    user_num_of_cards = cards[card_type][item][1]
+        
+        rarity = card_info.Rarity
+        cards_reqd = self.RARITY_INFO[rarity]["UpgradeCards"][user_level]
+
+        if cards_reqd > user_num_of_cards:
+            return await ctx.send(f"You do not have enough cards to upgrade. ({user_num_of_cards}/{cards_reqd})")
+        
+        leftover = user_num_of_cards - cards_reqd
+
+        upgrade_cost = self.RARITY_INFO[rarity]["UpgradeCost"][user_level]
+        reward_xp = self.RARITY_INFO[rarity]["UpgradePlayerExp"][user_level]
+
+        msg = await ctx.send(f"Upgrading {card_name} to level {user_level+1} will cost {upgrade_cost} {STAT_EMOTES['Gold_Icon']}. Continue?")
+        start_adding_reactions(msg, ReactionPredicate.YES_OR_NO_EMOJIS)
+
+        pred = ReactionPredicate.yes_or_no(msg, ctx.author)
+        await ctx.bot.wait_for("reaction_add", check=pred)
+        if not pred.result:
+            return await ctx.send("Upgrade cancelled by the user.")
+        
+        try:
+            gold = await self.config.user(ctx.author).gold()
+            if gold >= upgrade_cost:
+                # update config variables 
+                async with self.config.user(ctx.author).cards() as cards:
+                    for item in cards[card_type]:
+                        if card_name == item:
+                            cards[card_type][item][0] += 1
+                            cards[card_type][item][1] = leftover
+                upd_gold = gold - upgrade_cost
+                await self.config.user(ctx.author).gold.set(upd_gold)
+                xp = await self.config.user(ctx.author).xp()
+                await self.config.user(ctx.author).xp.set(reward_xp+xp)
+
+                await ctx.send(f"{card_name} upgraded to level {user_level+1}.")
+                await ctx.send(f"Rewards: {reward_xp} {STAT_EMOTES['Experience']}")
+                level_up = True
+                while level_up:
+                    level_up = await self.xp_level_handler(ctx)
+                    if level_up:
+                        await ctx.send(level_up[0])
+                        await ctx.send(level_up[1])
+            else:
+                return await ctx.send("You do not have enough gold to upgrade.")
+        except:
+            log.exception("Error with updating character sheet.")
+            return
+
     @commands.group(name="collect", autohelp=False)
     async def _collect(self, ctx):
         """Collect gold, free chest or a key."""
@@ -1137,7 +1212,7 @@ class RushWars(BaseCog):
         else:
             await self.config.user(ctx.author).keys.set(keys+1)
             await ctx.send(f"You got 1 {STAT_EMOTES['Keys']}!")
-    
+
     def card_search(self, name):
         files = ['troops.csv', 'airdrops.csv',
                  'defenses.csv', 'commanders.csv']
@@ -1390,7 +1465,7 @@ class RushWars(BaseCog):
         await self.config.user(ctx.author).xp.set(carry)
         await self.config.user(ctx.author).lvl.set(lvl+1)
         
-        level_up_msg = f"Congrats! Level up! You have reached level {lvl+1}."
+        level_up_msg = f"Level up! You have reached level {lvl+1}."
         
         gem_reward = self.XP_LEVELS[str(lvl)]["GemReward"]
         reward_msg = f"Rewards: {gem_reward} {STAT_EMOTES['Gems']}"
