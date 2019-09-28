@@ -185,6 +185,7 @@ class RushWars(BaseCog):
         await ctx.send(f"You are running Rush Wars version {__version__}")
 
     @commands.command()
+    @commands.cooldown(rate=1, per=60, type=commands.BucketType.user)
     async def rush(self, ctx, *, member: discord.Member = None):
         """Attack a base!"""
 
@@ -999,12 +1000,13 @@ class RushWars(BaseCog):
     
     @commands.group(name="upgrade", autohelp=False)
     async def _upgrade(self, ctx):
+        """Upgrade HQ, chopper or a card."""
         if not ctx.invoked_subcommand:
             return await ctx.send("Please specify one of the following to upgrade: hq, chopper or a card.")
 
     @_upgrade.command(name="hq")
     async def upgrade_hq(self, ctx):
-        """Upgrade HQ level."""
+        """Upgrade HQ level: `[p]upgrade hq`"""
         # get new hq level
         hq = await self.config.user(ctx.author).hq() + 1
 
@@ -1041,7 +1043,7 @@ class RushWars(BaseCog):
 
     @_upgrade.command(name="chopper")
     async def upgrade_chopper(self, ctx):
-        """Upgrade chopper level."""
+        """Upgrade chopper level: `[p]upgrade chopper`"""
         # get new chopper level
         chopper = await self.config.user(ctx.author).chopper() + 1
 
@@ -1076,27 +1078,30 @@ class RushWars(BaseCog):
         
     @commands.group(name="collect", autohelp=False)
     async def _collect(self, ctx):
+        """Collect gold, free chest or a key."""
         if not ctx.invoked_subcommand:
-            return await ctx.send("Please specify one of the following to collect: gold, free chest or key.")
+            return await ctx.send("Please specify one of the following to collect: gold, free chest or a key.")
 
+    @_collect.command(name="gold")
+    @commands.cooldown(rate=1, per=3600, type=commands.BucketType.user)
+    async def collect_gold(self, ctx):
+        """Collect gold from gold mine once every hour: `[p]collect gold`"""
+        gold = await self.config.user(ctx.author).gold()
+        hq = await self.config.user(ctx.author).hq()
+        resource_gold = self.HQ_LEVELS[str(hq)]["ResourceMax"]
+        await self.config.user(ctx.author).gold.set(gold+resource_gold)
+        await ctx.send(f"You got {resource_gold} {STAT_EMOTES['Gold_Icon']}!")
+    
     @_collect.command(name="key")
     @commands.cooldown(rate=1, per=3600, type=commands.BucketType.user)
     async def collect_key(self, ctx):
+        """Collect a key once every hour: `[p]collect key`"""
         keys = await self.config.user(ctx.author).keys()
         if keys == 5:
             return await ctx.send("You already have 5 keys!")
         else:
             await self.config.user(ctx.author).keys.set(keys+1)
             await ctx.send(f"You got 1 {STAT_EMOTES['Keys']}!")
-
-    @_collect.command(name="gold")
-    @commands.cooldown(rate=1, per=3600, type=commands.BucketType.user)
-    async def collect_gold(self, ctx):
-        gold = await self.config.user(ctx.author).gold()
-        hq = await self.config.user(ctx.author).hq()
-        resource_gold = self.HQ_LEVELS[str(hq)]["ResourceMax"]
-        await self.config.user(ctx.author).gold.set(gold+resource_gold)
-        await ctx.send(f"You got {resource_gold} {STAT_EMOTES['Gold_Icon']}!")
     
     def card_search(self, name):
         files = ['troops.csv', 'airdrops.csv',
