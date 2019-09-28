@@ -1754,6 +1754,7 @@ class RushWars(BaseCog):
 
         opponents = await self.config.all_users()
         for opponent in opponents:
+            return await ctx.send(opponent)
             opponent_stars = await self.get_stars(opponent)
             if user_stars in range(opponent_stars-100, opponent_stars+1000): # set to 1000 for testing only
                 if opponents[opponent]["active"]["defenses"]:
