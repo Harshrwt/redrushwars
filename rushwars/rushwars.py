@@ -1412,7 +1412,11 @@ class RushWars(BaseCog):
                 for card_type in ['troops', 'airdrops', 'defenses', 'commanders']:
                     for card in cards_unlocked[card_type]:
                         if card not in list(cards[card_type]):
-                            cards[card_type][card] = [1, 0]
+                            # get card rarity
+                            card_info = self.card_search(card)[1]
+                            rarity = card_info.Rarity
+                            level = base_card_levels[rarity.lower()]
+                            cards[card_type][card] = [level, 0]
         except Exception as ex:
             log.exception(ex)
             return
