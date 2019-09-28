@@ -966,7 +966,8 @@ class RushWars(BaseCog):
 
     @commands.command(name="sethq")
     async def set_hq(self, ctx, lvl: int = None):
-        await self.new_hq_cards(ctx, lvl)
+        # await self.new_hq_cards(ctx, lvl)
+        await self.config.user(ctx.author).hq.set(lvl)
         await ctx.send("Done")
 
     @commands.command(name="cards")
