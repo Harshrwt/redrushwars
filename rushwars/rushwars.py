@@ -191,7 +191,7 @@ class RushWars(BaseCog):
         await ctx.send(f"You are running Rush Wars version {__version__}")
 
     @commands.command()
-    @commands.cooldown(rate=1, per=5, type=commands.BucketType.user)
+    @commands.cooldown(rate=1, per=30, type=commands.BucketType.user)
     async def rush(self, ctx, *, member: discord.Member = None):
         """Attack a base!"""
 
@@ -315,10 +315,8 @@ class RushWars(BaseCog):
             stats = self.card_search(commander)[1]
             level = await self.rush_card_level(ctx, commander.title(), "commanders")
             lvl_stats = [int(stats.Hp), int(stats.Att)]
-            await ctx.send(lvl_stats)
             upd_stats = self.card_level(
                 level, lvl_stats, stats.Rarity, "commanders")
-            return await ctx.send(upd_stats)
         
             count = commanders[commander]
 
@@ -970,11 +968,11 @@ class RushWars(BaseCog):
         else:
             return await ctx.send("Reset cancelled by the user.")
 
-    @commands.command(name="sethq")
-    async def set_hq(self, ctx, lvl: int = None):
-        await self.new_hq_cards(ctx, lvl)
-        await self.config.user(ctx.author).hq.set(lvl)
-        await ctx.send("Done")
+    # @commands.command(name="sethq")
+    # async def set_hq(self, ctx, lvl: int = None):
+    #     await self.new_hq_cards(ctx, lvl)
+    #     await self.config.user(ctx.author).hq.set(lvl)
+    #     await ctx.send("Done")
 
     @commands.command(name="cards")
     async def cards(self, ctx):
@@ -1244,7 +1242,7 @@ class RushWars(BaseCog):
             await ctx.send(f"You got 1 {STAT_EMOTES['Keys']}!")
 
     @_collect.command(name="free")
-    @commands.cooldown(rate=1, per=10, type=commands.BucketType.user)
+    @commands.cooldown(rate=1, per=10800, type=commands.BucketType.user)
     async def collect_free_chest(self, ctx):
         """Collect a free chest once every 3 hours: `[p]collect free`"""
         chest = await self._chest(ctx, "Free")
