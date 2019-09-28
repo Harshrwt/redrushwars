@@ -223,6 +223,10 @@ class RushWars(BaseCog):
                 return
             if not defenses:
                 return await ctx.send("User has not set up a defense.")
+
+            opponent_stars = await self.get_stars(member)
+            if total_stars - opponent_stars >= 100:
+                return await ctx.send(f"Can't attack {opponent} because of large difference in stars.")
             
             if total_stars < 10:
                 await ctx.send("First 4 battles must be against computer. Changing to computer...")
