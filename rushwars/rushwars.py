@@ -372,6 +372,22 @@ class RushWars(BaseCog):
                 await ctx.send(level_up[0])
                 await ctx.send(level_up[1])
 
+    @commands.command(name="rushinfo")
+    async def rush_info(self, ctx):
+        """Get information related to rush (battle)."""
+        hq = await self.config.user(ctx.author).hq()
+
+        attack_cost = self.HQ_LEVELS[str(hq)]["AttackCost"]
+        temp_stars = await self.config.user(ctx.author).temp_stars()
+        keys = await self.config.user(ctx.author).keys()
+
+        embed = discord.Embed(colour=0x98D9EB, title="Rush Info")
+        embed.add_field(name="Attack Cost", value=f"{STAT_EMOTES['Gold_Icon']} {attack_cost}")
+        embed.add_field(name="Stars Till Next Box", value=f"{STAT_EMOTES['Stars']} {5 - temp_stars}")
+        embed.add_field(name="Keys", value=f"{STAT_EMOTES['Keys']} {keys}")
+        
+        await ctx.send(embed=embed)
+    
     @commands.command()
     async def card(self, ctx, card_name: str, level: int = None):
         """Search for a card in the Rush Wars universe.
