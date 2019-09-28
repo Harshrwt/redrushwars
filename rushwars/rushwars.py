@@ -203,7 +203,17 @@ class RushWars(BaseCog):
             return await ctx.send(f"Error with character sheet!")
             log.exception(f"Error with character sheet: {ex}!")
 
-        if member is not None:
+        try:
+            async with self.config.user(ctx.author).stars() as tot_stars:
+                att_stars = tot_stars["attack"]
+                def_stars = tot_stars["defense"]
+        except:
+            log.exception("Error with character sheet.")
+            return
+        
+        total_stars = att_stars + def_stars
+        
+        if member:
             try:
                 async with self.config.user(member).active() as active:
                     defenses = active["defenses"]
@@ -213,9 +223,24 @@ class RushWars(BaseCog):
                 return
             if not defenses:
                 return await ctx.send("User has not set up a defense.")
+            
+            if total_stars < 10:
+                await ctx.send("First 4 battles must be against computer. Changing to computer...")
+                defenses = random.choice(default_defenses)
+                opponent = "Computer"
         else:
             defenses = random.choice(default_defenses)
             opponent = "Computer"
+            if total_stars > 10:
+                member = await self.matchmaking(ctx)
+                if member:
+                    try:
+                        async with self.config.user(member).active() as active:
+                            defenses = active["defenses"]
+                            opponent = member.name
+                    except:
+                        log.exception("Error with character sheet.")
+                        return
 
         hp = 0
         attps = 0
@@ -327,16 +352,6 @@ class RushWars(BaseCog):
             stars = 1
         else:
             stars = 0
-        
-        try:
-            async with self.config.user(ctx.author).stars() as tot_stars:
-                att_stars = tot_stars["attack"]
-                def_stars = tot_stars["defense"]
-        except:
-            log.exception("Error with character sheet.")
-            return
-        
-        total_stars = att_stars + def_stars
 
         if total_stars < 9:
             stars = 3 
@@ -1731,3 +1746,32 @@ class RushWars(BaseCog):
                 temp_stars = 5
             await self.config.user(ctx.author).temp_stars.set(temp_stars)
             return False
+
+    async def matchmaking(self, ctx):
+        user_stars = await self.get_stars(ctx.author)
+
+        selected = None
+
+        opponents = self.config.all_users()
+        for opponent in opponents.keys():
+            opponent_stars = await self.get_stars(opponent)
+            if user_stars in range(opponent_stars-100, opponent_stars+1000): # set to 1000 for testing only
+                if opponents[opponent]["active"]["defenses"]:
+                    selected = opponent
+                    break
+            else:
+                continue
+        
+        return selected
+
+    async def get_stars(self, user):
+        """Get total stars of selected user."""
+        try:
+            async with self.config.user(user).stars() as stars:
+                att_stars = stars["attack"]
+                def_stars = stars["defense"]
+        except:
+            log.exception("Error with character sheet.")
+            return
+        
+        return att_stars + def_stars
