@@ -958,7 +958,7 @@ class RushWars(BaseCog):
 
                     type_emote = self.type_emotes(card_type.title())
                     embed = discord.Embed(
-                        color=0xEE2222, title=f"{card_type.title()}")
+                        color=0x98D9EB, title=f"{card_type.title()}")
 
                     for item in data.keys():
                         emote = self.card_emotes(item)
