@@ -66,7 +66,8 @@ default_user = {
     "gold": 200,
     "gems": 150,
     "chests": 0,
-    "temp_stars": 0
+    "temp_stars": 0,
+    "temp_def_stars": 0
 }
 
 default_defenses = [
@@ -1188,9 +1189,9 @@ class RushWars(BaseCog):
 
     @commands.group(name="collect", autohelp=False)
     async def _collect(self, ctx):
-        """Collect gold, free chest or a key."""
+        """Collect gold, key, free chest or defense chests."""
         if not ctx.invoked_subcommand:
-            return await ctx.send("Please specify one of the following to collect: gold, free chest or a key.")
+            return await ctx.send("Please specify one of the following to collect: gold, key, free chest or defense chest.")
 
     @_collect.command(name="gold")
     @commands.cooldown(rate=1, per=3600, type=commands.BucketType.user)
@@ -1213,10 +1214,22 @@ class RushWars(BaseCog):
             await self.config.user(ctx.author).keys.set(keys+1)
             await ctx.send(f"You got 1 {STAT_EMOTES['Keys']}!")
 
-    @_collect.command(name="freechest")
+    @_collect.command(name="free")
     @commands.cooldown(rate=1, per=10800, type=commands.BucketType.user)
     async def collect_free_chest(self, ctx):
+        """Collect a free chest once every 3 hours: `[p]collect free`"""
         chest = await self._chest(ctx, "Free")
+        await ctx.send(embed=chest)
+    
+    @_collect.command(name="defense")
+    async def collect_defense_chest(self, ctx):
+        """Collect defense chest if it is available: `[p]collect defense`"""
+        temp_def_stars = await self.config.user(ctx.author).temp_def_stars()
+
+        if temp_def_stars < 100:
+            return await ctx.send(f"You do not have enough defense stars. ({temp_def_stars}/100)")
+        
+        chest = await self._chest(ctx, "Defence")
         await ctx.send(embed=chest)
     
     def card_search(self, name):
@@ -1513,7 +1526,7 @@ class RushWars(BaseCog):
         
         if chest_type == "Free":
             multiplier = self.HQ_LEVELS[str(hq)]["ChestMultiplier"] / 100
-            desc = f"HQ level {hq} Free Chest"
+            desc = f"HQ {hq} Free Chest"
             get_gem = random.randint(1, 10)
             if get_gem >= 7:
                 reward_gem = random.randint(2, 8)
@@ -1790,6 +1803,9 @@ class RushWars(BaseCog):
         embed = discord.Embed(colour=0x98D9EB, title=desc)
 
         if reward_gem:
+            gems = await self.config.user(ctx.author).gems()
+            upd_gems = gold + reward_gold
+            await self.config.user(ctx.author).gold.set(upd_gems)
             embed.add_field(name=f"Gems {STAT_EMOTES['Gems']}", value=f"{reward_gem}")
 
         embed.add_field(name=f"Gold {STAT_EMOTES['Gold_Icon']}", value=f"{reward_gold}")
