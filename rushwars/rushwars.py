@@ -1753,7 +1753,9 @@ class RushWars(BaseCog):
         selected = None
 
         opponents = await self.config.all_users()
-        for opponent_id in opponents:
+        opponent_keys = list(opponents.keys())
+        random.shuffle(opponent_keys)
+        for opponent_id in opponent_keys:
             # return await ctx.send(opponent)
             if opponent_id == ctx.author.id:
                 continue
