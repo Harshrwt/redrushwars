@@ -1313,11 +1313,11 @@ class RushWars(BaseCog):
         embed = discord.Embed(colour=0x98D9EB, description=embed_desc)
         embed.set_author(name="Leaderboard", 
             icon_url="https://cdn.discordapp.com/attachments/626063027543736320/627811022723350528/Leaderboard.png")
-
+        embed.set_thumbnail(url="https://cdn.discordapp.com/attachments/626063027543736320/627811022723350528/Leaderboard.png")
         # add rank of user
         for idx, user in enumerate(users):
             if ctx.author == user['name']:
-                    embed.add_field(name=f"You", value=f":`{(idx+1):02d}.` {STAT_EMOTES['Stars']} `{user['stars']}`")
+                    embed.add_field(name=f"You", value=f"`{(idx+1):02d}.` {STAT_EMOTES['Elite']} `{user['stars']}`")
         
         await ctx.send(embed=embed)
     
