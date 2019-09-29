@@ -1302,21 +1302,22 @@ class RushWars(BaseCog):
             stars = await self.get_stars(user)
             users.append({'name': user, 'stars': stars})
         users = sorted(users, key=lambda k: k['stars'], reverse=True)
-        embed = discord.Embed(colour=0x98D9EB)
-        embed.set_author(name="Leaderboard", 
-            icon_url="https://cdn.discordapp.com/attachments/626063027543736320/627811022723350528/Leaderboard.png")
-        
+        embed_desc = ""
         # return first 10 (or fewer) members
         for i in range(10):
             try:
-                embed.add_field(name=f"{i+1}. {users[i]['name']}", value=f"{STAT_EMOTES['Stars']} {users[i]['stars']}")
+                embed_desc += f"`{(i+1):02d}.` {STAT_EMOTES['Stars']} `{users[i]['stars']}` {users[i]['name']}\n"
             except:
                 break
         
+        embed = discord.Embed(colour=0x98D9EB, description=embed_desc)
+        embed.set_author(name="Leaderboard", 
+            icon_url="https://cdn.discordapp.com/attachments/626063027543736320/627811022723350528/Leaderboard.png")
+
         # add rank of user
         for idx, user in enumerate(users):
             if ctx.author == user['name']:
-                    embed.add_field(name=f"Your position: {idx+1}", value=f"{STAT_EMOTES['Stars']} {user['stars']}")
+                    embed.add_field(name=f"You", value=f":`{(idx+1):02d}.` {STAT_EMOTES['Stars']} `{user['stars']}`")
         
         await ctx.send(embed=embed)
     
