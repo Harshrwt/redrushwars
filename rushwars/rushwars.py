@@ -434,7 +434,7 @@ class RushWars(BaseCog):
         embed.add_field(name="Stars Till Next Box",
                         value=f"{STAT_EMOTES['Stars']} {5 - temp_stars}")
         embed.add_field(name="Defense Box",
-                        value=f"{STAT_EMOTES['Stars']} {5 - temp_stars}")
+                        value=f"{STAT_EMOTES['Stars']} {temp_def_stars}/100")
         embed.add_field(name="Keys", value=f"{STAT_EMOTES['Keys']} {keys}")
 
         await ctx.send(embed=embed)
