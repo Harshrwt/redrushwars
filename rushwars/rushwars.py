@@ -118,6 +118,7 @@ STAT_EMOTES = {
     "Defense Stars": "<:RW_Defense:626338600467824660>",
     "Keys": "<:RW_Key:625783197963255838>",
     "Chopper": "<:RW_Chopper:626718677986967553>",
+    "Levels": "<:RW_Levels:626490780386721792>",
     "Rookie": "<:Rookie:626724912509485057>",
     "Bronze": "<:Bronze:626724908008734730>",
     "Silver": "<:Silver:626724911901310976>",
@@ -1306,18 +1307,18 @@ class RushWars(BaseCog):
         # return first 10 (or fewer) members
         for i in range(10):
             try:
-                embed_desc += f"`{(i+1):02d}.` {STAT_EMOTES['Stars']} `{users[i]['stars']}` {users[i]['name']}\n"
+                embed_desc += f"`{(i+1):02d}.` {STAT_EMOTES['Levels']} `{users[i]['stars']}` {users[i]['name']}\n"
             except:
                 break
         
         embed = discord.Embed(colour=0x98D9EB, description=embed_desc)
         embed.set_author(name="Leaderboard", 
             icon_url="https://cdn.discordapp.com/attachments/626063027543736320/627811022723350528/Leaderboard.png")
-        embed.set_thumbnail(url="https://cdn.discordapp.com/attachments/626063027543736320/627811022723350528/Leaderboard.png")
+        embed.set_thumbnail(url="https://www.rushstats.com/assets/league/Elite.png")
         # add rank of user
         for idx, user in enumerate(users):
             if ctx.author == user['name']:
-                    embed.add_field(name=f"You", value=f"`{(idx+1):02d}.` {STAT_EMOTES['Elite']} `{user['stars']}`")
+                    embed.add_field(name=f"You", value=f"`{(idx+1):02d}.` {STAT_EMOTES['Levels']} `{user['stars']}`")
         
         await ctx.send(embed=embed)
     
