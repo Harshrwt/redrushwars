@@ -1318,7 +1318,7 @@ class RushWars(BaseCog):
         # add rank of user
         for idx, user in enumerate(users):
             if ctx.author == user['name']:
-                    embed.add_field(name=f"You", value=f"`{(idx+1):02d}.` {STAT_EMOTES['Levels']} `{user['stars']}`")
+                    embed.add_field(name=f"You", value=f"`{(idx+1):02d}.` {STAT_EMOTES['Levels']} `{user['stars']}` {user['name']}")
         
         await ctx.send(embed=embed)
     
