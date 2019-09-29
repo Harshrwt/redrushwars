@@ -1301,7 +1301,7 @@ class RushWars(BaseCog):
             user = ctx.guild.get_member(user_id)
             stars = await self.get_stars(user)
             users.append({'name': user, 'stars': stars})
-        users = sorted(users, key=lambda k: k['stars'])
+        users = sorted(users, key=lambda k: k['stars'], reverse=True)
         embed = discord.Embed(colour=0x98D9EB)
         embed.set_author(name="Leaderboard", 
             icon_url="https://cdn.discordapp.com/attachments/626063027543736320/627811022723350528/Leaderboard.png")
