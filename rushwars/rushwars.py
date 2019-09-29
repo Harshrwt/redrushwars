@@ -1291,7 +1291,36 @@ class RushWars(BaseCog):
 
         box = await self._box(ctx, "Defense")
         await ctx.send(embed=box)
-
+    
+    @commands.command(name="rushboard")
+    async def rushboard(self, ctx):
+        """Check the leaderboards to see who is at the top!"""
+        all_users = await self.config.all_users()
+        users = []
+        for user_id in all_users:
+            user = ctx.guild.get_member(user_id)
+            stars = self.get_stars(user)
+            users.append({'name': user, 'stars': stars})
+        users = sorted(users, key=lambda k: k['stars'])
+        
+        embed = discord.Embed(colour=0x98D9EB)
+        embed.set_author(name="Leaderboard", 
+            icon_url="https://cdn.discordapp.com/attachments/626063027543736320/627811022723350528/Leaderboard.png")
+        
+        # return first 10 (or fewer) members
+        for i in range(10):
+            try:
+                embed.add_field(name=f"{i+1}. {users['name']}", value=f"{STAT_EMOTES['Stars']} {users['stars']}")
+            except:
+                break
+        
+        # add rank of user
+        for idx, user in enumerate(users):
+            if ctx.author == user['name']:
+                    embed.add_field(name=f"Your position: {idx+1}", value=f"{STAT_EMOTES['Stars']} {users['stars']}")
+        
+        await ctx.send(embed=embed)
+    
     def card_search(self, name):
         files = ['troops.csv', 'airdrops.csv',
                  'defenses.csv', 'commanders.csv']
@@ -2007,3 +2036,4 @@ class RushWars(BaseCog):
             return
 
         return att_stars + def_stars
+    
