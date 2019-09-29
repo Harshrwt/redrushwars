@@ -1332,7 +1332,7 @@ class RushWars(BaseCog):
         total_tips = len(self.TIPS)
 
         if not index:
-            index = random.choice(0, total_tips - 1)
+            index = random.randint(0, total_tips - 1)
         else:
             index -= index
 
