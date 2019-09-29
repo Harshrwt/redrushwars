@@ -1299,7 +1299,7 @@ class RushWars(BaseCog):
         users = []
         for user_id in all_users:
             user = ctx.guild.get_member(user_id)
-            stars = self.get_stars(user)
+            stars = await self.get_stars(user)
             users.append({'name': user, 'stars': stars})
         users = sorted(users, key=lambda k: k['stars'])
         embed = discord.Embed(colour=0x98D9EB)
@@ -1309,7 +1309,7 @@ class RushWars(BaseCog):
         # return first 10 (or fewer) members
         for i in range(10):
             try:
-                embed.add_field(name=f"{i+1}. {users['name']}", value=f"{STAT_EMOTES['Stars']} {users['stars']}")
+                embed.add_field(name=f"{i+1}. {users[i]['name']}", value=f"{STAT_EMOTES['Stars']} {users[i]['stars']}")
             except:
                 break
         
