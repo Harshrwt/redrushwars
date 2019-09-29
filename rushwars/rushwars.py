@@ -1327,11 +1327,11 @@ class RushWars(BaseCog):
         await ctx.send(embed=embed)
     
     @commands.command(name="tip")
-    async def tip(self, ctx, *, index:int=None):
+    async def tip(self, ctx, *, number:int=None):
         """Send a random in-game story tip."""
         total_tips = len(self.TIPS)
 
-        if not index:
+        if not number:
             index = random.randint(0, total_tips - 1)
         else:
             index -= 1
