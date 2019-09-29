@@ -1334,7 +1334,7 @@ class RushWars(BaseCog):
         if not index:
             index = random.randint(0, total_tips - 1)
         else:
-            index -= index
+            index -= 1
 
         if index not in range(0, total_tips-1):
             return await ctx.send(f"Story tip #{index+1} does not exist.")
