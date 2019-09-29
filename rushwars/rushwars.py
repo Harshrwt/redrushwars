@@ -1328,7 +1328,7 @@ class RushWars(BaseCog):
     
     @commands.command(name="tip")
     async def tip(self, ctx, *, number:int=None):
-        """Send a random in-game story tip."""
+        """Send a random (unless specified) in-game story tip."""
         total_tips = len(self.TIPS)
 
         if not number:
