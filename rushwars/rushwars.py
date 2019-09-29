@@ -152,6 +152,7 @@ class RushWars(BaseCog):
         self.CHOPPER_LEVELS: dict = None
         self.BOXES_INFO: dict = None
         self.RARITY_INFO: dict = None
+        self.TIPS: list = None
 
         self.config.register_user(**default_user)
 
@@ -163,6 +164,7 @@ class RushWars(BaseCog):
             chopper_levels_fp = bundled_data_path(self) / "chopper_levels.json"
             boxes_fp = bundled_data_path(self) / "boxes.json"
             rarities_fp = bundled_data_path(self) / "rarities.json"
+            tips_fp = bundled_data_path(self) / "tips.json"
         except:
             log.exception("Error with file path.")
 
@@ -176,6 +178,8 @@ class RushWars(BaseCog):
             self.BOXES_INFO = json.load(f)
         with rarities_fp.open("r") as f:
             self.RARITY_INFO = json.load(f)
+        with tips_fp.open("r") as f:
+            self.TIPS = json.load(f)
 
     @commands.command(name="rushversion", autohelp=True)
     @commands.cooldown(rate=5, per=120, type=commands.BucketType.guild)
@@ -1321,6 +1325,21 @@ class RushWars(BaseCog):
                     embed.add_field(name=f"You", value=f"`{(idx+1):02d}.` {STAT_EMOTES['Levels']} `{user['stars']}` {user['name']}")
         
         await ctx.send(embed=embed)
+    
+    @commands.command(name="tip")
+    async def tip(self, ctx, *, number:int=None):
+        """Send a random (unless specified) in-game story tip."""
+        total_tips = len(self.TIPS)
+
+        if not number:
+            index = random.randint(0, total_tips - 1)
+        else:
+            index -= 1
+
+        if index not in range(0, total_tips-1):
+            return await ctx.send(f"Story tip #{index+1} does not exist.")
+        
+        await ctx.send(f"Story Tip #{index+1}:\n> {self.TIPS[index]}")
     
     def card_search(self, name):
         files = ['troops.csv', 'airdrops.csv',
