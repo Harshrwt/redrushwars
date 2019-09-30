@@ -1296,7 +1296,7 @@ class RushWars(BaseCog):
 
         box = await self._box(ctx, "Defense")
         await ctx.send(embed=box)
-    
+
     @commands.command(name="rushboard")
     async def rushboard(self, ctx):
         """Check the leaderboards to see who is at the top!"""
@@ -1314,33 +1314,35 @@ class RushWars(BaseCog):
                 embed_desc += f"`{(i+1):02d}.` {STAT_EMOTES['Levels']} `{users[i]['stars']}` {users[i]['name']}\n"
             except:
                 break
-        
+
         embed = discord.Embed(colour=0x98D9EB, description=embed_desc)
-        embed.set_author(name="Leaderboard", 
-            icon_url="https://cdn.discordapp.com/attachments/626063027543736320/627811022723350528/Leaderboard.png")
-        embed.set_thumbnail(url="https://www.rushstats.com/assets/league/Elite.png")
+        embed.set_author(name="Leaderboard",
+                         icon_url="https://cdn.discordapp.com/attachments/626063027543736320/627811022723350528/Leaderboard.png")
+        embed.set_thumbnail(
+            url="https://www.rushstats.com/assets/league/Elite.png")
         # add rank of user
         for idx, user in enumerate(users):
             if ctx.author == user['name']:
-                    embed.add_field(name=f"You", value=f"`{(idx+1):02d}.` {STAT_EMOTES['Levels']} `{user['stars']}` {user['name']}")
-        
+                embed.add_field(
+                    name=f"You", value=f"`{(idx+1):02d}.` {STAT_EMOTES['Levels']} `{user['stars']}` {user['name']}")
+
         await ctx.send(embed=embed)
-    
+
     @commands.command(name="tip")
-    async def tip(self, ctx, *, number:int=None):
+    async def tip(self, ctx, *, number: int = None):
         """Send a random (unless specified) in-game story tip."""
         total_tips = len(self.TIPS)
 
         if not number:
             index = random.randint(0, total_tips - 1)
         else:
-            index -= 1
+            index = number - 1
 
         if index not in range(0, total_tips-1):
             return await ctx.send(f"Story tip #{index+1} does not exist.")
-        
+
         await ctx.send(f"Story Tip #{index+1}:\n> {self.TIPS[index]}")
-    
+
     def card_search(self, name):
         files = ['troops.csv', 'airdrops.csv',
                  'defenses.csv', 'commanders.csv']
@@ -2056,4 +2058,6 @@ class RushWars(BaseCog):
             return
 
         return att_stars + def_stars
-    
+
+    async def get_stars(self, user):
+        pass
