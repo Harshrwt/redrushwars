@@ -568,7 +568,7 @@ class RushWars(BaseCog):
             embed = discord.Embed(colour=0x98D9EB,
                                   description="Is your squad strong enough to kick butt and get mega rich?")
             embed.set_author(
-                name=f"{ctx.author.name}'s Squad", icon_url="https://cdn.discordapp.com/attachments/626063027543736320/626719420219392010/SilverStar.png")
+                name=f"{user}'s Squad", icon_url="https://cdn.discordapp.com/attachments/626063027543736320/626719420219392010/SilverStar.png")
             i = 1
             for items in att_data:
                 if i == 1:
