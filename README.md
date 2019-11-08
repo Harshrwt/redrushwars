@@ -37,6 +37,8 @@ The game is currently in BETA and available in the following countries (on both 
 - New Zealand
 - Australia
 
+**Edit:** Unfortunately, [Supercell has decided not to continue the Rush Wars beta](https://supercell.com/en/news/rush-wars-closing/7225/). 
+
 ---
 
 ## Features
@@ -96,6 +98,8 @@ The following features will be added in future:
 - [ ] Teams and domination
 - [ ] Better matchmaking
 - [ ] Improved battle system
+
+As Supercell has decided to discontinue the game's development, I'll be not be developing the cog further. You can still use the cog and play Rush Wars on Discord, however, it won't get any new features or optimisations. 
 
 ---
 
